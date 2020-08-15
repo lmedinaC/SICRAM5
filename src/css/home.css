@@ -1,0 +1,13 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    /*background-image: url(../assets/fondo2.jpg) ; 
+    background-repeat: no-repeat; 
+    
+    background-attachment: fixed;
+    background-position: 50% 50%;
+*/
+}
