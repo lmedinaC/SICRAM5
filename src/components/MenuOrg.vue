@@ -21,7 +21,7 @@
 
           <li class="active">
             <a href="#" @click="cambiarComponenteOrganizacion('InicioOrg')"
-              ><i class="fa fa-home icono" aria-hidden="true"></i>Inicio</a
+              ><i class="fas fa-home fa-sm icono"></i>Inicio</a
             >
           </li>
           <li class="">
@@ -31,21 +31,21 @@
               data-toggle="collapse"
               aria-expanded="false"
               class="dropdown-toggle"
-              ><i class="fa fa-user icono" aria-hidden="true"></i>Perfil</a
+              ><i class="fas fa-sitemap fa-sm icono"></i>Perfil</a
             >
             <b-collapse id="collapse-1">
               <ul class="list-unstyled" id="PerfilSubmenu">
                 <li>
                   <a
                     href="#"
-                    @click="cambiarComponenteOrganizacion('PerfilPaciente')"
+                    @click="cambiarComponenteOrganizacion('PerfilOrganizacion')"
                     >Tu perfil</a
                   >
                 </li>
                 <li>
                   <a
                     href="#"
-                    @click="cambiarComponenteOrganizacion('ActualizarPaciente')"
+                    @click="cambiarComponenteOrganizacion('ActualizarOrganizacion')"
                     >Actualizar datos</a
                   >
                 </li>
@@ -59,24 +59,24 @@
               data-toggle="collapse"
               aria-expanded="false"
               class="dropdown-toggle"
-              ><i class="fa fa-calendar icono" aria-hidden="true"></i>Citas</a
+              ><i class="fas fa-users fa-sm icono"></i>Personal</a
             >
             <b-collapse id="collapse-2">
               <ul class=" list-unstyled" id="citasSubmenu">
                 <li>
                   <a
                     href="#"
-                    @click="cambiarComponenteOrganizacion('NuevaCitaPaciente')"
-                    >Nueva cita</a
+                    @click="cambiarComponenteOrganizacion('AgregarDoctor')"
+                    >Agregar Doctor</a
                   >
                 </li>
                 <li>
                   <a
                     href="#"
                     @click="
-                      cambiarComponenteOrganizacion('ActualizarCitaPaciente')
+                      cambiarComponenteOrganizacion('ListaDoctores')
                     "
-                    >Actualizar cita</a
+                    >Tus Doctores</a
                   >
                 </li>
               </ul>
@@ -90,7 +90,7 @@
               aria-expanded="false"
               class="dropdown-toggle"
             >
-              <i class="fa fa-file icono" aria-hidden="true"></i>Buzón</a
+              <i class="fas fa-file fa-sm icono"></i>Buzón</a
             >
             <b-collapse id="collapse-3">
               <ul class=" list-unstyled" id="BuzonSubmenu">
@@ -112,7 +112,7 @@
 
           <li>
             <a href="#"
-              ><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
+              ><i class="fas fa-sign-out-alt fa-sm icono"></i>
               Salir</a
             >
           </li>
@@ -274,9 +274,8 @@ a[data-toggle="collapse"] {
 
 /*icono */
 .icono {
-  font-size: 15px;
   margin-right: 10px;
-  font-weight: 300;
+  margin-left: 5px;
 }
 
 .scroll-area {

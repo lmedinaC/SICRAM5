@@ -11,12 +11,10 @@
 </style>
 <script>
 import MenuOrg from "@/components/MenuOrg.vue";
-import InicioDoctor from "@/components/InicioDoctor.vue";
-import PerfilDoctor from "@/components/PerfilDoctor.vue";
-import ActualizarDoctor from "@/components/ActualizarDoctor.vue";
-import ModificarHorarioDoc from "@/components/ModificarHorarioDoc.vue";
-import AgregarHorarioDoc from "@/components/AgregarHorarioDoc.vue";
-import CitaPendienteDoctor from "@/components/CitaPendienteDoctor.vue";
+import AgregarDoctor from "@/components/AgregarDoctor.vue";
+import PerfilOrganizacion from "@/components/PerfilOrganizacion.vue";
+import ListaDoctores from "@/components/ListaDoctores.vue";
+import ActualizarOrganizacion from "@/components/ActualizarOrganizacion.vue";
 
 import { mapActions, mapState } from "vuex";
 
@@ -30,12 +28,10 @@ export default {
   },
   components: {
     MenuOrg,
-    InicioDoctor,
-    PerfilDoctor,
-    ActualizarDoctor,
-    ModificarHorarioDoc,
-    AgregarHorarioDoc,
-    CitaPendienteDoctor
+    AgregarDoctor,
+    PerfilOrganizacion,
+    ListaDoctores,
+    ActualizarOrganizacion,
   },
 
   computed: {
