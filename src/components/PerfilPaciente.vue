@@ -115,6 +115,7 @@ export default {
   methods: {
     getPaciente() {
       this.datosUsuario = this.paciente;
+      this.$log.info('Datos.PACIENTE', this.datosUsuario)
     },
   },
   computed: {

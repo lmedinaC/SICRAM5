@@ -283,17 +283,19 @@ export default {
             }
           )
           .then(res =>{
+            this.$log.debug('NUEVOSDATOS : ', res)
             this.mensajeRegistro = {
                 title: "ACTUALIZACIÓN EXITOSA",
                 message: "Se actualizó correctamente el perfil.",
                 type: "success",
               };
+              
             this.open2(this.mensajeRegistro);
             this.deshabilitar =false;
           })
 
           .catch(e=>{
-            console.log(e)
+            this.$log.error('NUEVOSDATOS : ', e)
             this.deshabilitar =false;
           })
 

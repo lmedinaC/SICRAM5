@@ -124,13 +124,14 @@ export default {
           },
         })
         .then((res) => {
-          
           this.datosUsuario = res.data;
           this.datosUsuario.especialidad =this.datosUsuario.especialidad.especialidad;
+          this.$log.info('DOCTOR: ', this.datosUsuario)
         })
         .catch((e) => {
+
           this.mensaje = e.response.data.message;
-          console.log(e);
+          this.$log.info('DOCTOR: ', e)
         });
     },
   },

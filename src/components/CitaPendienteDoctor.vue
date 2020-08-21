@@ -111,7 +111,7 @@ export default {
         this.ingresarCita(cita)
       }, 3000);
     },
-    getDoctor() {
+    getCitas() {
       this.usuario = this.usuarioDoctor;
       let url =
         `https://sicramv1.herokuapp.com/api/doctor/cita/listar/${this.idDoctor}`;
@@ -124,11 +124,11 @@ export default {
 
         .then((res) => {
           this.datosUsuario = res.data;
-          console.log(res.data)
+          this.$log.info('CITAS : ', this.datosUsuario)
         })
         .catch((e) => {
           this.mensaje = e
-          console.log(e);
+          this.$log.fatal('CITAS : ', e)
         });
     },
 
@@ -144,7 +144,7 @@ export default {
     ...mapState(["usuarioDoctor","idDoctor"]),
   },
   beforeMount(){
-    this.getDoctor();
+    this.getCitas();
   }
 };
 </script>

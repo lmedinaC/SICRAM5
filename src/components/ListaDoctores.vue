@@ -101,12 +101,13 @@ export default {
             }
           )
           .then((res)=>{
-            console.log(res.data)
-            this.doctoresDatos = res.data
             
+            this.doctoresDatos = res.data
+            this.$log.info('LISTADOCTORES:',this.doctoresDatos)
           })
           .catch((e)=>{
             console.log(e)
+            this.$log.fatal('LISTADOCTORES:',e)
           })
     }
   },

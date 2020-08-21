@@ -72,10 +72,11 @@ export default {
         })
         .then((res) => {
           this.datosUsuario = res.data;
+          this.$log.info('DOCTOR: ', this.datosUsuario)
         })
         .catch((e) => {
           this.mensaje = e;
-          console.log(e);
+          this.$log.fatal('DOCTOR: ', e)
         });
     },
   },

@@ -288,6 +288,7 @@ export default {
             if (
               res.data === "error al guardar al dependiente correo ya usado:"
             ) {
+              this.$log.error('DEPENDIENTE', res.data)
               this.mensajeRegistro = {
                 title: "REGISTRO FALLIDO",
                 message: "Familiar ya registrado",
@@ -296,6 +297,7 @@ export default {
               this.open2(this.mensajeRegistro);
             } else {
               //SE GUARDA CON EXITO 
+              this.$log.debug('DEPENDIENTE', res.data)
               this.mensajeRegistro = {
                 title: "REGISTRO EXITOSO",
                 message: "Se registro al familiar",
@@ -308,7 +310,7 @@ export default {
           })
           .catch((e) => {
             //EXISTIÓ UN ERROR AL GUARDAR EL DEPENDIENTE
-            console.log(e)
+            this.$log.fatal('DEPENDIENTE', e)
             this.mensajeRegistro = {
               title: "REGISTRO FALLIDO",
               message: "Ocurrio un error",

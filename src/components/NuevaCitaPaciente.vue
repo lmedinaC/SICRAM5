@@ -272,10 +272,11 @@ export default {
         })
         .then((res) => {
           this.dependientes = res.data;
-          console.log(this.dependientes);
+          this.$log.info('DEPENDIENTES', this.dependientes)
         })
         .catch((e) => {
           console.log(e);
+          this.$log.fatal('DEPENDIENTES', e)
         });
     },
 
@@ -286,10 +287,10 @@ export default {
         .get(url)
         .then((res) => {
           this.especialidades = res.data; //objto especialidad con sus doctores
-          console.log("doct", res.data);
+           this.$log.info('ESPECIALIDADES', this.especialidades)
         })
         .catch((e) => {
-          console.log(e);
+          this.$log.error('ESPECIALIDADES', e)
         });
     },
 
@@ -301,6 +302,7 @@ export default {
           this.doctores = element.doctor; //se guardan los doctores de la especialidad seleccionada
         }
       });
+      this.$log.info('DOCTORES', this.doctores)
       this.doctorElegido = "";
       this.rango = "";
       this.dia= [];
@@ -316,6 +318,7 @@ export default {
         .get(url)
         .then((res) => {
           this.horarioDoctor = res.data;
+          this.$log.info('HORARIOS', this.horarioDoctor)
           this.horarioDoctor.forEach((element) => {
             this.dia.push(element.fecha);
           });
@@ -373,8 +376,9 @@ export default {
               }
             )
             .then((res) => {
-              console.log(res);
+              
               if (res.data.msg == "Exito nueva cita creada.") {
+                this.$log.info('CITA', res.data.msg)
                 this.limpiarCasillas();
                 this.mensajeRegistro = {
                   title: "REGISTRO EXITOSO",
@@ -383,6 +387,7 @@ export default {
                 };
                 this.open2(this.mensajeRegistro);
               } else {
+                this.$log.error('CITA', res.data.msg)
                 this.mensajeRegistro = {
                   title: "REGISTRO FALLIDO",
                   message: "Horario en uso",
@@ -392,7 +397,7 @@ export default {
               }
             })
             .catch((e) => {
-              console.log(e);
+              this.$log.fatal('CITA', e)
               this.mensajeRegistro = {
                 title: "REGISTRO FALLIDO",
                 message: "Ocurrió un error",

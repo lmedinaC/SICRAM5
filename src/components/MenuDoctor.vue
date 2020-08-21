@@ -127,9 +127,7 @@ export default {
     };
   },
   methods: {
-    scrollHanle(evt) {
-      console.log(evt);
-    },
+  
     ...mapActions(["cambiarComponenteDoctor"]),
     getDoctor() {
       this.usuario = this.usuarioDoctor;

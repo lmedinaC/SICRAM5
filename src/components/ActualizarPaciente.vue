@@ -282,6 +282,7 @@ export default {
             }
           )
           .then(res =>{
+            this.$log.debug('MENSAJE', res)
             this.mensajeRegistro = {
                 title: "ACTUALIZACIÓN EXITOSA",
                 message: "Se actualizó correctamente el perfil.",
@@ -294,6 +295,7 @@ export default {
           .catch(e=>{
             console.log(e)
             this.deshabilitar =false;
+            this.$log.fatal('MENSAJE', e)
           })
     },
     getPaciente() {

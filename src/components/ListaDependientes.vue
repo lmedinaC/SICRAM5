@@ -142,9 +142,11 @@ export default {
           )
           .then((res) => {  
               this.datosUsuario=res.data
+              this.$log.info('DEPENDIENTES', res.data)
           })
           .catch((e) => {
              console.log(e)
+             this.$log.fatal('DEPENDIENTES', e)
           });
       
     },

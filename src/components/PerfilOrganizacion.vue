@@ -95,11 +95,10 @@ export default {
         .then((res) => {
           
           this.datosUsuario = res.data;
-          console.log(this.datosUsuario)
+          this.$log.info('ORGANIZACION : ', this.datosUsuario)
         })
         .catch((e) => {
-          this.mensaje = e.response.data.message;
-          console.log(e);
+          this.$log.fatal('ORGANIZACION : ', e)
         });
     } 
   },

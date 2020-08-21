@@ -86,10 +86,11 @@ export default {
 
         .then((res) => {
           this.datosUsuario = res.data;
+          this.$log.info('HORARIOS : ', res.data)
         })
         .catch((e) => {
           this.mensaje = e
-          console.log(e);
+          this.$log.fatal('HORARIOS : ', e)
         });
     },
   },

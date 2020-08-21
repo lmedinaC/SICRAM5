@@ -178,11 +178,11 @@ export default {
         })
         .then((res) => {
           this.datosUsuario = res.data;
-          console.log("cistas:",this.datosUsuario);
+          this.$log.info('CITAS', res.data)
         })
         .catch((e) => {
           this.mensaje = e;
-          console.log(e);
+          this.$log.fatal('CITAS', e)
         });
     },
 

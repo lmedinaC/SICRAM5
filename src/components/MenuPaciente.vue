@@ -4,7 +4,6 @@
       <vue-custom-scrollbar
         class="scroll-area"
         :settings="settings"
-        @ps-scroll-y="scrollHanle"
       >
         <div class="sidebar-header text-center">
           <a href="/" style="color:white;">

@@ -4,7 +4,7 @@
       <vue-custom-scrollbar
         class="scroll-area"
         :settings="settings"
-        @ps-scroll-y="scrollHanle"
+
       >
         <div class="sidebar-header text-center">
           <a href="/" style="color:white;">
@@ -152,9 +152,6 @@ export default {
 
     async asyncCall() {
       this.datosUsuario = await this.resolveAfter2Seconds();
-    },
-    scrollHanle(evt) {
-      console.log(evt);
     },
     ...mapActions(["cambiarComponenteOrganizacion"]),
   },

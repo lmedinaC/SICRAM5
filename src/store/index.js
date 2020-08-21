@@ -35,12 +35,15 @@ export default new Vuex.Store({
     },
     setComponente(state,payload){
       state.componenteVista=payload;
+      console.log("COMPONENTE: ", payload)
     },
     setComponenteDoctor(state,payload){
       state.componenteVistaDoctor=payload;
+      console.log("COMPONENTE: ", payload)
     },
     setComponenteOrganizacion(state,payload){
       state.componenteVistaOrganizacion=payload;
+      console.log("COMPONENTE: ", payload)
     },
     setUsuarioPaciente(state,payload){
       state.usuarioPaciente= payload;

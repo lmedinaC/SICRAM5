@@ -350,9 +350,7 @@ export default {
     //REGISTRAR UN DOCTOR
     setDoctor(doc) {
       this.doctor = doc;
-      console.log(this.doctor);
-      console.log(this.idOrganizacion);
-      console.log(this.usuarioOrganizacion);
+      this.$log.info('DOCTOR:',this.doctor )
       let url = `https://sicramv1.herokuapp.com/api/organizacion/doctor/registrar/${this.idOrganizacion}`;
       this.axios
         .post(
@@ -365,8 +363,8 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res);
           if (res.data.msg === "Bienvenido Doctor, es un nuevo usario.") {
+            this.$log.debug('DOCTORNUEVO:',res)
             this.mensaje={
               title: "REGISTRO EXITOSO",
               message: "Se registro su Doctor con éxito.",
@@ -374,6 +372,7 @@ export default {
             }
             this.vaciar();
           } else {
+            this.$log.error('DOCTORNUEVO:',res )
             this.mensaje={
               title: "REGISTRO FALLIDO",
               message: "Ocurrio un error en el registro.",
@@ -382,7 +381,7 @@ export default {
           }
         })
         .catch((e) => {
-          console.log(e);
+          this.$log.fatal('DOCTORNUEVO:',e )
           this.mensaje={
             title: "REGISTRO FALLIDO",
             message: "Ocurrio un error en el registro.",
@@ -395,6 +394,7 @@ export default {
     ...mapState(["usuarioOrganizacion", "idOrganizacion"]),
   },
   mounted() {
+    console.debug("Console.debug" + " " +"asdasdsadasfasfasfasf");
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
@@ -407,8 +407,6 @@ export default {
       if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
     this.usuario = this.usuarioPaciente;
-    console.log(this.idOrganizacion);
-    console.log(this.usuarioOrganizacion);
   },
 };
 </script>

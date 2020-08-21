@@ -152,6 +152,7 @@ export default {
     agregarHorario(horario) {
       //CASILLAS VACÍAS
       if (horario.hora_inicio === "" || horario.fecha === "") {
+        this.$log.warn('CITAS : ', "LLENE TODOS LOS CAMPOS" )
         this.mensajeRegistro = {
           title: "REGISTRO FALLIDO",
           message: "Seleccione fecha y hora",
@@ -176,9 +177,9 @@ export default {
           )
 
           .then((res) => {
-            console.log(res.data.msg);
             //YA CUENTA CON ESTE MISMO HORARIO 
             if (res.data.msg === "YA EXISTE ESE HORARIO PARA EL DOCTOR") {
+              this.$log.error('NUEVOHORARIO : ', res.data.msg)
               this.mensaje = "Horario agregado anteriormente";
               this.mensajeRegistro = {
                 title: "REGISTRO FALLIDO",
@@ -188,6 +189,7 @@ export default {
               this.open2(this.mensajeRegistro);
             } else {
               //SE GUARDA CON EXITO EL HORARIO
+              this.$log.debug('NUEVOHORARIO : ', res.data.msg)
               this.vaciarCasillas();
               this.mensaje = "Horario agregado";
               this.mensajeRegistro = {
@@ -200,6 +202,7 @@ export default {
           })
           .catch((e) => {
             //POR SI EXISTE UN ERROR AL GUARDAR
+            this.$log.fatal('NUEVOHORARIO : ', e)
             this.mensaje = "Error en el registro";
             this.mensajeRegistro = {
               title: "REGISTRO FALLIDO",
@@ -226,7 +229,6 @@ export default {
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
     this.usuario = this.usuarioDoctor;
-    console.log("user:" + this.usuario);
   },
   beforeMount() {
     this.diaMax.setDate(this.diaMax.getDate() + 7);

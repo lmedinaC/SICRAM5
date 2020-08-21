@@ -64,11 +64,13 @@ export default {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.paciente);
+            this.$log.info('PACIENTE', this.paciente)
           }, 1000);
         });
       } else {
         return new Promise((resolve) => {
           resolve(this.paciente);
+          this.$log.info('PACIENTE', this.paciente)
         });
       }
     },
