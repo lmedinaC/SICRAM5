@@ -45,7 +45,7 @@
                             <strong>Celular: </strong> {{element.celular}}
                           </p>
                           <p>
-                            <strong>Especialidad: </strong>  {{element.especialidad}}
+                            <strong>Especialidad: </strong>  {{element.especialidad.especialidad}}
                           </p>
                         </div>
                       </div>
@@ -103,7 +103,7 @@ export default {
           .then((res)=>{
             console.log(res.data)
             this.doctoresDatos = res.data
-          
+            
           })
           .catch((e)=>{
             console.log(e)

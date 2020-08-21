@@ -27,19 +27,21 @@
             </div>
           </div>
 
-          <form @submit.prevent="setDoctor({
-            username:doctor.username,
-            password:doctor.password,
-            email:doctor.email,
-            name:doctor.name,
-            lastname:doctor.lastname,
-            dni:doctor.dni,
-            edad:doctor.edad,
-            celular:doctor.celular,
-            cmp:doctor.cmp,
-            profesion:doctor.profesion,
-            especialidad:doctor.especialidad,
-          })">
+          <form @submit.prevent="
+              cargar({
+                username: doctor.username,
+                password: doctor.password,
+                email: doctor.email,
+                name: doctor.name,
+                lastname: doctor.lastname,
+                dni: doctor.dni,
+                edad: doctor.edad,
+                celular: doctor.celular,
+                cmp: doctor.cmp,
+                profesion: doctor.profesion,
+                especialidad: doctor.especialidad,
+              })
+            ">
             <div>
               <h5 class="subTitulo">Datos personales</h5>
             </div>
@@ -109,7 +111,6 @@
                         id="inputDNI"
                         placeholder="DNI Doctor"
                         v-model="doctor.dni"
-                        
                       />
                     </div>
                   </div>
@@ -265,66 +266,133 @@
         </div>
       </div>
       <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
-      <br>
+      <br />
     </div>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+//Impor component mensaje 
 import Simplert from "@/components/Simplert.vue";
+// Import component
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/vue-loading.css";
+// Init plugin
+Vue.use(Loading);
 import { mapState } from "vuex";
 export default {
   name: "AgregarDoctor",
   components: {
     Simplert,
+    Loading,
   },
   data() {
     return {
-      doctor: { //datos de registro del doctor
-        username:'',
-        password:'',
-        email:'',
-        name:'',
-        lastname:'',
-        dni:'',
-        edad:'',
-        celular:'',
-        cmp:'',
-        profesion:'',
-        especialidad:'',
-      }
+      //ELEMENTOS PARA CARGAR
+      fullPage: false,
+      //MENSAJE DE ACEPTACION
+      mensaje: {},
+      doctor: {
+        //datos de registro del doctor
+        username: "",
+        password: "",
+        email: "",
+        name: "",
+        lastname: "",
+        dni: "",
+        edad: "",
+        celular: "",
+        cmp: "",
+        profesion: "",
+        especialidad: "",
+      },
     };
   },
   methods: {
+    //METODOS LOADING
+    cargar(doc) {
+      this.setDoctor(doc)
+      let loader = this.$loading.show({
+        // Optional parameters
+        color: '#0099a1',
+        container: this.fullPage ? null : this.$refs.formContainer,
+        canCancel: false,
+        loader: 'dots',
+        height: 150,
+        width: 130,
+      });
+      // simulate AJAX
+      setTimeout(() => {
+        loader.hide();
+        this.$refs.simplert.openSimplert(this.mensaje);
+      }, 3000);
+    },
+
     //vacía las casillas despues de un registro
-    vaciar() {},
+    vaciar() {
+      this.doctor = {
+        //datos de registro del doctor
+        username: "",
+        password: "",
+        email: "",
+        name: "",
+        lastname: "",
+        dni: "",
+        edad: "",
+        celular: "",
+        cmp: "",
+        profesion: "",
+        especialidad: "",
+      };
+    },
     //REGISTRAR UN DOCTOR
-    setDoctor(doc){
-      this.doctor = doc
-      console.log(this.doctor)
-      console.log(this.idOrganizacion)
-      console.log(this.usuarioOrganizacion)
+    setDoctor(doc) {
+      this.doctor = doc;
+      console.log(this.doctor);
+      console.log(this.idOrganizacion);
+      console.log(this.usuarioOrganizacion);
       let url = `https://sicramv1.herokuapp.com/api/organizacion/doctor/registrar/${this.idOrganizacion}`;
-        this.axios
-          .post(
-            url,
-            { ...this.doctor },
-            {
-              headers: {
-                Authorization: `${this.usuarioOrganizacion}`,
-              },
+      this.axios
+        .post(
+          url,
+          { ...this.doctor },
+          {
+            headers: {
+              Authorization: `${this.usuarioOrganizacion}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          if (res.data.msg === "Bienvenido Doctor, es un nuevo usario.") {
+            this.mensaje={
+              title: "REGISTRO EXITOSO",
+              message: "Se registro su Doctor con éxito.",
+              type: "success",
             }
-          )
-          .then((res)=>{
-            console.log(res)
-          })
-          .catch((e)=>{
-            console.log(e)
-          })
-    }
+            this.vaciar();
+          } else {
+            this.mensaje={
+              title: "REGISTRO FALLIDO",
+              message: "Ocurrio un error en el registro.",
+              type: "error",
+            };
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          this.mensaje={
+            title: "REGISTRO FALLIDO",
+            message: "Ocurrio un error en el registro.",
+            type: "error",
+          };
+        });
+    },
   },
   computed: {
-    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
+    ...mapState(["usuarioOrganizacion", "idOrganizacion"]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -339,9 +407,8 @@ export default {
       if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
     this.usuario = this.usuarioPaciente;
-     console.log(this.idOrganizacion)
-      console.log(this.usuarioOrganizacion)
-    
+    console.log(this.idOrganizacion);
+    console.log(this.usuarioOrganizacion);
   },
 };
 </script>
@@ -410,15 +477,15 @@ a:focus {
   background: #0099a1;
 }
 
-.subTitulo{
-    margin-top: 10px;
-    margin-bottom: 30px;
+.subTitulo {
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
-.datosPersonales{
-    background: #c6eff1;
-    padding: 18px;
-    border-radius: 10px;
+.datosPersonales {
+  background: #c6eff1;
+  padding: 18px;
+  border-radius: 10px;
 }
 
 /* ---------------------------------------------------

@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted: function() {
-    var publisherOptions = {width: '50%', height:'585px'};
+    var publisherOptions = {width: '50%', height:'90vh'};
     const publisher = OT.initPublisher(this.$el, publisherOptions, err => {
       if (err) {
         this.$emit('error', err);

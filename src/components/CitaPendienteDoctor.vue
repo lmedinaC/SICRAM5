@@ -41,7 +41,7 @@
               <td >
                 <div class="boton-group">
                   <button class="btn btn-success  mr-2"
-                  @click="ingresarCita(element.aulaVirtual)">Ingresar</button>
+                  @click="cargar({aulaVirtual: element.aulaVirtual, name: element.user.name, lastname: element.user.lastname })">Ingresar</button>
                 </div>
               </td>
             </tr>
@@ -62,6 +62,15 @@
 </template>
 
 <script>
+import Vue from "vue";
+//Impor component mensaje 
+import Simplert from "@/components/Simplert.vue";
+// Import component
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/vue-loading.css";
+// Init plugin
+Vue.use(Loading);
 import { mapState, mapActions } from "vuex";
 export default {
   name: "CitaPendienteDoctor",
@@ -71,6 +80,10 @@ export default {
       usuario: "",
       datosUsuario: {},
     };
+  },
+  components: {
+    Simplert,
+    Loading,
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -82,6 +95,22 @@ export default {
   },
   methods: {
     ...mapActions(['setObjCita']),
+    cargar(cita) {
+      let loader = this.$loading.show({
+        // Optional parameters
+        color: '#0099a1',
+        container: this.fullPage ? null : this.$refs.formContainer,
+        canCancel: false,
+        loader: 'dots',
+        height: 150,
+        width: 130,
+      });
+      // simulate AJAX
+      setTimeout(() => {
+        loader.hide();
+        this.ingresarCita(cita)
+      }, 3000);
+    },
     getDoctor() {
       this.usuario = this.usuarioDoctor;
       let url =

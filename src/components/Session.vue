@@ -24,9 +24,9 @@ export default {
   name: 'Session',
   components: { Publisher, Subscriber },
   created() {
-    this.session = OT.initSession(this.apiKey, this.cita.sessionId);
+    this.session = OT.initSession(this.apiKey, this.cita.aulaVirtual.sessionId);
 
-    this.session.connect(this.cita.sessionToken, err => {
+    this.session.connect(this.cita.aulaVirtual.sessionToken, err => {
       if (err) {
         errorHandler(err);
       }

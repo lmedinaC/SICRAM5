@@ -4,6 +4,7 @@
 
 <script>
 import OT from '@opentok/client';  
+import { mapState } from 'vuex';
 export default {
   name: 'Subscriber',
   props: {
@@ -21,7 +22,7 @@ export default {
     }
   },
   mounted: function() {
-    var publisherOptions = {width: '50%', height:585, name:"su ptm stream"};
+    var publisherOptions = {width: '50%', height:'90vh', name:this.cita.name + ' '+ this.cita.lastname};
     const subscriber = this.session.subscribe(
       this.stream,
       this.$el,
@@ -35,6 +36,9 @@ export default {
       }
     );
     this.$emit('subscriberCreated', subscriber);
+  },
+  computed: {
+    ...mapState(['cita'])
   }
 };
 </script>
