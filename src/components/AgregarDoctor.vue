@@ -27,11 +27,40 @@
             </div>
           </div>
 
-          <form>
+          <form @submit.prevent="setDoctor({
+            username:doctor.username,
+            password:doctor.password,
+            email:doctor.email,
+            name:doctor.name,
+            lastname:doctor.lastname,
+            dni:doctor.dni,
+            edad:doctor.edad,
+            celular:doctor.celular,
+            cmp:doctor.cmp,
+            profesion:doctor.profesion,
+            especialidad:doctor.especialidad,
+          })">
             <div>
               <h5 class="subTitulo">Datos personales</h5>
             </div>
             <div class="datosPersonales">
+              <div class="form-row ">
+                <div class="form-group col-md-6">
+                  <div class="row mr-1">
+                    <div class="col-4">
+                      <label for="inputNombre">Usuario:</label>
+                    </div>
+                    <div class="col-8">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Usuario Doctor"
+                        v-model="doctor.username"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="form-row ">
                 <div class="form-group col-md-6">
                   <div class="row mr-1">
@@ -44,6 +73,7 @@
                         type="text"
                         class="form-control"
                         placeholder="NOMBRE Doctor"
+                        v-model="doctor.name"
                       />
                     </div>
                   </div>
@@ -59,6 +89,7 @@
                         type="text"
                         class="form-control"
                         placeholder="APELLIDO Doctor"
+                        v-model="doctor.lastname"
                       />
                     </div>
                   </div>
@@ -77,6 +108,8 @@
                         class="form-control"
                         id="inputDNI"
                         placeholder="DNI Doctor"
+                        v-model="doctor.dni"
+                        
                       />
                     </div>
                   </div>
@@ -92,6 +125,7 @@
                         class="form-control"
                         id="inputCMP"
                         placeholder="Celular Doctor"
+                        v-model="doctor.celular"
                       />
                     </div>
                   </div>
@@ -108,6 +142,7 @@
                         type="text"
                         class="form-control"
                         placeholder="Correo Doctor"
+                        v-model="doctor.email"
                       />
                     </div>
                   </div>
@@ -122,6 +157,7 @@
                         type="number"
                         class="form-control"
                         placeholder="Edad Doctor"
+                        v-model="doctor.edad"
                       />
                     </div>
                   </div>
@@ -137,7 +173,8 @@
                       <input
                         type="password"
                         class="form-control"
-                        placeholder="Celular Doctor"
+                        placeholder="Cotraseña Doctor"
+                        v-model="doctor.password"
                       />
                     </div>
                   </div>
@@ -151,7 +188,7 @@
                       <input
                         type="password"
                         class="form-control"
-                        placeholder="Celular Doctor"
+                        placeholder="Contraseña Doctor"
                       />
                     </div>
                   </div>
@@ -176,6 +213,7 @@
                         type="text"
                         class="form-control"
                         placeholder="CMP Doctor"
+                        v-model="doctor.cmp"
                       />
                     </div>
                   </div>
@@ -191,6 +229,7 @@
                         type="text"
                         class="form-control"
                         placeholder="Profesión Doctor"
+                        v-model="doctor.profesion"
                       />
                     </div>
                   </div>
@@ -204,10 +243,10 @@
                     </div>
                     <div class="col-8">
                       <input
-                        maxlength="8"
-                        type="number"
+                        type="text"
                         class="form-control"
                         placeholder="Especialidad"
+                        v-model="doctor.especialidad"
                       />
                     </div>
                   </div>
@@ -217,7 +256,7 @@
 
             <div class="text-center boton-final">
               <a href="formPaciente.html"
-                ><button class="but btn btn-lg mt-4" style="color:">
+                ><button class="but btn btn-lg mt-4" type="submit">
                   Registrar
                 </button></a
               >
@@ -240,13 +279,53 @@ export default {
     Simplert,
   },
   data() {
-    return {};
+    return {
+      doctor: { //datos de registro del doctor
+        username:'',
+        password:'',
+        email:'',
+        name:'',
+        lastname:'',
+        dni:'',
+        edad:'',
+        celular:'',
+        cmp:'',
+        profesion:'',
+        especialidad:'',
+      }
+    };
   },
   methods: {
     //vacía las casillas despues de un registro
     vaciar() {},
+    //REGISTRAR UN DOCTOR
+    setDoctor(doc){
+      this.doctor = doc
+      console.log(this.doctor)
+      console.log(this.idOrganizacion)
+      console.log(this.usuarioOrganizacion)
+      let url = `https://sicramv1.herokuapp.com/api/organizacion/doctor/registrar/${this.idOrganizacion}`;
+        this.axios
+          .post(
+            url,
+            { ...this.doctor },
+            {
+              headers: {
+                Authorization: `${this.usuarioOrganizacion}`,
+              },
+            }
+          )
+          .then((res)=>{
+            console.log(res)
+          })
+          .catch((e)=>{
+            console.log(e)
+          })
+    }
   },
-  computed: {},
+  computed: {
+    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
+  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
@@ -260,6 +339,9 @@ export default {
       if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
     this.usuario = this.usuarioPaciente;
+     console.log(this.idOrganizacion)
+      console.log(this.usuarioOrganizacion)
+    
   },
 };
 </script>

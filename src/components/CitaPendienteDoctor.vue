@@ -40,7 +40,8 @@
               <td>{{ element.estado }}</td>
               <td >
                 <div class="boton-group">
-                  <button class="btn btn-success  mr-2">Ingresar</button>
+                  <button class="btn btn-success  mr-2"
+                  @click="ingresarCita(element.aulaVirtual)">Ingresar</button>
                 </div>
               </td>
             </tr>
@@ -61,7 +62,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "CitaPendienteDoctor",
   data() {
@@ -80,6 +81,7 @@ export default {
     
   },
   methods: {
+    ...mapActions(['setObjCita']),
     getDoctor() {
       this.usuario = this.usuarioDoctor;
       let url =
@@ -100,6 +102,14 @@ export default {
           console.log(e);
         });
     },
+
+    //INGRESA A LA CITA
+    ingresarCita(cita){
+      console.log(cita)
+      this.setObjCita(cita)
+      this.$router.push("/doctorvista/citadoctor");
+    }
+
   },
   computed: {
     ...mapState(["usuarioDoctor","idDoctor"]),

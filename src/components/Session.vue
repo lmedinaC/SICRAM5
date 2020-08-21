@@ -14,6 +14,7 @@
 import OT from '@opentok/client';  
 import Publisher from '@/components/Publisher.vue';
 import Subscriber from '@/components/Subscriber.vue';
+import { mapState } from 'vuex';
 
 const errorHandler = err => {
   alert(err.message);
@@ -23,9 +24,9 @@ export default {
   name: 'Session',
   components: { Publisher, Subscriber },
   created() {
-    this.session = OT.initSession(this.apiKey, this.sessionID);
+    this.session = OT.initSession(this.apiKey, this.cita.sessionId);
 
-    this.session.connect(this.token, err => {
+    this.session.connect(this.cita.sessionToken, err => {
       if (err) {
         errorHandler(err);
       }
@@ -50,6 +51,9 @@ export default {
   }),
   methods: {
     errorHandler
+  },
+  computed: {
+    ...mapState(['cita'])
   }
 };
 </script>

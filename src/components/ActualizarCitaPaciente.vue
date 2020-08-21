@@ -55,7 +55,8 @@
                       Actualizar
                     </button>
                     <button class="btn btn-danger btn-sm mr-2">Eliminar</button>
-                    <button class="btn btn-success btn-sm ">Ingresar</button>
+                    <button class="btn btn-success btn-sm "
+                    @click="ingresarCita(element.aulaVirtual)">Ingresar</button>
                   </div>
                 </td>
               </tr>
@@ -77,7 +78,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "ActualizarCitaPaciente",
   data() {
@@ -100,6 +101,8 @@ export default {
     this.getCita();
   },
   methods: {
+    ...mapActions(['setObjCita']),
+
      MostrarFecha(fecha)
       {
       var nombres_dias = new Array("Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado")
@@ -147,13 +150,20 @@ export default {
         })
         .then((res) => {
           this.datosUsuario = res.data;
-          console.log("data:",res.data.length);
+          console.log("cistas:",this.datosUsuario);
         })
         .catch((e) => {
           this.mensaje = e;
           console.log(e);
         });
     },
+
+    //INGRESA A LA CITA
+    ingresarCita(cita){
+      console.log(cita)
+      this.setObjCita(cita)
+      this.$router.push("/pacientevista/citapaciente");
+    }
   },
   computed: {
     ...mapState(["usuarioPaciente","idPaciente"]),

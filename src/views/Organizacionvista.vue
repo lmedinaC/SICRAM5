@@ -15,7 +15,7 @@ import AgregarDoctor from "@/components/AgregarDoctor.vue";
 import PerfilOrganizacion from "@/components/PerfilOrganizacion.vue";
 import ListaDoctores from "@/components/ListaDoctores.vue";
 import ActualizarOrganizacion from "@/components/ActualizarOrganizacion.vue";
-
+import InicioOrg from "@/components/InicioOrg.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -32,6 +32,7 @@ export default {
     PerfilOrganizacion,
     ListaDoctores,
     ActualizarOrganizacion,
+    InicioOrg,
   },
 
   computed: {

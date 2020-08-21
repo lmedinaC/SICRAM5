@@ -26,102 +26,26 @@
           <div class="lista-doctor">
             <div class="doctores">
               <ul style="list-style:none">
-                <li >
+                <li v-for="(element,index) of doctoresDatos" :key="index">
                   <div class="row doctor">
                     <div class="col-md-10">
                       <div class="row">
                         <div class="col-md-2 foto"></div>
                         <div class="col-md-10">
                           <p>
-                            <strong>Nombre: </strong> asdasd
+                            <strong>Nombre: </strong> {{element.name}}  {{element.lastname}}
                           </p>
                           <p>
-                            <strong>DNI: </strong>
+                            <strong>DNI: </strong> {{element.dni}}
                           </p>
                           <p>
-                            <strong>Correo:</strong>
+                            <strong>Correo:</strong> {{element.email}}
                           </p>
                           <p>
-                            <strong>Celular: </strong>
+                            <strong>Celular: </strong> {{element.celular}}
                           </p>
                           <p>
-                            <strong>Especialidad: </strong> 
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div>
-                            <button class="btn btn-block btn-lg  btn-editar ">
-                               <i class="fas fa-list"></i> Editar
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-block btn-lg btn-eliminar">
-                                <i class="fas fa-times"></i> Eliminar
-                            </button>
-                        </div>
-                    </div>
-                  </div>
-                </li>
-                <li >
-                  <div class="row doctor">
-                    <div class="col-md-10">
-                      <div class="row">
-                        <div class="col-md-2 foto"></div>
-                        <div class="col-md-10">
-                          <p>
-                            <strong>Nombre: </strong> asdasd
-                          </p>
-                          <p>
-                            <strong>DNI: </strong>
-                          </p>
-                          <p>
-                            <strong>Correo:</strong>
-                          </p>
-                          <p>
-                            <strong>Celular: </strong>
-                          </p>
-                          <p>
-                            <strong>Especialidad: </strong> 
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div>
-                            <button class="btn btn-block btn-lg  btn-editar ">
-                               <i class="fas fa-list"></i> Editar
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-block btn-lg btn-eliminar">
-                                <i class="fas fa-times"></i> Eliminar
-                            </button>
-                        </div>
-                    </div>
-                  </div>
-                </li>
-                <li >
-                  <div class="row doctor">
-                    <div class="col-md-10">
-                      <div class="row">
-                        <div class="col-md-2 foto"></div>
-                        <div class="col-md-10">
-                          <p>
-                            <strong>Nombre: </strong> asdasd
-                          </p>
-                          <p>
-                            <strong>DNI: </strong>
-                          </p>
-                          <p>
-                            <strong>Correo:</strong>
-                          </p>
-                          <p>
-                            <strong>Celular: </strong>
-                          </p>
-                          <p>
-                            <strong>Especialidad: </strong> 
+                            <strong>Especialidad: </strong>  {{element.especialidad}}
                           </p>
                         </div>
                       </div>
@@ -160,19 +84,42 @@ export default {
     Simplert,
   },
   data() {
-    return {};
+    return {
+      doctoresDatos:null
+    };
   },
   methods: {
-    //vacía las casillas despues de un registro
-    vaciar() {},
+    getDoctores(){
+      let url = `https://sicramv1.herokuapp.com/api/organizacion/doctor/obtener/${this.idOrganizacion}`;
+        this.axios
+          .get(
+            url,
+            {
+              headers: {
+                Authorization: `${this.usuarioOrganizacion}`,
+              },
+            }
+          )
+          .then((res)=>{
+            console.log(res.data)
+            this.doctoresDatos = res.data
+          
+          })
+          .catch((e)=>{
+            console.log(e)
+          })
+    }
   },
-  computed: {},
+  computed: {
+    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
+  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
+    this.getDoctores()
   },
 };
 </script>

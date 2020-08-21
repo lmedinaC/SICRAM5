@@ -23,14 +23,14 @@
             </div>
             <div class="col-md-8 col-sm-12">
               <div class="contenido-perfil">
-                <h3 class="titulo">NOMBRE ORGANIZACIÓN</h3>
+                <h3 class="titulo">DATOS DE LA ORGANIZACIÓN</h3>
 
                 <div class="row mt-3">
                   <div class="col-md-4">
-                    Nombre:
+                    Nombre: 
                   </div>
                   <div class="col-md-8">
-                    Nombre completo
+                    {{datosUsuario.nameOrg}}
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -38,7 +38,7 @@
                     Correo Org:
                   </div>
                   <div class="col-md-8">
-                    correo@correo.com
+                    {{datosUsuario.email}}
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -46,15 +46,15 @@
                     Dirección:
                   </div>
                   <div class="col-md-8">
-                    direccion...
+                    {{datosUsuario.direccion}}
                   </div>
                 </div>
                 <div class="row mt-3">
                   <div class="col-md-4">
-                    Teléfono:
+                    RUC:
                   </div>
                   <div class="col-md-8">
-                    +51 9XX XXX XXX
+                    {{datosUsuario.ruc}}
                   </div>
                 </div>
               </div>
@@ -76,20 +76,47 @@ export default {
     Simplert,
   },
   data() {
-    return {};
+    return {
+      usuario:'',
+      datosUsuario: {}
+    };
   },
   methods: {
-    //vacía las casillas despues de un registro
-    vaciar() {},
+    getDatosOrganizacion(){
+      this.usuario = this.usuarioOrganizacion;
+      let url =
+        `https://sicramv1.herokuapp.com/api/organizacion/perfil/${this.idOrganizacion}`;
+      this.axios
+        .get(url, {
+          headers: {
+            Authorization: `${this.usuario}`,
+          },
+        })
+        .then((res) => {
+          
+          this.datosUsuario = res.data;
+          console.log(this.datosUsuario)
+        })
+        .catch((e) => {
+          this.mensaje = e.response.data.message;
+          console.log(e);
+        });
+    } 
   },
-  computed: {},
+  computed: {
+    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
+  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
+      
     });
   },
+  beforeMount(){
+    this.getDatosOrganizacion()
+  }
 };
 </script>
 

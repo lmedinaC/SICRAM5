@@ -154,7 +154,8 @@ export default {
           this.setUserDoctor(res.data.token);
           this.setIdDoct(res.data.id);
           this.$router.push("/doctorvista");
-
+          console.log(res.data.token)
+          console.log(res.data.id)
         })
         .catch((e) => {
           if(this.acceso==true){

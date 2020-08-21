@@ -82,7 +82,7 @@ export default {
         })
         .then((res) => {
           this.datosUsuario = res.data.citas;
-          console.log(this.datosUsuario);
+          console.log("citas", this.datosUsuario);
         })
         .catch((e) => {
           this.mensaje = e.response.data.message;

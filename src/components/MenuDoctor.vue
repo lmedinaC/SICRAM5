@@ -12,7 +12,7 @@
         <ul class="list-unstyled components">
           <p class="m-0 ml-1">Doctor :</p>
           <p class="mb-1 ml-1" style="text-transform: uppercase;">
-            {{ datosUsuario.name.split(" ")[0] }}  {{ datosUsuario.lastname.split(" ")[0]}}
+            {{ datosUsuario.lastname}}
           </p>
 
           <li class="active">
@@ -133,6 +133,7 @@ export default {
     ...mapActions(["cambiarComponenteDoctor"]),
     getDoctor() {
       this.usuario = this.usuarioDoctor;
+      console.log("doctor", this.usuario)
       let url =
         `https://sicramv1.herokuapp.com/api/doctor/perfil/${this.idDoctor}`;
       this.axios

@@ -18,6 +18,7 @@ export default new Vuex.Store({
     mensaje:'',
     paciente:null,
     organizacion:null,
+    cita:null
   },
   mutations: {
     setOrganizacion(state,payload){
@@ -59,6 +60,9 @@ export default new Vuex.Store({
     setIdOrganizacion(state,payload){
       state.idOrganizacion=payload;
     },
+    setCita(state,payload){
+      state.cita = payload
+    }
   },
   actions: {
 
@@ -111,6 +115,10 @@ export default new Vuex.Store({
     setObjOrganizacion({commit},organizacion){
       
       commit('setOrganizacion',organizacion)
+    },
+
+    setObjCita({commit},cita){
+      commit('setCita',cita)
     }
   },
   modules: {

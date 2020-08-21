@@ -60,13 +60,12 @@ export default {
   },
   methods: {
     getPaciente() {
-      this.usuario = this.usuarioOrganizacion;
        let url =
-        "https://sicramv1.herokuapp.com/api/organizacion/perfil/5f20d390bc2c6b00176b1730";
+        `https://sicramv1.herokuapp.com/api/organizacion/perfil/${this.idOrganizacion}`;
       this.axios
         .get(url, {
           headers: {
-            Authorization: `${this.usuario}`,
+            Authorization: `${this.usuarioOrganizacion}`,
           },
         })
         .then((res) => {
@@ -80,7 +79,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["usuarioOrganizacion"]),
+    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
   },
 };
 </script>

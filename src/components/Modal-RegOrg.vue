@@ -18,6 +18,7 @@
             email: $v.organizacion.email.$model,
             nameOrg: $v.organizacion.nameOrg.$model,
             direccion: $v.organizacion.direccion.$model,
+            ruc: $v.organizacion.ruc.$model,
           })
         "
       >
@@ -85,6 +86,19 @@
               />
             </div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <input
+                type="number"
+                class="form-control"
+                id="inputRUC"
+                v-model="$v.organizacion.ruc.$model"
+                placeholder="RUC"
+              />
+            </div>
+          </div>
+
           <br />
           <div class="alert alert-danger" role="alert" v-if="carga != true">
             <div class="label">{{mensaje}}</div>
@@ -124,6 +138,7 @@ export default {
         email: "",
         nameOrg: "",
         direccion: "",
+        ruc: "",
       },
     };
   },
@@ -141,6 +156,7 @@ export default {
       },
       nameOrg: { required },
       direccion: { required },
+      ruc: { required },
     },
   },
   methods: {
