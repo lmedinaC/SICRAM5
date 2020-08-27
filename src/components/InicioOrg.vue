@@ -12,7 +12,7 @@
         <div class="contenido-perfil ">
           <div class="perfil-label">
             <h2 style="text-transform: uppercase;">
-              Bienvenido(a) {{ datosUsuario.nameOrg }}
+              Bienvenido(a) {{ getDatosOrganizacion.nameOrg }}
             </h2>
             <p class="">
               En SICRAM podrás realizar orientacion médica a personas que tienen
@@ -40,46 +40,19 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "InicioOrg",
-  data() {
-    return {
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
-    };
-  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getPaciente();
   },
-  methods: {
-    getPaciente() {
-       let url =
-        `https://sicramv1.herokuapp.com/api/organizacion/perfil/${this.idOrganizacion}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuarioOrganizacion}`,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          this.datosUsuario = res.data;
-        })
-        .catch((e) => {
-          this.mensaje = e.response;
-          console.log(e);
-        });
-    },
-  },
+    
   computed: {
-    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
+    ...mapGetters(['getDatosOrganizacion'])
   },
 };
 </script>

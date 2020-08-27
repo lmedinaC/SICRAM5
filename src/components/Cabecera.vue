@@ -15,42 +15,10 @@
             <li>
               <a href="/">Inicio</a>
             </li>
-            <li class="dropdown">
-              <a
-                href="#PerfilSubmenu"
-              v-b-toggle.collapse-1
-              data-toggle="collapse"
-              aria-expanded="false"
-              class="dropdown-toggle"
-                >Registrarse</a
-              >
-              <b-collapse id="collapse-1">
-              <ul class="list-unstyled" id="PerfilSubmenu">
-                <li>
-                  <a href="#"
-                    >Médico</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    
-                    >Paciente</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    
-                    >Organización</a
-                  >
-                </li>
-              </ul>
-            </b-collapse>
-            </li>
+
 
             <li>
-              <a href="loginDoctor.html">Ingresar</a>
+              <router-link to="/login"><a>Ingresar</a></router-link>
             </li>
           </ul>
         </div>
@@ -300,7 +268,6 @@ header .textos-header {
     width: 100%;
     font-size: 30px;
     text-align: center;
-    background: hsl(209, 75%, 62%);
   }
   h1 {
     text-align: center;

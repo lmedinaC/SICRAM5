@@ -12,16 +12,16 @@
             class="mr-3 mt-3"
             style="font-weight: bold; color=#03A9F4; float:right;"
           >
-            <router-link to="/"><a style="color:#0099a1;">
-              <i class="fas fa-home fa-3x"></i>
-            </a></router-link>
+            <router-link to="/"
+              ><a style="color:#0099a1;"> <i class="fas fa-home fa-3x"></i> </a
+            ></router-link>
           </div>
           <div class="content">
             <h2>INICIAR SESIÓN</h2>
             <hr />
             <form
               @submit.prevent="
-                iniciarUsuario({
+                cargar({
                   email: $v.usuario.email.$model,
                   password: $v.usuario.password.$model,
                 })
@@ -61,6 +61,13 @@
                 <small
                   class="text-danger"
                   style="font-weight: bold;"
+                  v-if="!$v.usuario.password.minLength"
+                  >Contraseña mayor a 6 carácteres</small
+                >
+
+                <small
+                  class="text-danger"
+                  style="font-weight: bold;"
                   v-if="!$v.usuario.password.required"
                   >Campo Requerido</small
                 ><br />
@@ -75,11 +82,11 @@
                 role="alert"
                 v-if="acceso === false"
               >
-                {{mensaje}}
+                {{ mensaje }}
               </div>
             </form>
             <div>
-              Si aún no formas para de nosotros,
+              Si aún no formas parte de nosotros,
               <a href="#Registro" @click="$modal.show('demo-login')"
                 >Registrate</a
               >
@@ -94,20 +101,27 @@
 </template>
 
 <script>
-import Navbar from "@/components/Navbar.vue";
+import Vue from "vue";
+// Import component
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/vue-loading.css";
+// Init plugin
+Vue.use(Loading);
+
 import DemoLoginModal from "@/components/Modal_Login.vue";
 // @ is an alias to /src
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 
 import { required, minLength, email } from "vuelidate/lib/validators";
 export default {
   name: "Login",
   components: {
-    Navbar,
     DemoLoginModal,
   },
   data() {
     return {
+      fullPage: false,
       usuario: {
         email: "",
         password: "",
@@ -122,119 +136,66 @@ export default {
     usuario: {
       email: {
         required,
-        email
+        email,
       },
       password: {
         required,
-        minLength: minLength(4),
+        minLength: minLength(6),
       },
     },
   },
-  created() {
-    setInterval(() => {
-      this.canBeShown = !this.canBeShown;
-    }, 5000);
-  },
 
   methods: {
-    ...mapActions(["setUserPaciente", "setUserDoctor","setUserOrganizacion","setIdPac","setIdDoct","setIdOrg"]),
-
-    iniciarUsuario(user) {
-      this.carga = true;
-      this.usuario = user;
-      const usuarioLogin = ""
-        this.axios
-        .post("https://sicramv1.herokuapp.com/api/signindoctor",{
-          ...this.usuario,
-        })
-
-        .then((res) => { 
-          this.acceso=true;
-          this.carga = true;
-          this.setUserDoctor(res.data.token);
-          this.setIdDoct(res.data.id);
-          this.$router.push("/doctorvista");
-          console.log(res.data.token)
-          console.log(res.data.id)
-        })
-        .catch((e) => {
-          if(this.acceso==true){
-            this.acceso=true;
-            this.carga = true;
-            console.log(this.carga)
-          }else{
-            this.acceso=false;
-            this.carga = false;
-            console.log(this.carga)
-          }
-        });
-        console.log(this.carga)
-
-      this.axios
-        .post("https://sicramv1.herokuapp.com/api/signinorganizacion",{
-          ...this.usuario,
-        })
-
-        .then((res) => {
-          this.acceso=true;
-          this.carga = false;
-          this.setUserOrganizacion(res.data.token);
-          this.setIdOrg(res.data.id);
-          this.$router.push("/organizacionvista");
-        })
-        .catch((e) => {
-          if(this.acceso==true){
-            this.acceso=true;
-            this.carga = true;
-            console.log(this.carga)
-          }else{
-            this.acceso=false;
-            this.carga = false;
-            console.log(this.carga)
-          }
-          
-        });
-        console.log(this.carga)
-      
-      this.axios
-        .post("https://sicramv1.herokuapp.com/api/signinuser",{
-          ...this.usuario,
-        })
-
-        .then((res) => {
-          this.acceso=true;
-          
-          this.carga = true;
-          this.setIdPac(res.data.id);
-          this.setUserPaciente(res.data.token);
-          this.$router.push("/pacientevista");
-          
-        })
-        .catch((e) => {
-          if(this.acceso==true){
-            this.acceso=true;
-            this.carga = true;
-            console.log(this.carga)
-          }else{
-            this.acceso=false;
-            this.carga = false;
-            console.log(this.carga)
-          }
-         
-        });
-        console.log(this.carga)
-        
-        if(this.acceso!=true){
-          
-
-          this.mensaje="Correo o contraseña incorrectos."
-          
-          
-        }
+    ...mapActions(["loginPaciente", "loginDoctor", "loginOrganizacion"]),
+    //INICIALIZA EL ESPINER 
+    cargar(user) {
+      this.iniciarUsuario(user);
+      let loader = this.$loading.show({
+        // Optional parameters
+        container: this.fullPage ? null : this.$refs.formContainer,
+        color: "#0099a1",
+        loader: "dots",
+        height: 150,
+        width: 130,
+      });
+      // simulate AJAX
+      setTimeout(() => {
+        loader.hide();
+      }, 5000);
     },
-  },
-  computed: {
-    ...mapState(["usuarioPaciente"]),
+    //INICIAR SESION COMO PACIENTE, DOCTOR U ORGANIZACION
+    iniciarUsuario(user) {
+      this.acceso = true
+      //INCIAR SESION COMO PACIENTE
+      this.loginPaciente(user).then((res) => {
+        if (res) {
+          setTimeout(() => {
+            this.$router.push("/pacientevista");
+          }, 2000);
+        } else {
+          //INICIAR SESION COMO DOCTOR
+          this.loginDoctor(user).then((res) => {
+            if (res) {
+              setTimeout(() => {
+                this.$router.push("/doctorvista");
+              }, 2000);
+            } else {
+              //INICIAR SESION COMO ORGANIZACION
+              this.loginOrganizacion(user).then((res) => {
+                if (res) {
+                  setTimeout(() => {
+                    this.$router.push("/organizacionvista");
+                  }, 2000);
+                }else{
+                  this.acceso = false
+                  this.mensaje = "Usuario o contraseñas incorrectos."
+                }
+              });
+            }
+          });
+        }
+      });
+    },
   },
 };
 </script>
@@ -363,6 +324,7 @@ input {
   #slideBox {
     margin-left: 0%;
     width: 425px;
+    height: 100%;
   }
   .backLeft {
     width: 0%;

@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   name: "PerfilPaciente",
   data() {
@@ -114,12 +114,12 @@ export default {
   },
   methods: {
     getPaciente() {
-      this.datosUsuario = this.paciente;
+      this.datosUsuario = this.getDatosPaciente;
       this.$log.info('Datos.PACIENTE', this.datosUsuario)
     },
   },
   computed: {
-    ...mapState(["usuarioPaciente","idPaciente","paciente"]),
+    ...mapGetters(['getDatosPaciente'])
   },
 };
 </script>

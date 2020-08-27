@@ -23,7 +23,7 @@
                     Nombres y apellidos
                   </div>
                   <div class="col-7 " style="text-transform: uppercase;">
-                    {{datosUsuario.name}} {{datosUsuario.lastname}}
+                    {{getDatosDoctor.name}} {{getDatosDoctor.lastname}}
                   </div>
                 </div>
                 <div class="row" style="margin-bottom:5px;"> 
@@ -31,7 +31,7 @@
                     DNI
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.dni}}
+                    {{getDatosDoctor.dni}}
                   </div>
                 </div>
                 <div class="row" style="margin-bottom:5px;"> 
@@ -39,7 +39,7 @@
                     Username
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.username}} 
+                    {{getDatosDoctor.username}} 
                   </div>
                 </div>
                 <div class="row" > 
@@ -47,7 +47,7 @@
                     Edad
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.edad}}
+                    {{getDatosDoctor.edad}}
                   </div>
                 </div>
               </div>
@@ -64,7 +64,7 @@
                     CMP
                   </div>
                   <div class="col-7 " style="text-transform: uppercase;">
-                    {{datosUsuario.cmp}} 
+                    {{getDatosDoctor.cmp}} 
                   </div>
                 </div>
                 <div class="row" style="margin-bottom:5px;"> 
@@ -72,7 +72,7 @@
                     Especialidad
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.especialidad}}
+                    {{getDatosDoctor.especialidad}}
                   </div>
                 </div>
                 <div class="row" style="margin-bottom:5px;"> 
@@ -80,7 +80,7 @@
                     Profesión
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.profesion}} 
+                    {{getDatosDoctor.profesion}} 
                   </div>
                 </div>
               </div>
@@ -93,16 +93,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {  mapGetters } from "vuex";
 export default {
   name: "PerfilDoctor",
-  data() {
-    return {
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
-    };
-  },
+
   mounted() {
     $("#sidebarCollapse").on("click", function() {
     
@@ -110,33 +104,10 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getDoctor();
   },
-  methods: {
-    getDoctor() {
-      this.usuario = this.usuarioDoctor;
-      let url =
-        `https://sicramv1.herokuapp.com/api/doctor/perfil/${this.idDoctor}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.datosUsuario.especialidad =this.datosUsuario.especialidad.especialidad;
-          this.$log.info('DOCTOR: ', this.datosUsuario)
-        })
-        .catch((e) => {
-
-          this.mensaje = e.response.data.message;
-          this.$log.info('DOCTOR: ', e)
-        });
-    },
-  },
+  
   computed: {
-    ...mapState(["usuarioDoctor","idDoctor"]),
+    ...mapGetters(['getDatosDoctor'])
   },
 };
 </script>

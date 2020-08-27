@@ -16,7 +16,7 @@
         <ul class="list-unstyled components">
           <p class="m-0 ml-1">Organizacion :</p>
           <p class="mb-1 ml-1 " style="text-transform: uppercase;">
-            {{ datosUsuario.nameOrg }}
+            {{ getDatosOrganizacion.nameOrg }}
           </p>
 
           <li class="active">
@@ -124,7 +124,7 @@
 
 <script>
 import vueCustomScrollbar from "vue-custom-scrollbar";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "MenuOrg",
   components: {
@@ -132,9 +132,6 @@ export default {
   },
   data() {
     return {
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
       settings: {
         maxScrollbarLength: 50,
       },
@@ -142,17 +139,6 @@ export default {
     };
   },
   methods: {
-    resolveAfter2Seconds() {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(this.organizacion);
-        }, 1000);
-      });
-    },
-
-    async asyncCall() {
-      this.datosUsuario = await this.resolveAfter2Seconds();
-    },
     ...mapActions(["cambiarComponenteOrganizacion"]),
   },
 
@@ -171,10 +157,9 @@ export default {
         }
       });
     });
-    this.asyncCall();
   },
   computed: {
-    ...mapState(["usuarioOrganizacion", "idOrganizacion", "organizacion"]),
+    ...mapGetters(['getDatosOrganizacion'])
   },
 };
 </script>

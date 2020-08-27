@@ -176,7 +176,10 @@
             
             
             <div class="text-center boton-final">
-              <button class="but btn  btn-lg mt-3" type="submit">
+              <button class="but btn  btn-lg mt-3" 
+                type="submit"
+                :disabled = "getCargaDoctor"
+              >
                 Actualizar
               </button>
             </div>
@@ -233,7 +236,7 @@
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "ActualizarDoctor",
   components: {
@@ -242,8 +245,6 @@ export default {
   data() {
     return {
       mensajeRegistro: {},
-      mensaje: "",
-      usuario: "",
       datosUsuario: {},
       actualizarUsuario:{}
     };
@@ -254,74 +255,26 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getDoctor();
+    this.cargarDatos();
   },
   methods: {
-    open2(o) {
-      let obj = {
-        title: o.title,
-        message: o.message,
-        type: o.type,
-      };
-
-      console.log("open simplert with obj : ", obj);
-      this.$refs.simplert.openSimplert(obj);
-      console.log(o);
+    ...mapActions(['actualizarDatosDoctor']),
+    actualizarDoctor(newDatos) {
+      let datos = {
+        doctor : this.getDoctor,
+        newDatos : newDatos
+      }
+      this.actualizarDatosDoctor(datos)
+      .then((res)=>{
+        this.$refs.simplert.openSimplert(this.getMensajeDoctor);
+      })
     },
-
-    actualizarDoctor(doctor) {
-      this.actualizarUsuario = doctor
-      let url = `https://sicramv1.herokuapp.com/api/doctor/perfil/update/${this.idDoctor}`;
-        this.axios
-          .post(
-            url,
-            { ...this.actualizarUsuario },
-            {
-              headers: {
-                Authorization: `${this.usuario}`,
-              },
-            }
-          )
-          .then(res =>{
-            this.$log.debug('NUEVOSDATOS : ', res)
-            this.mensajeRegistro = {
-                title: "ACTUALIZACIÓN EXITOSA",
-                message: "Se actualizó correctamente el perfil.",
-                type: "success",
-              };
-              
-            this.open2(this.mensajeRegistro);
-            this.deshabilitar =false;
-          })
-
-          .catch(e=>{
-            this.$log.error('NUEVOSDATOS : ', e)
-            this.deshabilitar =false;
-          })
-
-
-    },
-    getDoctor() {
-      this.usuario = this.usuarioDoctor;
-      let url =
-        `https://sicramv1.herokuapp.com/api/doctor/perfil/${this.idDoctor}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.datosUsuario.especialidad = this.datosUsuario.especialidad.especialidad;
-        })
-        .catch((e) => {
-          this.mensaje = e.response.data.message;
-        });
+    cargarDatos() {
+      this.datosUsuario = this.getDatosDoctor
     },
   },
   computed: {
-    ...mapState(["usuarioDoctor","idDoctor"]),
+    ...mapGetters(['getDatosDoctor','getCargaDoctor','getDoctor','getMensajeDoctor'])
   },
 };
 </script>

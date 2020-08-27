@@ -22,7 +22,7 @@
           </div>
           <table class="table table-striped table-hover mt-4"
           style="border-style: solid; border-width: 2px; border-color: #f2f2f2;"
-          v-if="datosUsuario.length!=0">
+          v-if="getListaCitasDoctor!=null">
           <thead class="text-center">
             <tr>
               <th scope="col">Fecha</th>
@@ -33,7 +33,7 @@
             </tr>
           </thead>
           <tbody class="text-center">
-            <tr v-for="(element, index) in datosUsuario" :key="index">
+            <tr v-for="(element, index) in getListaCitasDoctor" :key="index">
               <td>{{ element.horario.fecha }}</td>
               <td>{{ element.horario.hora_inicio}} - {{ element.horario.hora_fin }}</td>
               <td>{{ element.user.name }} {{ element.user.lastname }}</td>
@@ -47,7 +47,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="container" v-if="datosUsuario.length===0">
+        <div class="container" v-if="getListaCitasDoctor===null">
               <div class="mt-3" style="padding:50px; align-content: center; text-align: center; background:pink">
                   <h4>NO CUENTA CON CITAS REGISTRADAS</h4>
               </div>
@@ -71,7 +71,7 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
 // Init plugin
 Vue.use(Loading);
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   name: "CitaPendienteDoctor",
   data() {
@@ -94,7 +94,7 @@ export default {
     
   },
   methods: {
-    ...mapActions(['setObjCita']),
+    ...mapActions(['setObjCita','listarCitasDoctor']),
     cargar(cita) {
       let loader = this.$loading.show({
         // Optional parameters
@@ -112,24 +112,7 @@ export default {
       }, 3000);
     },
     getCitas() {
-      this.usuario = this.usuarioDoctor;
-      let url =
-        `https://sicramv1.herokuapp.com/api/doctor/cita/listar/${this.idDoctor}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.$log.info('CITAS : ', this.datosUsuario)
-        })
-        .catch((e) => {
-          this.mensaje = e
-          this.$log.fatal('CITAS : ', e)
-        });
+      this.listarCitasDoctor(this.getDoctor)
     },
 
     //INGRESA A LA CITA
@@ -142,6 +125,7 @@ export default {
   },
   computed: {
     ...mapState(["usuarioDoctor","idDoctor"]),
+    ...mapGetters(['getListaCitasDoctor','getDoctor'])
   },
   beforeMount(){
     this.getCitas();

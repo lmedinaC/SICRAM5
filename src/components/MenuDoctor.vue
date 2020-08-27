@@ -12,7 +12,7 @@
         <ul class="list-unstyled components">
           <p class="m-0 ml-1">Doctor :</p>
           <p class="mb-1 ml-1" style="text-transform: uppercase;">
-            {{ datosUsuario.lastname}}
+            {{ getDatosDoctor.lastname}}
           </p>
 
           <li class="active">
@@ -27,7 +27,7 @@
               variant="info"
               ><i class="fa fa-user icono" aria-hidden="true"></i>Perfil</a
             >
-            <b-collapse id="collapse-1" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-1"  accordion="my-accordion" role="tabpanel">
               <ul class="list-unstyled" id="PerfilSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponenteDoctor('PerfilDoctor')"
@@ -52,7 +52,7 @@
             >
               <i class="fa fa-clock icono" aria-hidden="true"></i>Horario</a
             >
-            <b-collapse id="collapse-2" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-2"  accordion="my-accordion" role="tabpanel">
               <ul class=" list-unstyled" id="citasSubmenu">
                 <li>
                   <a
@@ -79,7 +79,7 @@
             >
               <i class="fa fa-file icono" aria-hidden="true"></i>Buzón</a
             >
-            <b-collapse id="collapse-3" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-3"  accordion="my-accordion" role="tabpanel">
               <ul
                 class=" list-unstyled"
                 id="BuzonSubmenu"
@@ -109,7 +109,7 @@
 
 <script>
 import vueCustomScrollbar from "vue-custom-scrollbar";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "MenuPaciente",
   components: {
@@ -121,38 +121,12 @@ export default {
         maxScrollbarLength: 300,
       },
       componente: "asdasdasd",
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
     };
   },
   methods: {
-  
     ...mapActions(["cambiarComponenteDoctor"]),
-    getDoctor() {
-      this.usuario = this.usuarioDoctor;
-      console.log("doctor", this.usuario)
-      let url =
-        `https://sicramv1.herokuapp.com/api/doctor/perfil/${this.idDoctor}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          this.datosUsuario = res.data;
-        })
-        .catch((e) => {
-          this.mensaje = e;
-          console.log(e);
-        });
-    },
   },
-
   mounted() {
-    this.getDoctor();
     $(document).ready(function() {
       $(document).keydown(function(tecla) {
         if (tecla.keyCode == 37) {
@@ -169,7 +143,7 @@ export default {
     });
   },
   computed: {
-    ...mapState(["usuarioDoctor","idDoctor"]),
+    ...mapGetters(['getDatosDoctor'])
   },
 };
 </script>

@@ -30,7 +30,7 @@
                     Nombre: 
                   </div>
                   <div class="col-md-8">
-                    {{datosUsuario.nameOrg}}
+                    {{getDatosOrganizacion.nameOrg}}
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -38,7 +38,7 @@
                     Correo Org:
                   </div>
                   <div class="col-md-8">
-                    {{datosUsuario.email}}
+                    {{getDatosOrganizacion.email}}
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -46,7 +46,7 @@
                     Dirección:
                   </div>
                   <div class="col-md-8">
-                    {{datosUsuario.direccion}}
+                    {{getDatosOrganizacion.direccion}}
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -54,7 +54,7 @@
                     RUC:
                   </div>
                   <div class="col-md-8">
-                    {{datosUsuario.ruc}}
+                    {{getDatosOrganizacion.ruc}}
                   </div>
                 </div>
               </div>
@@ -68,43 +68,10 @@
 </template>
 
 <script>
-import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import {  mapGetters } from "vuex";
 export default {
   name: "PerfilOrganizacion",
-  components: {
-    Simplert,
-  },
-  data() {
-    return {
-      usuario:'',
-      datosUsuario: {}
-    };
-  },
-  methods: {
-    getDatosOrganizacion(){
-      this.usuario = this.usuarioOrganizacion;
-      let url =
-        `https://sicramv1.herokuapp.com/api/organizacion/perfil/${this.idOrganizacion}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          
-          this.datosUsuario = res.data;
-          this.$log.info('ORGANIZACION : ', this.datosUsuario)
-        })
-        .catch((e) => {
-          this.$log.fatal('ORGANIZACION : ', e)
-        });
-    } 
-  },
-  computed: {
-    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
-  },
+  
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
@@ -113,9 +80,9 @@ export default {
       
     });
   },
-  beforeMount(){
-    this.getDatosOrganizacion()
-  }
+  computed: {
+    ...mapGetters(['getDatosOrganizacion'])
+  },
 };
 </script>
 

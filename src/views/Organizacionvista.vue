@@ -36,34 +36,9 @@ export default {
   },
 
   computed: {
-    ...mapState(["componenteVistaOrganizacion","usuarioOrganizacion", "idOrganizacion"]),
+    ...mapState(["componenteVistaOrganizacion"]),
   },
-  methods:{
-    ...mapActions(['setObjOrganizacion']),
-    getPaciente() {
-      this.usuario = this.usuarioOrganizacion;
-       let url =
-        `https://sicramv1.herokuapp.com/api/organizacion/perfil/${this.idOrganizacion}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-        
-          this.datosUsuario = res.data;
-          this.setObjOrganizacion(this.datosUsuario)
-        })
-        .catch((e) => {
-          this.mensaje = e;
-          console.log(e);
-        });
-    },
-  },
-  beforeMount(){
-    this.getPaciente()
-  }
+ 
 };
 </script>
 

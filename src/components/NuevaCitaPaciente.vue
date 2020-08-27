@@ -77,7 +77,7 @@
                     >
                       <option disabled value="">Seleccionar Familiar</option>
                       <option
-                        v-for="(item, index) in dependientes"
+                        v-for="(item, index) in getListFamiliares"
                         :key="index"
                         v-bind:value="item._id"
                       >
@@ -103,7 +103,7 @@
                     >
                       <option disabled value="">Especialidad</option>
                       <option
-                        v-for="(element, id) in especialidades"
+                        v-for="(element, id) in getEspecialidades"
                         :key="id"
                         v-bind:value="element"
                         >{{ element.especialidad }}</option
@@ -203,7 +203,7 @@
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "NuevaCitaPaciente",
   components: {
@@ -239,6 +239,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['listarEspecialidades','listarDependientes','agregarCitaPaciente','agregarCitaDependiente']),
     open2(o) {
       let obj = {
         title: o.title,
@@ -263,41 +264,14 @@ export default {
 
     //Carga los dependientes del paciente
     cargarDependiente() {
-      let url = `https://sicramv1.herokuapp.com/api/user/dependiente/listar/${this.idPaciente}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          this.dependientes = res.data;
-          this.$log.info('DEPENDIENTES', this.dependientes)
-        })
-        .catch((e) => {
-          console.log(e);
-          this.$log.fatal('DEPENDIENTES', e)
-        });
+      this.listarDependientes(this.getPaciente)
     },
 
-    //LISTAR LAS ESPECIALIDADES
-    getEspecialidades() {
-      let url = `https://sicramv1.herokuapp.com/api/especialidad`;
-      this.axios
-        .get(url)
-        .then((res) => {
-          this.especialidades = res.data; //objto especialidad con sus doctores
-           this.$log.info('ESPECIALIDADES', this.especialidades)
-        })
-        .catch((e) => {
-          this.$log.error('ESPECIALIDADES', e)
-        });
-    },
 
     //LISTAR DOCTORES POR ESPECIALIDAD
     getDoctores(especialidad) {
       console.log(especialidad);
-      this.especialidades.forEach((element) => {
+      this.getEspecialidades.forEach((element) => {
         if (especialidad == element._id) {
           this.doctores = element.doctor; //se guardan los doctores de la especialidad seleccionada
         }
@@ -364,90 +338,28 @@ export default {
       } else {
         //CITA PAR EL TITULAR
         if (paciente.tipopaciente == "titular") {
-          let url = `https://sicramv1.herokuapp.com/api/user/cita/crear/${this.idPaciente}`;
-          this.axios
-            .post(
-              url,
-              { ...this.agregarcitaPaciente },
-              {
-                headers: {
-                  Authorization: `${this.usuario}`,
-                },
-              }
-            )
-            .then((res) => {
-              
-              if (res.data.msg == "Exito nueva cita creada.") {
-                this.$log.info('CITA', res.data.msg)
-                this.limpiarCasillas();
-                this.mensajeRegistro = {
-                  title: "REGISTRO EXITOSO",
-                  message: "Cita registrada con éxito",
-                  type: "success",
-                };
-                this.open2(this.mensajeRegistro);
-              } else {
-                this.$log.error('CITA', res.data.msg)
-                this.mensajeRegistro = {
-                  title: "REGISTRO FALLIDO",
-                  message: "Horario en uso",
-                  type: "error",
-                };
-                this.open2(this.mensajeRegistro);
-              }
-            })
-            .catch((e) => {
-              this.$log.fatal('CITA', e)
-              this.mensajeRegistro = {
-                title: "REGISTRO FALLIDO",
-                message: "Ocurrió un error",
-                type: "error",
-              };
-              this.open2(this.mensajeRegistro);
-            });
+          let datos = {
+            paciente: this.getPaciente,
+            cita : cita
+          }
+          this.agregarCitaPaciente(datos)
+          .then((res)=>{
+            this.$refs.simplert.openSimplert(this.getMensaje);
+            this.limpiarCasillas()
+          })
         } else {
           //CITA PARA EL PACIENTE DEPENDIENTE
           console.log("idpaciente", this.idPaciente);
-          let url = `https://sicramv1.herokuapp.com/api/user/dependiente/cita/crear/${paciente.idFamiliar}`;
-          this.axios
-            .post(
-              url,
-              { ...this.agregarcitaPaciente },
-              {
-                headers: {
-                  Authorization: `${this.usuario}`,
-                },
-              }
-            )
-            .then((res) => {
-              console.log(res);
-              if (res.data.msg == "Exito nueva cita creada.") {
-                this.limpiarCasillas();
-                this.mensajeRegistro = {
-                  title: "REGISTRO EXITOSO",
-                  message: "Cita registrada con éxito",
-                  type: "success",
-                };
-                this.open2(this.mensajeRegistro);
-              } else {
-                this.mensajeRegistro = {
-                  title: "REGISTRO FALLIDO",
-                  message: "Horario en uso",
-                  type: "error",
-                };
-                this.open2(this.mensajeRegistro);
-              }
-            })
-            .catch((e) => {
-              //ERROR AL CARGAR CITA
-              console.log(e);
-              this.mensajeRegistro = {
-                title: "REGISTRO FALLIDO",
-                message: "Ocurrió un error",
-                type: "error",
-              };
-              this.open2(this.mensajeRegistro);
-            });
+          let datos = {
+            paciente: this.getPaciente,
+            cita: cita,
+            idFamiliar : paciente.idFamiliar
+          }
+          this.agregarCitaDependiente(datos)
+          .then((res)=>{
+            this.$refs.simplert.openSimplert(this.getMensaje);
+            this.limpiarCasillas()
+          })
         }
       }
     },
@@ -459,12 +371,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(["usuarioPaciente", "idPaciente"]),
+    ...mapGetters(['getEspecialidades','getListFamiliares','getPaciente','getMensaje','getCarga'])
   },
   beforeMount() {
     this.usuario = this.usuarioPaciente;
-    this.getEspecialidades();
     this.cargarDependiente();
+    this.listarEspecialidades();
   },
 };
 </script>

@@ -51,7 +51,9 @@
                 </div>
 
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary"
+                  :disabled="getCargaDoctor"
+                  >Registrar</button>
                 </div>
               </form>
             </div>
@@ -77,13 +79,12 @@
 </template>
 
 <script>
-import MensajeExitoso from "@/components/MensajeExitoso.vue";
+
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "AgregarHorarioDoctor",
   components: {
-    MensajeExitoso,
     Simplert,
   },
   data() {
@@ -121,22 +122,13 @@ export default {
   },
   
   methods: {
-    //MODAL DE MENSAJE DE REGISTRO
-    open2(o) {
-      let obj = {
-        title: o.title,
-        message: o.message,
-        type: o.type,
-      };
-
-      this.$refs.simplert.openSimplert(obj);
-      console.log(o);
-    },
+    ...mapActions(['registrarHorarioDoctor']),
 
     vaciarCasillas() {
       this.fecha = "";
       this.horario = "";
     },
+
     elegirHorario(hora) {
       console.log(hora);
       this.optionsHorario.forEach((element) => {
@@ -153,64 +145,24 @@ export default {
       //CASILLAS VACÍAS
       if (horario.hora_inicio === "" || horario.fecha === "") {
         this.$log.warn('CITAS : ', "LLENE TODOS LOS CAMPOS" )
+        
         this.mensajeRegistro = {
           title: "REGISTRO FALLIDO",
           message: "Seleccione fecha y hora",
           type: "warning",
         };
-        this.open2(this.mensajeRegistro);
+        this.$refs.simplert.openSimplert(this.mensajeRegistro);
         
       } else { 
-        console.log(horario);
-        this.nuevoHorario = horario;
-        console.log(horario.fecha);
-        let url = `https://sicramv1.herokuapp.com/api/doctor/horario/agregar/${this.idDoctor}`;
-        this.axios
-          .post(
-            url,
-            { ...this.nuevoHorario },
-            {
-              headers: {
-                Authorization: `${this.usuario}`,
-              },
-            }
-          )
-
-          .then((res) => {
-            //YA CUENTA CON ESTE MISMO HORARIO 
-            if (res.data.msg === "YA EXISTE ESE HORARIO PARA EL DOCTOR") {
-              this.$log.error('NUEVOHORARIO : ', res.data.msg)
-              this.mensaje = "Horario agregado anteriormente";
-              this.mensajeRegistro = {
-                title: "REGISTRO FALLIDO",
-                message: this.mensaje,
-                type: "error",
-              };
-              this.open2(this.mensajeRegistro);
-            } else {
-              //SE GUARDA CON EXITO EL HORARIO
-              this.$log.debug('NUEVOHORARIO : ', res.data.msg)
-              this.vaciarCasillas();
-              this.mensaje = "Horario agregado";
-              this.mensajeRegistro = {
-                title: "REGISTRO EXITOSO",
-                message: this.mensaje,
-                type: "success",
-              };
-              this.open2(this.mensajeRegistro);
-            }
-          })
-          .catch((e) => {
-            //POR SI EXISTE UN ERROR AL GUARDAR
-            this.$log.fatal('NUEVOHORARIO : ', e)
-            this.mensaje = "Error en el registro";
-            this.mensajeRegistro = {
-              title: "REGISTRO FALLIDO",
-              message: this.mensaje,
-              type: "error",
-            };
-            this.open2(this.mensajeRegistro);
-          });
+        let datos = {
+          newHorario : horario,
+          doctor : this.getDoctor
+        }
+        //SE ENVIA LA CONSULTA DE REGISTRAR HORARIO A DOCTOS.JS
+        this.registrarHorarioDoctor(datos)
+        .then((res)=>{
+          this.$refs.simplert.openSimplert(this.getMensajeDoctor);
+        })
       }
     },
     //FECHA SELECCIONADA
@@ -220,7 +172,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["usuarioDoctor", "idDoctor"]),
+    ...mapGetters(['getCargaDoctor','getDoctor','getMensajeDoctor'])
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {

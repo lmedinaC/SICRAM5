@@ -26,7 +26,7 @@
           <div class="lista-doctor">
             <div class="doctores">
               <ul style="list-style:none">
-                <li v-for="(element,index) of doctoresDatos" :key="index">
+                <li v-for="(element,index) of getListaDoctoresOrganizacion" :key="index">
                   <div class="row doctor">
                     <div class="col-md-10">
                       <div class="row">
@@ -77,7 +77,7 @@
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "ListaDoctores",
   components: {
@@ -89,30 +89,12 @@ export default {
     };
   },
   methods: {
-    getDoctores(){
-      let url = `https://sicramv1.herokuapp.com/api/organizacion/doctor/obtener/${this.idOrganizacion}`;
-        this.axios
-          .get(
-            url,
-            {
-              headers: {
-                Authorization: `${this.usuarioOrganizacion}`,
-              },
-            }
-          )
-          .then((res)=>{
-            
-            this.doctoresDatos = res.data
-            this.$log.info('LISTADOCTORES:',this.doctoresDatos)
-          })
-          .catch((e)=>{
-            console.log(e)
-            this.$log.fatal('LISTADOCTORES:',e)
-          })
-    }
+    //LLAMAMOS A LA CONSULTA DE LISTAR  DOCTORES EN ORGANIZACION JS
+    ...mapActions(['listarDoctores'])
   },
   computed: {
-    ...mapState(["usuarioOrganizacion","idOrganizacion"]),
+    //LLAMAMOS A EL ID Y TOKEN DE ORGANIZACION Y SU LISTA DE DOCTORES
+    ...mapGetters(['getOrganizacion','getListaDoctoresOrganizacion'])
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -120,7 +102,7 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getDoctores()
+    this.listarDoctores(this.getOrganizacion)
   },
 };
 </script>

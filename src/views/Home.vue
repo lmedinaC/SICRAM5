@@ -10,6 +10,7 @@
 import Footer from '@/components/Footer.vue'
 import Cuerpo from '@/components/Cuerpo.vue'
 import Cabecera from '@/components/Cabecera.vue'
+import { mapActions } from 'vuex'
 export default {
     name: 'Home',
     components: {
@@ -17,6 +18,14 @@ export default {
     Footer,
     Cuerpo
   },
+
+  mounted(){
+    this.listarEspecialidades()
+  },
+
+  methods: {
+    ...mapActions(['listarEspecialidades'])
+  }
 }
 </script>
 <style lang="scss" scoped>

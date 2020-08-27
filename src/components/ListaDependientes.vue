@@ -22,9 +22,9 @@
               <h3 style="color:white;">Lista de Familiares</h3>
             </div>
           </div>
-          <div class="container" v-if="datosUsuario.length!=0">
+          <div class="container" v-if="getListFamiliares!=null">
             <div class="row mt-4  ml-2 mr-2" 
-            v-for="(element, index) in datosUsuario" 
+            v-for="(element, index) in getListFamiliares" 
             :key="index"
             style="border-style: solid; align-content: center; border: 1px solid #c3c3c3; padding-top: 15px; "
             > 
@@ -91,7 +91,7 @@
             </div>
             <br>
           </div>
-          <div class="container" v-if="datosUsuario.length===0">
+          <div class="container" v-if="getListFamiliares===null">
               <div class="mt-3" style="padding:50px; align-content: center; text-align: center; background:pink">
                   <h4>NO CUENTA CON FAMILIARES REGISTRADOS</h4>
               </div>
@@ -99,13 +99,14 @@
           </div>
         </div>
       </div>
+      <br>
     </div>
   </div>
 </template>
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapGetters,mapActions } from "vuex";
 export default {
   name: "ListaDependientes",
   components: {
@@ -129,30 +130,14 @@ export default {
     this.cargarDependiente();
   },
   methods: {
+    ...mapActions(["listarDependientes"]),
+    //Carga los dependientes del paciente
     cargarDependiente() {
-        let url = `https://sicramv1.herokuapp.com/api/user/dependiente/listar/${this.idPaciente}`;
-        this.axios
-          .get(
-            url,
-            {
-              headers: {
-                Authorization: `${this.usuario}`,
-              },
-            }
-          )
-          .then((res) => {  
-              this.datosUsuario=res.data
-              this.$log.info('DEPENDIENTES', res.data)
-          })
-          .catch((e) => {
-             console.log(e)
-             this.$log.fatal('DEPENDIENTES', e)
-          });
-      
+      this.listarDependientes(this.getPaciente)
     },
   },
   computed: {
-    ...mapState(["usuarioPaciente", "idPaciente"]),
+    ...mapGetters(["getPaciente","getListFamiliares"]),
   },
 };
 </script>

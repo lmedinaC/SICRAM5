@@ -168,7 +168,7 @@
                   >
                     <option disabled value="">Especialidad</option>
                     <option
-                      v-for="(element, id) in especialidades"
+                      v-for="(element, id) in getEspecialidades"
                       :key="id"
                       v-bind:value="element.especialidad"
                       >{{ element.especialidad }}</option
@@ -222,6 +222,7 @@
 <script>
 import vueCustomScrollbar from "vue-custom-scrollbar";
 import { required, minLength, email } from "vuelidate/lib/validators";
+import { mapGetters } from 'vuex';
 const MODAL_WIDTH = 800;
 
 export default {
@@ -257,7 +258,6 @@ export default {
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
-    this.getEspecialidades();
   },
   validations: {
     doctor: {
@@ -323,19 +323,10 @@ export default {
           this.carga2 = false;
         });
     },
-    getEspecialidades() {
-      let url = `https://sicramv1.herokuapp.com/api/especialidad`;
-      this.axios
-        .get(url)
-        .then((res) => {
-          this.especialidades = res.data;
-          console.log("especialidades: ", res.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
   },
+  computed: {
+    ...mapGetters(['getEspecialidades'])
+  }
 };
 </script>
 <style lang="scss" scoped>

@@ -12,8 +12,8 @@
         <div class="contenido-perfil "> 
           <div class="perfil-label">
             <h2 style="text-transform: uppercase;">
-              Bienvenido(a) {{ datosUsuario.name }}
-              {{ datosUsuario.lastname }}
+              Bienvenido(a) {{ getDatosDoctor.name }}
+              {{ getDatosDoctor.lastname }}
             </h2>
             <p class="">
               En SICRAM podrás realizar orientacion médica a personas que tienen
@@ -41,47 +41,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   name: "InicioDoctor",
-  data() {
-    return {
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
-    };
-  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getDoctor();
-  },
-  methods: {
-    getDoctor() {
-      this.usuario = this.usuarioDoctor;
-      let url =
-        `https://sicramv1.herokuapp.com/api/doctor/perfil/${this.idDoctor}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.$log.info('DOCTOR: ', this.datosUsuario)
-        })
-        .catch((e) => {
-          this.mensaje = e;
-          this.$log.fatal('DOCTOR: ', e)
-        });
-    },
   },
   computed: {
-    ...mapState(["usuarioDoctor","idDoctor"]),
+    ...mapGetters(['getDatosDoctor'])
   },
 };
 </script>

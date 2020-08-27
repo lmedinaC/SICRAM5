@@ -22,7 +22,7 @@
           </div>
           <table class="table table-striped table-hover mt-4"
           style="border-style: solid; border-width: 2px; border-color: #f2f2f2;"
-          v-if="datosUsuario.length!=0">
+          v-if="getListaHorariosDoctor!=null">
           <thead class="text-center">
             <tr>
               <th scope="col">Fecha</th>
@@ -32,7 +32,7 @@
             </tr>
           </thead>
           <tbody class="text-center">
-            <tr v-for="(element, index) in datosUsuario" :key="index">
+            <tr v-for="(element, index) in getListaHorariosDoctor" :key="index">
               <td>{{ element.fecha }}</td>
               <td>{{ element.hora_inicio}}</td>
               <td>{{ element.hora_fin }}</td>
@@ -45,7 +45,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="container" v-if="datosUsuario.length===0">
+        <div class="container" v-if="getListaHorariosDoctor ===null ">
               <div class="mt-3" style="padding:50px; align-content: center; text-align: center; background:pink">
                   <h4>NO CUENTA CON HORARIOS REGISTRADOS</h4>
               </div>
@@ -60,16 +60,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {  mapGetters, mapActions } from "vuex";
 export default {
   name: "ModificarHorarioDoc",
-  data() {
-    return {
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
-    };
-  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
@@ -79,26 +72,17 @@ export default {
     
   },
   methods: {
-    getDoctor() {
-      this.usuario = this.usuarioDoctor;
-      this.axios
-        .get(`https://sicramv1.herokuapp.com/api/doctor/horarios/${this.idDoctor}`)
-
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.$log.info('HORARIOS : ', res.data)
-        })
-        .catch((e) => {
-          this.mensaje = e
-          this.$log.fatal('HORARIOS : ', e)
-        });
+    ...mapActions(['listarHorariosDoctor']),
+    listarHorarios() {
+      this.listarHorariosDoctor(this.getDoctor)
     },
   },
   computed: {
-    ...mapState(["usuarioDoctor","idDoctor"]),
+    
+    ...mapGetters(['getListaHorariosDoctor','getDoctor'])
   },
-  beforeMount(){
-    this.getDoctor();
+  mounted(){
+    this.listarHorarios();
   }
 };
 </script>

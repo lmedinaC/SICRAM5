@@ -257,7 +257,8 @@
 
             <div class="text-center boton-final">
               <a href="formPaciente.html"
-                ><button class="but btn btn-lg mt-4" type="submit">
+                ><button class="but btn btn-lg mt-4" type="submit"
+                :disabled="getCargaOrganizacion">
                   Registrar
                 </button></a
               >
@@ -281,7 +282,7 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
 // Init plugin
 Vue.use(Loading);
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "AgregarDoctor",
   components: {
@@ -311,6 +312,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['agregarNuevoDoctor']),
     //METODOS LOADING
     cargar(doc) {
       this.setDoctor(doc)
@@ -326,8 +328,8 @@ export default {
       // simulate AJAX
       setTimeout(() => {
         loader.hide();
-        this.$refs.simplert.openSimplert(this.mensaje);
-      }, 3000);
+        this.$refs.simplert.openSimplert(this.getMensajeOrganizacion);
+      }, 4000);
     },
 
     //vacía las casillas despues de un registro
@@ -349,49 +351,16 @@ export default {
     },
     //REGISTRAR UN DOCTOR
     setDoctor(doc) {
-      this.doctor = doc;
-      this.$log.info('DOCTOR:',this.doctor )
-      let url = `https://sicramv1.herokuapp.com/api/organizacion/doctor/registrar/${this.idOrganizacion}`;
-      this.axios
-        .post(
-          url,
-          { ...this.doctor },
-          {
-            headers: {
-              Authorization: `${this.usuarioOrganizacion}`,
-            },
-          }
-        )
-        .then((res) => {
-          if (res.data.msg === "Bienvenido Doctor, es un nuevo usario.") {
-            this.$log.debug('DOCTORNUEVO:',res)
-            this.mensaje={
-              title: "REGISTRO EXITOSO",
-              message: "Se registro su Doctor con éxito.",
-              type: "success",
-            }
-            this.vaciar();
-          } else {
-            this.$log.error('DOCTORNUEVO:',res )
-            this.mensaje={
-              title: "REGISTRO FALLIDO",
-              message: "Ocurrio un error en el registro.",
-              type: "error",
-            };
-          }
-        })
-        .catch((e) => {
-          this.$log.fatal('DOCTORNUEVO:',e )
-          this.mensaje={
-            title: "REGISTRO FALLIDO",
-            message: "Ocurrio un error en el registro.",
-            type: "error",
-          };
-        });
+        let datos = {
+            newDoctor: doc,
+            organizacion : this.getOrganizacion
+        }
+        //LLAMA A LA CONSULTA AGREGAR NUEVO DOCTOR DE ORGANIZACION.JS
+        this.agregarNuevoDoctor(datos)
     },
   },
   computed: {
-    ...mapState(["usuarioOrganizacion", "idOrganizacion"]),
+    ...mapGetters(['getOrganizacion','getMensajeOrganizacion','getCargaOrganizacion'])
   },
   mounted() {
     console.debug("Console.debug" + " " +"asdasdsadasfasfasfasf");
@@ -406,7 +375,7 @@ export default {
     document.getElementById("inputDNI").addEventListener("input", function() {
       if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
-    this.usuario = this.usuarioPaciente;
+    
   },
 };
 </script>

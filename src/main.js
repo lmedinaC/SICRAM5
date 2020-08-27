@@ -12,6 +12,7 @@ import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import vmodal from 'vue-js-modal'
 import VueLogger from 'vuejs-logger';
+
 const isProduction = process.env.NODE_ENV === 'production';
 const options = {
   isEnabled: true,

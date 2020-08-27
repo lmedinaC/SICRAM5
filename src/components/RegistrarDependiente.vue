@@ -183,7 +183,7 @@
             <div class="text-center boton-final">
               <a href="formPaciente.html"
                 ><button class="but btn btn-lg mt-4" style="color:"
-                :disabled="deshabilitar">
+                :disabled="getCarga">
                   Registrar
                 </button></a
               >
@@ -198,7 +198,7 @@
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapGetters , mapActions } from "vuex";
 export default {
   name: "RegistrarDependiente",
   components: {
@@ -206,10 +206,6 @@ export default {
   },
   data() {
     return {
-      deshabilitar: false,
-      mensajeRegistro: {},
-      mensaje: "",
-      usuario: "", //ID DEL PACIENTE TITULAR
       dependiente: {//DATOS DEL DEPENDIENTE
         name: "",
         lastname: "",
@@ -223,6 +219,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["registrarPacienteDependiente"]),
     //vacía las casillas despues de un registro
     vaciar(){
       this.dependiente= {
@@ -236,95 +233,22 @@ export default {
         direccion: "",
       }
     },
-    open2(o) {
-      let obj = {
-        title: o.title,
-        message: o.message,
-        type: o.type,
-      };
-
-      console.log("open simplert with obj : ", obj);
-      this.$refs.simplert.openSimplert(obj);
-      console.log(o);
-    },
+    //FUNCION PARA REGISTRAR AL DEPENDIENTE
     crearDependiente(paciente) {
-      this.deshabilitar =true; //DESHABILITA EL BOTON DE AGREGAR DEPENDIENTE POR SEGURIDAD
-      this.dependiente = paciente;
-      console.log(this.dependiente);
-      //LAS CASILLAS ESTAN VACIAS
-      if (
-        this.dependiente.name === "" ||
-        this.dependiente.lastname === "" ||
-        this.dependiente.email === "" ||
-        this.dependiente.dni === "" ||
-        this.dependiente.edad === "" ||
-        this.dependiente.celular === "" ||
-        this.dependiente.direccion === ""
-      ) {
-        this.mensajeRegistro = {
-          title: "REGISTRO FALLIDO",
-          message: "Rellene todos los campos",
-          type: "warning",
-        };
-        this.open2(this.mensajeRegistro);
-        this.deshabilitar =false;
-      } else {
-        //AGREGAR FAMILIAR DE PACIENTE TITULAR
-        
-        let url = `https://sicramv1.herokuapp.com/api/user/dependiente/agregar/${this.idPaciente}`;
-        this.axios
-          .post(
-            url,
-            { ...this.dependiente },
-            {
-              headers: {
-                Authorization: `${this.usuario}`,
-              },
-            }
-          )
-          .then((res) => {
-            this.deshabilitar =true;
-            //YA EXISTE ESTE DEPENDIENTE EN LA BD DEL PACIENTE TITULAR
-            if (
-              res.data === "error al guardar al dependiente correo ya usado:"
-            ) {
-              this.$log.error('DEPENDIENTE', res.data)
-              this.mensajeRegistro = {
-                title: "REGISTRO FALLIDO",
-                message: "Familiar ya registrado",
-                type: "error",
-              };
-              this.open2(this.mensajeRegistro);
-            } else {
-              //SE GUARDA CON EXITO 
-              this.$log.debug('DEPENDIENTE', res.data)
-              this.mensajeRegistro = {
-                title: "REGISTRO EXITOSO",
-                message: "Se registro al familiar",
-                type: "success",
-              };
-              this.open2(this.mensajeRegistro);
-              this.vaciar();
-            }
-            this.deshabilitar =false;
-          })
-          .catch((e) => {
-            //EXISTIÓ UN ERROR AL GUARDAR EL DEPENDIENTE
-            this.$log.fatal('DEPENDIENTE', e)
-            this.mensajeRegistro = {
-              title: "REGISTRO FALLIDO",
-              message: "Ocurrio un error",
-              type: "error",
-            };
-            this.open2(this.mensajeRegistro);
-            this.deshabilitar =false;
-          });
-
+      const datos = {
+        paciente: this.getPaciente,
+        dependiente: paciente,
       }
+      //LLAMA A LA CONSULTA REGISTRAR DEPENDIENTE DE PACIENTE.JS
+      this.registrarPacienteDependiente(datos)
+      .then((res)=>{
+        this.$refs.simplert.openSimplert(this.getMensaje);
+        this.vaciar()
+      })
     },
   },
   computed: {
-    ...mapState(["usuarioPaciente", "idPaciente"]),
+    ...mapGetters(["getPaciente","getCarga","getMensaje"]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -338,7 +262,6 @@ export default {
     document.getElementById("inputDNI").addEventListener("input", function() {
       if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
-    this.usuario = this.usuarioPaciente;
   },
 };
 </script>

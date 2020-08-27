@@ -12,8 +12,8 @@
         <div class="contenido-perfil ">
           <div class="perfil-label">
             <h2 style="text-transform: uppercase;">
-              Bienvenido(a) {{ datosUsuario.name }}
-              {{ datosUsuario.lastname }}
+              Bienvenido(a) {{ getDatosPaciente.name }}
+              {{ getDatosPaciente.lastname }}
             </h2>
             <p class="">
               En SICRAM podrás realizar orientacion médica a personas que tienen
@@ -41,45 +41,19 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   name: "InicioPaciente",
-  data() {
-    return {
-      mensaje: "",
-      datosUsuario: {},
-    };
-  },
+
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.asyncCall();
-  },
-  methods: {
-    resolveAfter2Seconds() {
-      if (this.paciente === null) {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(this.paciente);
-            this.$log.info('PACIENTE', this.paciente)
-          }, 1000);
-        });
-      } else {
-        return new Promise((resolve) => {
-          resolve(this.paciente);
-          this.$log.info('PACIENTE', this.paciente)
-        });
-      }
-    },
-    async asyncCall() {
-      this.datosUsuario = await this.resolveAfter2Seconds();
-    },
   },
   computed: {
-    ...mapState(["paciente"]),
+    ...mapGetters(["getDatosPaciente"]),
   },
 };
 </script>

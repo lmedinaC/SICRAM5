@@ -16,7 +16,6 @@ import PerfilPaciente from "@/components/PerfilPaciente.vue";
 import ActualizarPaciente from "@/components/ActualizarPaciente.vue";
 import ActualizarCitaPaciente from "@/components/ActualizarCitaPaciente.vue";
 import NuevaCitaPaciente from "@/components/NuevaCitaPaciente.vue";
-import CitaPendientePaciente from "@/components/CitaPendientePaciente.vue";
 import RegistrarDependiente from "@/components/RegistrarDependiente.vue";
 import ListaDependientes from "@/components/ListaDependientes.vue";
 import { mapActions, mapState } from "vuex";
@@ -36,39 +35,13 @@ export default {
     ActualizarPaciente,
     ActualizarCitaPaciente,
     NuevaCitaPaciente,
-    CitaPendientePaciente,
     RegistrarDependiente,
     ListaDependientes
   },
 
   computed: {
-    ...mapState(["componenteVista","usuarioPaciente","idPaciente"]),
+    ...mapState(["componenteVista"]),
   },
-  methods: {
-    ...mapActions(['setObjPaciente']),
-    getPaciente() {
-      this.usuario = this.usuarioPaciente;
-       let url =
-        `https://sicramv1.herokuapp.com/api/user/perfil/${this.idPaciente}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.setObjPaciente(this.datosUsuario)
-        })
-        .catch((e) => {
-          this.mensaje = e.response;
-          console.log(e);
-        });
-    },
-  },
-  beforeMount(){
-    this.getPaciente()
-  }
 };
 </script>
 

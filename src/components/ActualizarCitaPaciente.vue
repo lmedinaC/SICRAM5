@@ -25,7 +25,7 @@
           <table
             class="table table-striped table-hover tabla mt-4"
             style="border-style: solid; border-width: 2px; border-color: #f2f2f2; "
-            v-if="datosUsuario.length!=0"
+            v-if="getListaCitas!== null"
           >
             <thead class="text-center">
               <tr>
@@ -37,7 +37,7 @@
               </tr>
             </thead>
             <tbody class="text-center">
-              <tr v-for="(element, index) in datosUsuario" :key="index">
+              <tr v-for="(element, index) in getListaCitas" :key="index">
                 <td>{{ element.horario.fecha }}</td>
                 <td style="text-transform: uppercase;">
                   {{ element.doctor.lastname }}
@@ -62,7 +62,7 @@
               </tr>
             </tbody>
           </table>
-          <div class="container" v-if="datosUsuario.length===0">
+          <div class="container" v-if="getListaCitas === null">
               <div class="mt-3" style="padding:50px; align-content: center; text-align: center; background:pink">
                   <h4>NO CUENTA CON CITAS REGISTRADAS</h4>
               </div>
@@ -87,7 +87,7 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
 // Init plugin
 Vue.use(Loading);
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   name: "ActualizarCitaPaciente",
   components: {
@@ -111,10 +111,9 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getCita();
   },
   methods: {
-    ...mapActions(['setObjCita']),
+    ...mapActions(['setObjCita','listCitas']),
       cargar(cita) {
       let loader = this.$loading.show({
         // Optional parameters
@@ -165,25 +164,10 @@ export default {
         this.fecha = this.MostrarFecha(fecha1) + " al "+ this.MostrarFecha(fecha2);
         console.log(this.fecha)
       },
-
+    //MUESTRA LAS CITAS DEL PACIENTE
     getCita() {
-      this.usuario = this.usuarioPaciente;
-      let url =
-        `https://sicramv1.herokuapp.com/api/user/cita/listar/${this.idPaciente}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-          this.datosUsuario = res.data;
-          this.$log.info('CITAS', res.data)
-        })
-        .catch((e) => {
-          this.mensaje = e;
-          this.$log.fatal('CITAS', e)
-        });
+      //LLAMA A LA FUNCION LISTAR CISTAS DE PACIENTE.JS
+      this.listCitas(this.getPaciente)
     },
 
     //INGRESA A LA CITA
@@ -195,10 +179,12 @@ export default {
   },
   computed: {
     ...mapState(["usuarioPaciente","idPaciente"]),
+    ...mapGetters(['getPaciente','getListaCitas'])
   },
    beforeMount() {
     this.diaMax.setDate(this.diaMax.getDate() + 7);
     this.setFecha(this.diaMin,this.diaMax)
+    this.getCita();
   },
 };
 </script>

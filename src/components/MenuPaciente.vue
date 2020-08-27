@@ -15,11 +15,14 @@
         <ul class="list-unstyled components">
           <p class="m-0 ml-1">Paciente :</p>
           <p class="mb-1 ml-1 " style="text-transform: uppercase;">
-            {{ datosUsuario.name }}  {{ datosUsuario.lastname}}
+            {{ getDatosPaciente.name }}  {{ getDatosPaciente.lastname}}
           </p>
 
           <li class="active">
-            <a href="#" @click="cambiarComponente('InicioPaciente')"
+            <a href="#" 
+              v-b-toggle.collapse-1
+              variant="info"
+              @click="cambiarComponente('InicioPaciente')"
               ><i class="fa fa-home icono" aria-hidden="true"></i>Inicio</a
             >
           </li>
@@ -27,11 +30,11 @@
           <li class="">
             <a
               href="#PerfilSubmenu"
-              v-b-toggle.collapse-1
+              v-b-toggle.collapse-2
               variant="info"
               ><i class="fas fa-user fa-sm" style=" margin-right: 10px;"></i>Perfil</a
             >
-            <b-collapse id="collapse-1" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-2"  accordion="my-accordion" role="tabpanel">
               <ul class="list-unstyled" id="PerfilSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponente('PerfilPaciente')"
@@ -50,11 +53,11 @@
           <li class="">
             <a
               href="#dependienteSubmenu"
-              v-b-toggle.collapse-2
+              v-b-toggle.collapse-3
               variant="info"
               ><i class="fas fa-users fa-sm" style=" margin-right: 5px;"></i>Familiar</a
             >
-            <b-collapse id="collapse-2" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-3"  accordion="my-accordion" role="tabpanel">
               <ul class="list-unstyled" id="dependienteSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponente('RegistrarDependiente')"
@@ -73,11 +76,11 @@
           <li class="">
             <a
               href="#citasSubmenu"
-              v-b-toggle.collapse-5
+              v-b-toggle.collapse-4
               variant="info"
               ><i class="fa fa-calendar icono" aria-hidden="true"></i>Citas</a
             >
-            <b-collapse id="collapse-5" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-4"  accordion="my-accordion" role="tabpanel">
               <ul class=" list-unstyled" id="citasSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponente('NuevaCitaPaciente')"
@@ -97,12 +100,12 @@
           <li class="">
             <a
               href="#BuzonSubmenu"
-              v-b-toggle.collapse-4
+              v-b-toggle.collapse-5
               variant="info"
             >
               <i class="fa fa-file icono" aria-hidden="true"></i>Buzón</a
             >
-            <b-collapse id="collapse-4" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse id="collapse-5"  accordion="my-accordion" role="tabpanel">
               <ul
                 class=" list-unstyled"
                 id="BuzonSubmenu"
@@ -132,7 +135,7 @@
 
 <script>
 import vueCustomScrollbar from "vue-custom-scrollbar";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 export default {
   name: "MenuPaciente",
   components: {
@@ -140,9 +143,6 @@ export default {
   },
   data() {
     return {
-      mensaje: "",
-      usuario: "",
-      datosUsuario: {},
       settings: {
         maxScrollbarLength: 50,
       },
@@ -150,33 +150,11 @@ export default {
     };
   },
   methods: {
-    getPaciente() {
-      this.usuario = this.usuarioPaciente;
-       let url =
-        `https://sicramv1.herokuapp.com/api/user/perfil/${this.idPaciente}`;
-      this.axios
-        .get(url, {
-          headers: {
-            Authorization: `${this.usuario}`,
-          },
-        })
-        .then((res) => {
-        
-          this.datosUsuario = res.data;
-        })
-        .catch((e) => {
-          this.mensaje = e;
-          console.log(e);
-        });
-    },
-    scrollHanle(evt) {
-      console.log(evt);
-    },
+
     ...mapActions(["cambiarComponente"]),
   },
 
   mounted() {
-    this.getPaciente();
     $(document).ready(function() {
       $(document).keydown(function(tecla) {
         if (tecla.keyCode == 37) {
@@ -193,7 +171,7 @@ export default {
     });
   },
   computed: {
-    ...mapState(["usuarioPaciente","idPaciente"]),
+    ...mapGetters(['getDatosPaciente'])
   },
 };
 </script>

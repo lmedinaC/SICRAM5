@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Page Content  -->
-    <div id="content" >
+    <div id="content">
       <div class="">
         <button
           type="button"
@@ -32,9 +32,9 @@
               actualizarPaciente({
                 email: datosUsuario.email,
                 discapacidad: datosUsuario.discapacidad,
-                direccion:datosUsuario.direccion,
-                edad:datosUsuario.edad,
-                celular :datosUsuario.celular,
+                direccion: datosUsuario.direccion,
+                edad: datosUsuario.edad,
+                celular: datosUsuario.celular,
               })
             "
           >
@@ -173,20 +173,26 @@
             </div>
             <div class="text-center boton-final">
               <a href="formPaciente.html"
-                ><button class="but btn btn-lg mt-4" style="color:"
-               :disabled="deshabilitar">
+                ><button
+                  class="but btn btn-lg mt-4"
+                  style="color:"
+                  :disabled="getCarga"
+                >
                   Actualizar
                 </button></a
               >
             </div>
           </form>
-          <div class="row " style="background:#0099a1; height:60px; align-content: center;">
+          <div
+            class="row "
+            style="background:#0099a1; height:60px; align-content: center;"
+          >
             <div class="col-12 text-center">
               <h3 style="color:white">Actualizar contraseña</h3>
             </div>
           </div>
           <form action="">
-              <div class="form-row ">
+            <div class="form-row ">
               <div class="form-group col-md-6">
                 <div class="row mr-1">
                   <div class="col-4">
@@ -232,7 +238,7 @@
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "ActualizarPaciente",
   components: {
@@ -244,7 +250,7 @@ export default {
       mensaje: "",
       datosUsuario: {},
       deshabilitar: null,
-      actualizarUsuario: {}
+      actualizarUsuario: {},
     };
   },
   mounted() {
@@ -253,57 +259,29 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.getPaciente();
+    this.datosPaciente();
   },
   methods: {
-    open2(o) {
-      let obj = {
-        title: o.title,
-        message: o.message,
-        type: o.type,
+    ...mapActions(["actualizarDatosPaciente"]),
+    //FUNCION PARA ACTUALIZAR AL PACIENTE
+    actualizarPaciente(pacient) {
+      this.deshabilitar = true;
+      const datos = {
+        paciente: this.getPaciente,
+        newDatos: pacient,
       };
-
-      this.$refs.simplert.openSimplert(obj);
- 
+      //LLAMA A LA CONSULTADA ALMACENADA EN PACIENTE.JS
+      this.actualizarDatosPaciente(datos)
+      .then((res)=>{
+        this.$refs.simplert.openSimplert(this.getMensaje);
+      })
     },
-
-    actualizarPaciente(paciente) {
-      this.actualizarUsuario = paciente
-      this.deshabilitar =true;
-      let url = `https://sicramv1.herokuapp.com/api/user/perfil/update/${this.idPaciente}`;
-        this.axios
-          .post(
-            url,
-            { ...this.actualizarUsuario },
-            {
-              headers: {
-                Authorization: `${this.usuarioPaciente}`,
-              },
-            }
-          )
-          .then(res =>{
-            this.$log.debug('MENSAJE', res)
-            this.mensajeRegistro = {
-                title: "ACTUALIZACIÓN EXITOSA",
-                message: "Se actualizó correctamente el perfil.",
-                type: "success",
-              };
-            this.open2(this.mensajeRegistro);
-            this.deshabilitar =false;
-          })
-
-          .catch(e=>{
-            console.log(e)
-            this.deshabilitar =false;
-            this.$log.fatal('MENSAJE', e)
-          })
-    },
-    getPaciente() {
-      this.datosUsuario = this.paciente;
+    datosPaciente() {
+      this.datosUsuario = this.getDatosPaciente;
     },
   },
   computed: {
-    ...mapState(["usuarioPaciente","idPaciente","paciente"]),
+    ...mapGetters(["getDatosPaciente", "getPaciente","getCarga","getMensaje"]),
   },
 };
 </script>
@@ -356,7 +334,6 @@ a:focus {
   top: 0;
   right: 0;
   background-color: #ffffff;
-
 }
 
 #content.active {
@@ -366,12 +343,11 @@ a:focus {
 #content .contenido {
   position: relative;
   top: 10px;
-  
 }
 .titulo {
   margin-top: 35px;
   text-align: left;
-  background:#0099a1;
+  background: #0099a1;
 }
 
 /* ---------------------------------------------------
