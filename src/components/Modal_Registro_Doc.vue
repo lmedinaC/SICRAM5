@@ -294,6 +294,7 @@ export default {
       this.carga2 = true;
       this.doctor = doctor;
       console.log(doctor.especialidad);
+      console.log(doctor)
       this.axios
         .post("https://sicramv1.herokuapp.com/api/signupdoctor", {
           ...this.doctor,

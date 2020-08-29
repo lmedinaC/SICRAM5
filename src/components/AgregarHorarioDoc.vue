@@ -112,7 +112,7 @@ export default {
         { text: "9:00-10:00", value: 2, inicio: "09:00", fin: "10:00" },
         { text: "10:00-11:00", value: 3, inicio: "10:00", fin: "11:00" },
         { text: "11:00-12:00", value: 4, inicio: "11:00", fin: "12:00" },
-        { text: "15:00-16:00", value: 5, inicio: "16:00", fin: "17:00" },
+        { text: "15:00-16:00", value: 5, inicio: "15:00", fin: "16:00" },
         { text: "16:00-17:00", value: 6, inicio: "16:00", fin: "17:00" },
         { text: "17:00-18:00", value: 7, inicio: "17:00", fin: "18:00" },
         { text: "18:00-19:00", value: 8, inicio: "18:00", fin: "19:00" },

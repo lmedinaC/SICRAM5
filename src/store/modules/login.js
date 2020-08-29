@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const namespaced= true;
 
@@ -8,6 +8,7 @@ const state = {
     userPaciente: null, //USUARIO DEL PACIENTE
     userOrganizacion: null, //USUARIO DE LA ORGRANIZACION
     ingreso: false,
+    
 };
 
 const getters = {
@@ -109,13 +110,27 @@ const actions = {
     //CONSULTA DE LAS ESPECIALIDADES DEL SISTEMA
     listarEspecialidades({commit}){
         let url = `https://sicramv1.herokuapp.com/api/especialidad`;
-        axios
-        .get(url)
+        return axios
+        .get(url) 
         .then((res) => {
+            console.log(res.data)
             commit('setEspecialidades', res.data)
         })
         .catch((e) => {
           console.log(e);
+        });
+    },
+
+    //CONSULTA PARA LA PRUEBA
+    especialidadesPrueba(){
+        return axios
+        .get("https://sicramv1.herokuapp.com/api/especialidad") 
+        .then(res=> 
+            res.data
+        )
+        .catch((e) => {
+          console.log(e);
+          
         });
     }
 }
