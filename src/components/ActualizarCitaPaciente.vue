@@ -129,7 +129,7 @@ export default {
         loader.hide();
         this.ingresarCita(cita)
       }, 3000);
-    },
+    },//
      MostrarFecha(fecha)
       {
       var nombres_dias = new Array("Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado")

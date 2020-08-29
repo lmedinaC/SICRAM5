@@ -4,6 +4,7 @@ import login from './modules/login.js'
 import paciente from './modules/paciente.js'
 import doctor from './modules/doctor.js'
 import organizacion from './modules/organizacion.js'
+import axios from 'axios'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -11,7 +12,7 @@ export default new Vuex.Store({
     componenteVista: 'InicioPaciente',
     componenteVistaDoctor: 'InicioDoctor',
     componenteVistaOrganizacion: 'InicioOrg',
-    cita:null
+    cita:null,
   },
   mutations: {
     setComponente(state,payload){
@@ -28,7 +29,8 @@ export default new Vuex.Store({
     },
     setCita(state,payload){
       state.cita = payload
-    }
+    },
+
   },
   actions: {
 
@@ -43,7 +45,8 @@ export default new Vuex.Store({
     },
     setObjCita({commit},cita){
       commit('setCita',cita)
-    }
+    },
+
   },
   modules: {
     viewLogin: login,
