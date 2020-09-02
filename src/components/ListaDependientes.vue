@@ -133,11 +133,11 @@ export default {
     ...mapActions(["listarDependientes"]),
     //Carga los dependientes del paciente
     cargarDependiente() {
-      this.listarDependientes(this.getPaciente)
+      this.listarDependientes(this.getUsuario)
     },
   },
   computed: {
-    ...mapGetters(["getPaciente","getListFamiliares"]),
+    ...mapGetters(["getUsuario","getListFamiliares"]),
   },
 };
 </script>

@@ -156,7 +156,7 @@ export default {
       } else { 
         let datos = {
           newHorario : horario,
-          doctor : this.getDoctor
+          doctor : this.getUsuario
         }
         //SE ENVIA LA CONSULTA DE REGISTRAR HORARIO A DOCTOS.JS
         this.registrarHorarioDoctor(datos)
@@ -172,7 +172,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getCargaDoctor','getDoctor','getMensajeDoctor'])
+    ...mapGetters(['getCargaDoctor','getUsuario','getMensajeDoctor'])
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {

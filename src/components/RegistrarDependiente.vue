@@ -236,7 +236,7 @@ export default {
     //FUNCION PARA REGISTRAR AL DEPENDIENTE
     crearDependiente(paciente) {
       const datos = {
-        paciente: this.getPaciente,
+        paciente: this.getUsuario,
         dependiente: paciente,
       }
       //LLAMA A LA CONSULTA REGISTRAR DEPENDIENTE DE PACIENTE.JS
@@ -248,7 +248,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getPaciente","getCarga","getMensaje"]),
+    ...mapGetters(["getUsuario","getCarga","getMensaje"]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {

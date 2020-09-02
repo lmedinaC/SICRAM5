@@ -112,7 +112,7 @@
 
           <li>
             <a href="#"
-              ><i class="fas fa-sign-out-alt fa-sm icono"></i>
+              @click="cerrarSesion()"><i class="fas fa-sign-out-alt fa-sm icono"></i>
               Salir</a
             >
           </li>
@@ -139,7 +139,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["cambiarComponenteOrganizacion"]),
+    ...mapActions(["cambiarComponenteOrganizacion","cerrarSesion"]),
   },
 
   mounted() {

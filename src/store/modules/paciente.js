@@ -72,7 +72,6 @@ const mutations = {
 const actions = {
     //CONSULTA DEL PERFIL PACIENTE
     getPerfilPaciente({commit},paciente){
-        console.log(paciente)
         let url =
         `https://sicramv1.herokuapp.com/api/user/perfil/${paciente.id}`;
         axios

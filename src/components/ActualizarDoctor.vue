@@ -261,7 +261,7 @@ export default {
     ...mapActions(['actualizarDatosDoctor']),
     actualizarDoctor(newDatos) {
       let datos = {
-        doctor : this.getDoctor,
+        doctor : this.getUsuario,
         newDatos : newDatos
       }
       this.actualizarDatosDoctor(datos)
@@ -274,7 +274,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getDatosDoctor','getCargaDoctor','getDoctor','getMensajeDoctor'])
+    ...mapGetters(['getDatosDoctor','getCargaDoctor','getUsuario','getMensajeDoctor'])
   },
 };
 </script>

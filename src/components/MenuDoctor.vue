@@ -97,7 +97,7 @@
 
           <li>
             <a href="#"
-              ><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
+              @click="cerrarSesion()"><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
               Salir</a
             >
           </li>
@@ -124,7 +124,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["cambiarComponenteDoctor"]),
+    ...mapActions(["cambiarComponenteDoctor","cerrarSesion"]),
   },
   mounted() {
     $(document).ready(function() {

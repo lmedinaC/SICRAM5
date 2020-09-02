@@ -74,12 +74,12 @@ export default {
   methods: {
     ...mapActions(['listarHorariosDoctor']),
     listarHorarios() {
-      this.listarHorariosDoctor(this.getDoctor)
+      this.listarHorariosDoctor(this.getUsuario)
     },
   },
   computed: {
     
-    ...mapGetters(['getListaHorariosDoctor','getDoctor'])
+    ...mapGetters(['getListaHorariosDoctor','getUsuario'])
   },
   mounted(){
     this.listarHorarios();

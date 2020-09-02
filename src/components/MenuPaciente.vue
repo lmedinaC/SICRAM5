@@ -123,6 +123,7 @@
 
           <li>
             <a href="#"
+            @click="cerrarSesion()"
               ><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
               Salir</a
             >
@@ -151,7 +152,7 @@ export default {
   },
   methods: {
 
-    ...mapActions(["cambiarComponente"]),
+    ...mapActions(["cambiarComponente","cerrarSesion"]),
   },
 
   mounted() {

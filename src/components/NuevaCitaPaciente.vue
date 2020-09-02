@@ -264,7 +264,7 @@ export default {
 
     //Carga los dependientes del paciente
     cargarDependiente() {
-      this.listarDependientes(this.getPaciente)
+      this.listarDependientes(this.getUsuario)
     },
 
 
@@ -339,7 +339,7 @@ export default {
         //CITA PAR EL TITULAR
         if (paciente.tipopaciente == "titular") {
           let datos = {
-            paciente: this.getPaciente,
+            paciente: this.getUsuario,
             cita : cita
           }
           this.agregarCitaPaciente(datos)
@@ -351,7 +351,7 @@ export default {
           //CITA PARA EL PACIENTE DEPENDIENTE
           console.log("idpaciente", this.idPaciente);
           let datos = {
-            paciente: this.getPaciente,
+            paciente: this.getUsuario,
             cita: cita,
             idFamiliar : paciente.idFamiliar
           }
@@ -371,7 +371,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getEspecialidades','getListFamiliares','getPaciente','getMensaje','getCarga'])
+    ...mapGetters(['getEspecialidades','getListFamiliares','getUsuario','getMensaje','getCarga'])
   },
   beforeMount() {
     this.usuario = this.usuarioPaciente;

@@ -112,7 +112,7 @@ export default {
       }, 3000);
     },
     getCitas() {
-      this.listarCitasDoctor(this.getDoctor)
+      this.listarCitasDoctor(this.getUsuario)
     },
 
     //INGRESA A LA CITA
@@ -125,7 +125,7 @@ export default {
   },
   computed: {
     ...mapState(["usuarioDoctor","idDoctor"]),
-    ...mapGetters(['getListaCitasDoctor','getDoctor'])
+    ...mapGetters(['getListaCitasDoctor','getUsuario'])
   },
   beforeMount(){
     this.getCitas();

@@ -353,17 +353,16 @@ export default {
     setDoctor(doc) {
         let datos = {
             newDoctor: doc,
-            organizacion : this.getOrganizacion
+            organizacion : this.getUsuario
         }
         //LLAMA A LA CONSULTA AGREGAR NUEVO DOCTOR DE ORGANIZACION.JS
         this.agregarNuevoDoctor(datos)
     },
   },
   computed: {
-    ...mapGetters(['getOrganizacion','getMensajeOrganizacion','getCargaOrganizacion'])
+    ...mapGetters(['getUsuario','getMensajeOrganizacion','getCargaOrganizacion'])
   },
   mounted() {
-    console.debug("Console.debug" + " " +"asdasdsadasfasfasfasf");
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");

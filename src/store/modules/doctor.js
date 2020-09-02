@@ -105,7 +105,7 @@ const actions = {
             }
           )
           .then((res) =>{
-            console.log(res)
+            console.log(res.data)
             commit('setDatosDoctor',res.data)
             commit('setMensajePositivoDoctor')
             commit('setCargaDoctor',false)

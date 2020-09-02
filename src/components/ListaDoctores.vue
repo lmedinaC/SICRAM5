@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     //LLAMAMOS A EL ID Y TOKEN DE ORGANIZACION Y SU LISTA DE DOCTORES
-    ...mapGetters(['getOrganizacion','getListaDoctoresOrganizacion'])
+    ...mapGetters(['getUsuario','getListaDoctoresOrganizacion'])
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -102,7 +102,7 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.listarDoctores(this.getOrganizacion)
+    this.listarDoctores(this.getUsuario)
   },
 };
 </script>

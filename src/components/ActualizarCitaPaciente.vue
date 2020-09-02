@@ -167,7 +167,7 @@ export default {
     //MUESTRA LAS CITAS DEL PACIENTE
     getCita() {
       //LLAMA A LA FUNCION LISTAR CISTAS DE PACIENTE.JS
-      this.listCitas(this.getPaciente)
+      this.listCitas(this.getUsuario)
     },
 
     //INGRESA A LA CITA
@@ -179,7 +179,7 @@ export default {
   },
   computed: {
     ...mapState(["usuarioPaciente","idPaciente"]),
-    ...mapGetters(['getPaciente','getListaCitas'])
+    ...mapGetters(['getUsuario','getListaCitas'])
   },
    beforeMount() {
     this.diaMax.setDate(this.diaMax.getDate() + 7);

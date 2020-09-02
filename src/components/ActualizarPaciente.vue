@@ -267,7 +267,7 @@ export default {
     actualizarPaciente(pacient) {
       this.deshabilitar = true;
       const datos = {
-        paciente: this.getPaciente,
+        paciente: this.getUsuario,
         newDatos: pacient,
       };
       //LLAMA A LA CONSULTADA ALMACENADA EN PACIENTE.JS
@@ -281,7 +281,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getDatosPaciente", "getPaciente","getCarga","getMensaje"]),
+    ...mapGetters(["getDatosPaciente", "getUsuario","getCarga","getMensaje"]),
   },
 };
 </script>

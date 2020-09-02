@@ -145,6 +145,10 @@ export default {
     },
   },
 
+  computed:{
+    ...mapGetters(['getUsuario','getTipoUsuario'])
+  },
+
   methods: {
     ...mapActions(["loginPaciente", "loginDoctor", "loginOrganizacion"]),
     //INICIALIZA EL ESPINER 
@@ -196,7 +200,26 @@ export default {
         }
       });
     },
+    //PREGUNTA SI EL USUARIO ESTA LOGEADO
+    usuarioLogeado(){
+      if(this.getUsuario!=null){
+        console.log(this.getUsuario)
+        console.log(this.getTipoUsuario)
+        switch(this.getTipoUsuario){
+          case 'paciente' : this.$router.push("/pacientevista"); break;
+          case 'doctor':  this.$router.push("/doctorvista");break;
+          case 'organizacion':  this.$router.push("/organizacionvista");break;
+        }
+      }else{
+        console.log("Inicio")
+      }
+    }
   },
+
+  created(){
+    this.usuarioLogeado()
+  }
+
 };
 </script>
 

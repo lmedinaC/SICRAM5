@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-
+// Importamos la tienda
+import store from '../store/modules/login';
 Vue.use(VueRouter)
 
   const routes = [
@@ -32,7 +33,8 @@ Vue.use(VueRouter)
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Doctorvista.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Doctorvista.vue'),
+    meta: {requireAuth: true}
   },
   {
     path: '/organizacionvista',
@@ -40,7 +42,8 @@ Vue.use(VueRouter)
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Organizacionvista.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Organizacionvista.vue'),
+    meta: {requireAuth: true}
   },
   {
     path: '/pacientevista',
@@ -48,7 +51,8 @@ Vue.use(VueRouter)
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Pacientevista.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Pacientevista.vue'),
+    meta: {requireAuth: true}
   },
   {
     path: '/pacientevista/citapaciente',
@@ -56,7 +60,8 @@ Vue.use(VueRouter)
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/CitaPaciente.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/CitaPaciente.vue'),
+    meta: {requireAuth: true}
   },
   {
     path: '/doctorvista/citadoctor',
@@ -64,7 +69,8 @@ Vue.use(VueRouter)
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/CitaDoctor.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/CitaDoctor.vue'),
+    meta: {requireAuth: true}
   },
   
 ]
@@ -74,5 +80,20 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+
+router.beforeEach((to, from, next) => {
+  const rutaProtegida = to.matched.some(record => record.meta.requireAuth);
+
+  if(rutaProtegida && store.state.user === null){
+    // console.log(store.state.token);
+    next({name: 'Login'})
+
+  }else{
+    next()
+  }
+
+})
+
 
 export default router

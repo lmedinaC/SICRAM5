@@ -1,51 +1,45 @@
 import axios from 'axios';
-
+import router from 'C:/Users/usser/Desktop/proyect/src/router'
 const namespaced= true;
 
 const state = {
     especialidades : null, //ESPECIALIDADES DEL DOCTOR
-    userDoctor: null, //USUARIO DEL DOCTOR
-    userPaciente: null, //USUARIO DEL PACIENTE
-    userOrganizacion: null, //USUARIO DE LA ORGRANIZACION
-    ingreso: false,
+    user: null, //TOKEN Y ID DEL USUARIO
+    tipoUser: null,
     
 };
 
 const getters = {
-    //CONSEGUIR DOCTOR
-    getDoctor(state){
-        return state.userDoctor
+    //CONSEGUIR ID Y TOKEN DEL USUARIO
+    getUsuario(state){
+        return state.user
     },
-    //CONSEGUIR PACIENTE
-    getPaciente(state){
-        return state.userPaciente
-    },
-    //CONSEGUIR ORGANIZACION
-    getOrganizacion(state){
-        return state.userOrganizacion
-    },
+    
     //CONSEGUIR ESPECIALIDADES
     getEspecialidades(state){
         return state.especialidades
+    },
+
+    //CONSEGUIR TIPO DE USUARIO 
+    getTipoUsuario(state){
+        return state.tipoUser
     }
 };
 
 const mutations = {
-    //PONER DOCTOR
-    setDoctor(state,payload){
-        state.userDoctor = payload
+    //PONE AL USUARIO
+    setUsuario(state,payload){
+        state.user = payload
     },
-    //PONER PACIENTE
-    setPaciente(state,payload){
-        state.userPaciente = payload
-    },
-    //PONER ORGANIZACION
-    setOrganizacion(state,payload){
-        state.userOrganizacion = payload
-    },
+    
     //PONER ESPECIALIDADES 
     setEspecialidades(state,payload){
         state.especialidades = payload
+    },
+
+    //PONER TIPO DE USUARIO
+    setTipoUsuario(state,payload){
+        state.tipoUser = payload
     }
 };
 
@@ -58,7 +52,8 @@ const actions = {
         })
         .then((res)=>{
             console.log("DOCTOR: ",res.data)
-            commit('setDoctor',res.data)
+            dispatch('guardarTipoDeUsuario','doctor');
+            dispatch('guardarUsuario',res.data);
             dispatch('perfilDoctor', res.data , { root: true })
             return Promise.resolve(true)
         })
@@ -77,7 +72,8 @@ const actions = {
         })
         .then((res)=>{
             console.log("ORGANIZACION : ",res.data)
-            commit('setOrganizacion',res.data)
+            dispatch('guardarTipoDeUsuario','organizacion');
+            dispatch('guardarUsuario',res.data);
             dispatch('perfilOrganizacion', res.data , { root: true })
             return Promise.resolve(true)
         })
@@ -97,7 +93,8 @@ const actions = {
         })
         .then((res)=>{
             console.log("PACIENTE : ",res.data)
-            commit('setPaciente',res.data)
+            dispatch('guardarTipoDeUsuario','paciente');
+            dispatch('guardarUsuario',res.data);
             dispatch('getPerfilPaciente', res.data , { root: true })
             return Promise.resolve(true)
         })
@@ -130,8 +127,45 @@ const actions = {
         )
         .catch((e) => {
           console.log(e);
-          
         });
+    },
+
+    //GUADAR USUARIO EN EL LOCALSTORAGE
+    guardarUsuario({commit},payload){
+        localStorage.setItem('user',JSON.stringify(payload))
+        commit('setUsuario',payload)
+    },
+    //GUARDAR EL ROL DE USUARIO
+    guardarTipoDeUsuario({commit},payload){
+        localStorage.setItem('tipoUser',payload)
+        commit('setTipoUsuario',payload)
+    },
+
+    //CERRAR SESION DEL USUARIO 
+    cerrarSesion({commit}){
+        localStorage.removeItem('user')
+        localStorage.removeItem('tipoUser')
+        commit('setUsuario',null)
+        commit('setTipoUsuario',null)
+        router.push({name: 'Login'});
+    },
+
+    //VER SI USUARIO SE ENCUENTRA LOGEADO
+    leerUsuario({commit,dispatch}){
+        const user = JSON.parse(localStorage.getItem('user'))
+        const tipoUser =  localStorage.getItem('tipoUser')
+        if(user){
+            commit('setUsuario',user)
+            commit('setTipoUsuario',tipoUser)
+            switch(tipoUser){
+                case 'paciente' : dispatch('getPerfilPaciente', user , { root: true }); break;
+                case 'doctor':  dispatch('perfilDoctor', user , { root: true });break;
+                case 'organizacion':  dispatch('perfilOrganizacion', user , { root: true });break;
+            }
+        }else{
+            commit('setUsuario',null)
+            commit('setTipoUsuario',null)
+        }
     }
 }
    

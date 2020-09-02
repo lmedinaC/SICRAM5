@@ -4,7 +4,6 @@ import login from './modules/login.js'
 import paciente from './modules/paciente.js'
 import doctor from './modules/doctor.js'
 import organizacion from './modules/organizacion.js'
-import axios from 'axios'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
