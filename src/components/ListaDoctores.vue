@@ -22,45 +22,53 @@
               <h3 style="color:white;">Lista de Doctores</h3>
             </div>
           </div>
-
+          <div class="container" v-if="getListaDoctoresOrganizacion === null">
+            <div
+              class="mt-3"
+              style="padding:50px; align-content: center; text-align: center; background:pink"
+            >
+              <h4>NO CUENTA CON DOCTORES REGISTRADOS</h4>
+            </div>
+          </div>
           <div class="lista-doctor">
             <div class="doctores">
               <ul style="list-style:none">
-                <li v-for="(element,index) of getListaDoctoresOrganizacion" :key="index">
+                <li
+                  v-for="(element, index) of getListaDoctoresOrganizacion"
+                  :key="index"
+                >
                   <div class="row doctor">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                       <div class="row">
-                        <div class="col-md-2 foto"></div>
-                        <div class="col-md-10">
+                        <div class="col-md-4">
+                          <div class="foto"></div>
+                        </div>
+                        <div class="col-md-8">
                           <p>
-                            <strong>Nombre: </strong> {{element.name}}  {{element.lastname}}
+                            <strong>Nombre: </strong> {{ element.name }}
+                            {{ element.lastname }}
+                          </p>
+                          <p><strong>DNI: </strong> {{ element.dni }}</p>
+                          <p><strong>Correo:</strong> {{ element.email }}</p>
+                          <p>
+                            <strong>Celular: </strong> {{ element.celular }}
                           </p>
                           <p>
-                            <strong>DNI: </strong> {{element.dni}}
-                          </p>
-                          <p>
-                            <strong>Correo:</strong> {{element.email}}
-                          </p>
-                          <p>
-                            <strong>Celular: </strong> {{element.celular}}
-                          </p>
-                          <p>
-                            <strong>Especialidad: </strong>  {{element.especialidad.especialidad}}
+                            <strong>Especialidad: </strong>
+                            {{ element.especialidad.especialidad }}
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-2">
-                        <div>
-                            <button class="btn btn-block btn-lg  btn-editar ">
-                               <i class="fas fa-list"></i> Editar
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-block btn-lg btn-eliminar">
-                                <i class="fas fa-times"></i> Eliminar
-                            </button>
-                        </div>
+                    <div class="col-md-4 botones">
+                      <div>
+                        <button
+                          class="btn  btn-lg btn-eliminar"
+                          @click="abrirEliminación(element)"
+                        >
+                          <i class="fas fa-times"></i> Eliminar
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </li>
@@ -85,16 +93,40 @@ export default {
   },
   data() {
     return {
-      doctoresDatos:null
+      doctoresDatos: null,
     };
   },
   methods: {
     //LLAMAMOS A LA CONSULTA DE LISTAR  DOCTORES EN ORGANIZACION JS
-    ...mapActions(['listarDoctores'])
+    ...mapActions(["listarDoctores","eliminarDoctorOrg"]),
+    //ABRE MODAL DE CONFIRAMCIÓN DE ELIMINACIÓN
+    abrirEliminación(doctor) {
+      this.doctoresDatos = doctor;
+      this.$refs.simplert.openSimplert({
+        title: "CONFIRMAR ELIMINACIÓN",
+        message: "¿Seguro que desea proceder con la eliminación?",
+        type: "info",
+        useConfirmBtn: true,
+        onConfirm: this.eliminarDoctor,
+      });
+    },
+    //LLAMA A ELIMINAR DOCTOR DE ORGANZIACION DE ORGANIZACION.JS
+    eliminarDoctor() {
+      console.log(this.doctoresDatos);
+      let datos = {
+        doctor : this.getUsuario,
+        id_doctor : this.doctoresDatos._id
+      }
+      this.eliminarDoctorOrg(datos)
+      .then((res)=>{
+        this.$refs.simplert.openSimplert(this.getMensajeOrganizacion);
+        this.listarDoctores(this.getUsuario);
+      })
+    },
   },
   computed: {
     //LLAMAMOS A EL ID Y TOKEN DE ORGANIZACION Y SU LISTA DE DOCTORES
-    ...mapGetters(['getUsuario','getListaDoctoresOrganizacion'])
+    ...mapGetters(["getUsuario", "getListaDoctoresOrganizacion","getMensajeOrganizacion"]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -102,7 +134,8 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.listarDoctores(this.getUsuario)
+    console.log(this.getUsuario)
+    this.listarDoctores(this.getUsuario);
   },
 };
 </script>
@@ -172,55 +205,51 @@ a:focus {
   background: #0099a1;
 }
 
-.subTitulo {
-  margin-top: 10px;
-  margin-bottom: 30px;
-}
-
-.datosPersonales {
-  background: #c6eff1;
-  padding: 18px;
-  border-radius: 10px;
-}
-
 .foto {
   background: gray;
   height: 150px;
   border-radius: 15px;
 }
-.lista-doctor{
-    margin-top: 30px;
-    padding-bottom: 30px;
+.lista-doctor {
+  margin-top: 30px;
+  padding-bottom: 30px;
 }
-.doctor{
-    background: #b8f2f5;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    margin-right: 20px;
-    padding-left: 20px;
-    padding-top: 15px;
-    padding-bottom: 5px;
+.doctor {
+  border-radius: 15px;
+  background: #67d9df;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  padding-left: 20px;
+  padding-top: 15px;
+  padding-bottom: 5px;
 }
-
-.btn-editar{
-    background: rgb(75, 197, 75);
-    margin-bottom: 10px;
-    margin-top: 20px;
-    color: white;
+.botones {
+  text-align: center;
 }
-.btn-editar:hover{
-    background: rgb(43, 161, 43);
+.btn-editar {
+  width: 150px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  background: rgb(75, 197, 75);
+  margin-bottom: 10px;
+  margin-top: 20px;
+  color: white;
 }
-
-.btn-eliminar{
-    color: white;
-    background: rgb(228, 73, 73);
-    margin-bottom: 10px;
-    margin-top: 20px;
+.btn-editar:hover {
+  background: rgb(43, 161, 43);
 }
 
-.btn-eliminar:hover{
-    background: rgb(226, 24, 24);
+.btn-eliminar {
+  width: 150px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  color: white;
+  background: rgb(211, 65, 65);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.btn-eliminar:hover {
+  background: rgb(199, 21, 21);
 }
 /* ---------------------------------------------------
     MEDIAQUERIES
@@ -265,6 +294,12 @@ a:focus {
     margin-top: 10px;
     text-align: center;
     height: 60px;
+  }
+  .btn-editar {
+    width: 200px;
+  }
+  .btn-eliminar {
+    width: 200px;
   }
 }
 

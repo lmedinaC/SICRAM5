@@ -22,7 +22,7 @@ export default {
     }
   },
   mounted: function() {
-    var publisherOptions = {width: '50%', height:'90vh', name:this.cita.name + ' '+ this.cita.lastname};
+    var publisherOptions = {width: '50%', height:'65vh', name:this.cita.name + ' '+ this.cita.lastname};
     const subscriber = this.session.subscribe(
       this.stream,
       this.$el,

@@ -8,10 +8,43 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    mensajeEliminación: {
+        title: "CONFIRMAR ELIMINACIÓN",
+        message: "¿Seguro que desea proceder con la eliminación?",
+        type: "info",
+        useConfirmBtn: true,
+        onConfirm: null
+    },
+    mensajeEdición: {
+        title: "CONFIRMAR EDICIÓN",
+        message: "¿Seguro que desea proceder con la edición?",
+        type: "info",
+        useConfirmBtn: true,
+        onConfirm: null
+    },
+    mensajeAdevertencia: {
+      title: "CAMPOS IMCOMPLETOS",
+      message: "Todos los campos son necesarios!",
+      type: "warning",
+    },
     componenteVista: 'InicioPaciente',
     componenteVistaDoctor: 'InicioDoctor',
     componenteVistaOrganizacion: 'InicioOrg',
     cita:null,
+  },
+  getters:{
+    //DEVUELVE EL MENSAJE DE EDITAR
+    getMensajeEditar(state){
+      return state.mensajeEdición
+    },
+    //DEVUELVE EL MENSAJE DE ELIMINAR
+    getMensajeEliminar(state){
+      return state.mensajeEliminación
+    },
+    //DEVUELVE EL MENSAJE DE ADVERTENCIA
+    getMensajeAdvertencia(state){
+      return state.mensajeAdevertencia
+    },
   },
   mutations: {
     setComponente(state,payload){
@@ -27,7 +60,7 @@ export default new Vuex.Store({
       console.log("COMPONENTE: ", payload)
     },
     setCita(state,payload){
-      state.cita = payload
+      state.cita = payload 
     },
 
   },
@@ -43,6 +76,10 @@ export default new Vuex.Store({
       commit('setComponenteOrganizacion',comp)    
     },
     setObjCita({commit},cita){
+      localStorage.setItem('cita',JSON.stringify(cita))
+    },
+    obtenerCita({commit}){
+      const cita = JSON.parse(localStorage.getItem('cita'))
       commit('setCita',cita)
     },
 

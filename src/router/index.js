@@ -61,7 +61,6 @@ Vue.use(VueRouter)
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/CitaPaciente.vue'),
-    meta: {requireAuth: true}
   },
   {
     path: '/doctorvista/citadoctor',
@@ -70,7 +69,6 @@ Vue.use(VueRouter)
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/CitaDoctor.vue'),
-    meta: {requireAuth: true}
   },
   
 ]
@@ -86,7 +84,6 @@ router.beforeEach((to, from, next) => {
   const rutaProtegida = to.matched.some(record => record.meta.requireAuth);
 
   if(rutaProtegida && store.state.user === null){
-    // console.log(store.state.token);
     next({name: 'Login'})
 
   }else{

@@ -30,7 +30,7 @@ export default {
       if (err) {
         errorHandler(err);
       }
-    });
+    }); 
 
     this.session.on('streamCreated', event => {
       this.streams.push(event.stream);

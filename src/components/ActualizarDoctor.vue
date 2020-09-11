@@ -23,7 +23,7 @@
             </div>
 
             <div class="col-sm-7 col-md-7 col-12 titulo">
-              <h3 style="color:white">Actualizar datos Paciente</h3>
+              <h3 style="color:white">Actualizar datos Doctor</h3>
             </div>
           </div>
           <form
@@ -31,7 +31,8 @@
               actualizarDoctor({
                 email: datosUsuario.email,
                 celular: datosUsuario.celular,
-                edad: datosUsuario.edad
+                edad: datosUsuario.edad,
+                especialidad : datosUsuario.especialidad
               })
             "
           >
@@ -260,6 +261,7 @@ export default {
   methods: {
     ...mapActions(['actualizarDatosDoctor']),
     actualizarDoctor(newDatos) {
+      console.log(newDatos)
       let datos = {
         doctor : this.getUsuario,
         newDatos : newDatos

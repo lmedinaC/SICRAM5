@@ -181,12 +181,10 @@
               </div>
             </div>
             <div class="text-center boton-final">
-              <a href="formPaciente.html"
-                ><button class="but btn btn-lg mt-4" style="color:"
+              <button class="but btn btn-lg mt-4" style="color:"
                 :disabled="getCarga">
                   Registrar
-                </button></a
-              >
+                </button>
             </div>
           </form>
         </div>

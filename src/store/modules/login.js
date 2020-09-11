@@ -75,6 +75,7 @@ const actions = {
             dispatch('guardarTipoDeUsuario','organizacion');
             dispatch('guardarUsuario',res.data);
             dispatch('perfilOrganizacion', res.data , { root: true })
+            
             return Promise.resolve(true)
         })
 
@@ -92,10 +93,10 @@ const actions = {
           ...paciente
         })
         .then((res)=>{
+            dispatch('getPerfilPaciente', res.data , { root: true })
             console.log("PACIENTE : ",res.data)
             dispatch('guardarTipoDeUsuario','paciente');
             dispatch('guardarUsuario',res.data);
-            dispatch('getPerfilPaciente', res.data , { root: true })
             return Promise.resolve(true)
         })
 

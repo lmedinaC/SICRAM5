@@ -1,113 +1,117 @@
 <template>
-  <div>
-      <div class="container-fluid ">
-        <div class="row">
-            <div class="col-md-9 pantalla">
-                <Session></Session>
-                <div class="botones-pantalla">
-                    <button class="colgar"><i class="fas fa-phone-slash"></i></button>
-                </div>
-            </div>
-            <div class="col-md-3 detalles">
-                <div class="cabecera">
-                    <span class="font-weight-bold">Detalles</span>
-                </div>      
-            </div>    
+  <div class="citaPaciente">
+    <div class="container">
+      <h3 class="titulo">CONSULTA MÉDICA VIRTUAL</h3>
+      <h6>Titulo de la videollamada</h6>
+      <div class="sesion">
+        <div class="videollamada">
+            <Session></Session>
         </div>
-        
+        <div class="botonSalir">
+          <button class="colgar">
+            <i class="fas fa-phone-slash fa-2x"
+              @click="colgarLlamada()"  
+            ></i>
+          </button>
+        </div>
+      </div>
     </div>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert1"> </simplert>
   </div>
 </template>
 
 <script>
+import Simplert from "@/components/Simplert.vue";
 import Session from '../components/Session.vue'
+import { mapActions } from 'vuex';
 export default {
-    name:"CitaPaciente",
+  name: "citaPaciente",
     components:{
         Session,
+        Simplert
+    },
+    methods:{
+      ...mapActions(['obtenerCita']),
+      colgarLlamada(){
+        let obj2 = {
+            title: 'SALIR DE LA SESIÓN',
+            message: '¿Seguro que desea salir de la sesión?',
+            type: 'info',
+            useConfirmBtn: true,
+            onConfirm: this.salir
+        }
+        this.$refs.simplert1.openSimplert(obj2)
+      },
+      salir(){
+      window.location.assign("/pacientevista")
+      }
+    },
+    created(){
+      this.obtenerCita()
     }
-}
+};
 </script>
 
-<style scoped>
-.pantalla{
-    height: 100vh;
-    width: 100wh;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    background-color: rgb(26, 26, 26);
+<style lang="scss" scoped>
+.citaPaciente {
+  height: 100vh;
+  background-color: #c8def3;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px;
+  padding-top: 25px;
+}
+.titulo {
+  margin: 10px;
+}
+.sesion{
+    box-shadow: 0 0 7px 3px rgb(105, 110, 110);
 }
 
-.detalles{
-    border: 1px solid rgb(31, 31, 31);
-    height: 100vh;
-    width: 100wh;
-    padding: 0;
-    position: relative;
+.videollamada {
+  background-color: #000000;
+  height: 65vh;
+  border: 1px solid;
 }
 
-
-.detalles .cabecera{
-    border-bottom: 1px solid rgb(31, 31, 31);
-    width: 100wh;
-    padding: 10px;
-}
-
-
-.botones{
-    display: flex;
-    flex-direction: column;
-    
-}
-
-.botones button{
-    background: rgb(27, 150, 172);
-    border: none;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-top: 5px;
-    border-radius: 5px;
-
-}
-
-.botones button:hover{
-    background: rgb(41, 187, 151);
-    border: none;
-    
-}
-
-.pantalla .botones-pantalla{
-    width: 100%;
-    height: 70px;
-    border-top: 2px solid rgb(48, 140, 177);
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-}
-
-.pantalla .botones-pantalla button{
-    width: 50px;
-    height: 50px;
-}
-
-.pantalla .botones-pantalla .colgar{
-    
+.botonSalir {
+  
+  text-align: center;
+  height: 13vh;
+  background-color: #f0eeee;
+  border: 1px solid;
+  .colgar {
+    box-shadow: 0 0 5px 3px rgb(168, 179, 179);
     border-radius: 100%;
-    margin-left: 12px;
-    margin-right: 12px;
-    color: red;
     border: none;
     transition: 0.5s ease-out;
+    margin: 12px;
+    color: red;
+    width: 50px;
+    height: 50px;
+    &:hover {
+      box-shadow: 0 0 5px 3px rgb(106, 110, 110);
+    }
+  }
 
 }
 
-.pantalla .botones-pantalla .colgar:hover{
-    box-shadow: 0 0 5px 3px rgb(184, 192, 192);
+@media (max-width: 768px) {
+  .citaPaciente {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .titulo {
+    text-align: center;
+  }
+}
 
+@media (max-width: 425px) {
+  .citaPaciente {
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 5px;
+  }
 }
 </style>
-

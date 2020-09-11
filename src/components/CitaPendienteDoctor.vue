@@ -30,7 +30,7 @@
               <th scope="col">Paciente</th>
               <th scope="col">Estado</th>
               <th scope="col">Acción</th>
-            </tr>
+            </tr> 
           </thead>
           <tbody class="text-center">
             <tr v-for="(element, index) in getListaCitasDoctor" :key="index">
@@ -91,7 +91,7 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    
+    this.getCitas();
   },
   methods: {
     ...mapActions(['setObjCita','listarCitasDoctor']),
@@ -113,13 +113,14 @@ export default {
     },
     getCitas() {
       this.listarCitasDoctor(this.getUsuario)
+      console.log(this.getListaCitasDoctor)
     },
 
     //INGRESA A LA CITA
     ingresarCita(cita){
       console.log(cita)
       this.setObjCita(cita)
-      this.$router.push("/doctorvista/citadoctor");
+      window.location.assign("/doctorvista/citadoctor")
     }
 
   },
@@ -127,9 +128,6 @@ export default {
     ...mapState(["usuarioDoctor","idDoctor"]),
     ...mapGetters(['getListaCitasDoctor','getUsuario'])
   },
-  beforeMount(){
-    this.getCitas();
-  }
 };
 </script>
 

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ModEditarHorario />
     <div id="content">
       <div class="">
         <button type="button" id="sidebarCollapse" class=" boton-menu">
@@ -8,39 +9,40 @@
         </button>
       </div>
       <div class="contenido">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-3">
-              <form
-                class="formularioElegir"
-                @submit.prevent="
-                  agregarHorario({
-                    fecha: fecha,
-                    hora_inicio: hora_inicio,
-                    hora_fin: hora_fin,
-                  })
-                "
-              >
-                <div class="form-group">
-                  <label for="exampleImputFecha">Fecha</label>
-                  <input
-                    disabled
+        <div class="contenido-Horario">
+          <div class="agregar-Horario">
+            <form
+              @submit.prevent="
+                agregarHorario({
+                  fecha: fecha,
+                  hora_inicio: hora_inicio,
+                  hora_fin: hora_fin,
+                })
+              "
+            >
+              <div class="row">
+                <div class="col-md-4 mt-2">
+                  <h6>FECHA</h6>
+                  <date-picker
+                    class="calendar"
+                    value-type="DD/MM/YYYY"
                     v-model="fecha"
-                    type="text"
-                    class="form-control"
-                    id="exampleImputFecha"
-                    placeholder="MM-DD-AAAA"
-                  />
+                    :disabled-date="disabledBeforeTodayAndAfterAWeek"
+                    :lang="lang"
+                  ></date-picker>
                 </div>
-                <div class="form-group ">
-                  <label for="inputIni">Rango de Horarios</label>
+                <div class="col-md-4 mt-2">
+                  <h6>HORA</h6>
                   <select
+                    data-show-content="true"
                     id="inputIni"
                     class="form-control"
                     v-model="horario"
                     @change="elegirHorario(horario)"
                   >
+                    <option disabled value="">Seleccione horario</option>
                     <option
+                      data-content="<i class='far fa-clock'></i>"
                       v-for="(element, id) in optionsHorario"
                       :key="id"
                       v-bind:value="element.value"
@@ -49,65 +51,115 @@
                     </option>
                   </select>
                 </div>
-
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary"
-                  :disabled="getCargaDoctor"
-                  >Registrar</button>
+                <div class="col-md-4 mt-2">
+                  <button class="btn btn-lg agregar" :disabled="getCargaDoctor">
+                    Agregar
+                  </button>
                 </div>
-              </form>
-            </div>
-            <div class="col-lg-8">
-              <div>
-                <b-calendar
-                  v-model="value"
-                  :min="diaMin"
-                  :max="diaMax"
-                  @context="onContext"
-                  locale="es"
-                ></b-calendar>
               </div>
-
-              <simplert :useRadius="true" :useIcon="true" ref="simplert">
-              </simplert>
+            </form>
+          </div>
+          <div class="horario">
+            <div class="titulo">
+              <h3>Lista de horarios</h3>
+            </div>
+            <div class="container" v-if="getListaHorariosDoctor === null">
+              <div
+                class="mt-3"
+                style="padding:50px; align-content: center; text-align: center; background:pink"
+              >
+                <h4>NO CUENTA CON HORARIOS REGISTRADOS OCUPADOS</h4>
+              </div>
+            </div>
+            <div v-if="getListaHorariosDoctor != null">
+              <div class="lista-horario">
+                <div class="row">
+                  <div class="col-md-3">
+                    <p>Fecha</p>
+                  </div>
+                  <div class="col-md-3 ">
+                    <p>Hora inicio</p>
+                  </div>
+                  <div class="col-md-3 ">
+                    <p>Hora fin</p>
+                  </div>
+                  <div class="col-md-3">
+                    <p>Accion</p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="lista-horas"
+                v-for="(element, index) in getListaHorariosDoctor"
+                :key="index"
+              >
+                <div class="row">
+                  <div class="col-md-3">
+                    <p>{{ element.fecha }}</p>
+                  </div>
+                  <div class="col-md-3">
+                    <p>{{ element.hora_inicio }}</p>
+                  </div>
+                  <div class="col-md-3">
+                    <p>{{ element.hora_fin }}</p>
+                  </div>
+                  <div class="col-md-3">
+                    <div>
+                      <button
+                        class="btn btn-sm  btn-editar "
+                        @click="abrirEdicion(element)"
+                      >
+                        <i class="fas fa-list fa-sm"></i> Editar
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        class="btn  btn-sm btn-eliminar"
+                        @click="abrirModalEliminar(element)"
+                      >
+                        <i class="fas fa-times fa-sm"></i> Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <br />
     </div>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
   </div>
 </template>
 
 <script>
-
 import Simplert from "@/components/Simplert.vue";
+import ModEditarHorario from "@/components/Modales/ModEditarHorario.vue";
 import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "AgregarHorarioDoctor",
   components: {
     Simplert,
+    ModEditarHorario,
   },
   data() {
     return {
-      mensajeRegistro: {},
-      diaMin: new Date(), //DIA MINIMO DEL CALENDARIO
-      diaMax: new Date(), //DIA MAXIMO DEL CALENDAIO
-      nuevoHorario: {  //OBJETO DE HORARIO NUEVO
-        dia: "",
-        hora_inicio: "",
-        hora_fin: "",
-        doctor_id: "",
+      lang: {
+        formatLocale: {
+          firstDayOfWeek: 1,
+        },
+        monthBeforeYear: false,
+        range: true,
       },
-      value: "",
-      context: null, //CONTEXTO DEL CALENDARIO
-      mensaje: "", //MENSAJE 
-      usuario: "", //ID DOCTOR 
-
-      fecha: "",  //FECHA (DIA)
+      mensajeRegistro: {},
+      fecha: null, //FECHA (DIA)
       hora_inicio: "", //FECHA (HORA INICIO)
-      hora_fin: "",//FECHA (HORA FIN)
-      horario: "",//GUARDA EL VALOR DEL HORARIO ELEGIDO
-      optionsHorario: [ //LISTA DE HORARIOS PARA EL DOCTOR
+      hora_fin: "", //FECHA (HORA FIN)
+      horario: "", //GUARDA EL VALOR DEL HORARIO ELEGIDO
+      horarioModificado: null,
+      optionsHorario: [
+        //LISTA DE HORARIOS PARA EL DOCTOR
         { text: "8:00-9:00", value: 1, inicio: "08:00", fin: "09:00" },
         { text: "9:00-10:00", value: 2, inicio: "09:00", fin: "10:00" },
         { text: "10:00-11:00", value: 3, inicio: "10:00", fin: "11:00" },
@@ -120,9 +172,22 @@ export default {
       ],
     };
   },
-  
+
   methods: {
-    ...mapActions(['registrarHorarioDoctor']),
+    ...mapActions([
+      "registrarHorarioDoctor",
+      "listarHorariosDoctor",
+      "datosHorario",
+      "eliminarHorarioDoctor",
+    ]),
+
+    disabledBeforeTodayAndAfterAWeek(date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return (
+        date < today || date > new Date(today.getTime() + 7 * 24 * 3600 * 1000)
+      );
+    },
 
     vaciarCasillas() {
       this.fecha = "";
@@ -143,36 +208,62 @@ export default {
     //AGREGAR HORARIO
     agregarHorario(horario) {
       //CASILLAS VACÍAS
+      console.log(horario);
       if (horario.hora_inicio === "" || horario.fecha === "") {
-        this.$log.warn('CITAS : ', "LLENE TODOS LOS CAMPOS" )
-        
+        this.$log.warn("CITAS : ", "LLENE TODOS LOS CAMPOS");
+
         this.mensajeRegistro = {
           title: "REGISTRO FALLIDO",
           message: "Seleccione fecha y hora",
           type: "warning",
         };
         this.$refs.simplert.openSimplert(this.mensajeRegistro);
-        
-      } else { 
+      } else {
         let datos = {
-          newHorario : horario,
-          doctor : this.getUsuario
-        }
+          newHorario: horario,
+          doctor: this.getUsuario,
+        };
         //SE ENVIA LA CONSULTA DE REGISTRAR HORARIO A DOCTOS.JS
-        this.registrarHorarioDoctor(datos)
-        .then((res)=>{
+        this.registrarHorarioDoctor(datos).then((res) => {
           this.$refs.simplert.openSimplert(this.getMensajeDoctor);
-        })
+          this.listarHorariosDoctor(this.getUsuario);
+        });
       }
     },
-    //FECHA SELECCIONADA
-    onContext(ctx) {
-      const fechaCalendario = this.value.replace(/^(\d{4})-(\d{2})-(\d{2})$/g, "$3/$2/$1");
-      this.fecha = fechaCalendario;
+
+    //ABRE EL MODAL DE CONFIMACION DE ELIMINAR HORARIO
+    abrirModalEliminar(horario) {
+      this.horarioModificado = horario;
+      this.getMensajeEliminar.onConfirm = this.eliminarHorario;
+      this.$refs.simplert.openSimplert(this.getMensajeEliminar);
+    },
+    eliminarHorario() {
+      let datos = {
+        doctor: this.getUsuario,
+        id_horario: this.horarioModificado._id,
+      };
+      //ABRE LA CONSULTA DE ELIMINAR UN HORARIO DEL DOCTOR QUE NO ESTÉ OCUPADA DE DOCTOR.JS
+      this.eliminarHorarioDoctor(datos).then((res) => {
+        //MUESTRA EL MENSAJE POSITIVO O NEGATIVO
+        this.$refs.simplert.openSimplert(this.getMensajeDoctor);
+        this.listarHorariosDoctor(this.getUsuario);
+      });
+    },
+
+    //ABRE EL MODAL DE EDITAR EL HORARIO
+    abrirEdicion(horario) {
+      this.datosHorario(horario);
+      this.$modal.show("mod-editar-horario");
     },
   },
   computed: {
-    ...mapGetters(['getCargaDoctor','getUsuario','getMensajeDoctor'])
+    ...mapGetters([
+      "getCargaDoctor",
+      "getUsuario",
+      "getMensajeDoctor",
+      "getListaHorariosDoctor",
+      "getMensajeEliminar",
+    ]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -180,32 +271,12 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    this.usuario = this.usuarioDoctor;
-  },
-  beforeMount() {
-    this.diaMax.setDate(this.diaMax.getDate() + 7);
+    this.listarHorariosDoctor(this.getUsuario);
   },
 };
 </script>
 
-<style scoped>
-/*HORARIO CSS */
-.formularioElegir {
-  padding: 10px 20px;
-  border: 2px solid #f4f4f4;
-  background: #f4f4f4;
-  margin-left: 20px;
-  margin-bottom: 10px;
-}
-
-.calendar {
-  border: 5px solid black;
-  width: 100%;
-  height: 580px;
-  margin-bottom: 20px;
-}
-/*content */
-
+<style lang="scss" scoped>
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 p {
   font-family: "Poppins", sans-serif;
@@ -262,6 +333,76 @@ a:focus {
 #content .contenido {
   position: relative;
   top: 10px;
+}
+
+.contenido-Horario {
+  padding: 0 50px 0 50px;
+  .agregar-Horario {
+    border-radius: 10px;
+    text-align: center;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background: white;
+    margin: 0 0 50px 0;
+    .agregar {
+      color: white;
+      background-color: #16c8d1;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      margin: 10px;
+      &:hover {
+        background-color: #0099a1;
+      }
+    }
+  }
+  .horario {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background: white;
+    padding-bottom: 10px;
+    .titulo {
+      padding: 10px;
+      background: #0099a1;
+      height: 60px;
+      text-align: center;
+      color: white;
+    }
+    .lista-horario {
+      text-align: center;
+      margin: 20px 30px 20px 30px;
+      border: 1px solid rgb(156, 156, 156);
+    }
+    .lista-horas {
+      align-items: center;
+      text-align: center;
+      margin: 5px 30px 0px 30px;
+      background-color: rgb(236, 236, 236);
+      p {
+        padding-top: 15px;
+        font-size: 1.3em;
+        font-weight: 300;
+      }
+    }
+    .btn-editar {
+      margin: 5px 0 5px 0;
+      width: 100px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      background: rgb(75, 197, 75);
+      color: white;
+      &:hover {
+        background: rgb(43, 161, 43);
+      }
+    }
+
+    .btn-eliminar {
+      margin: 5px 0 5px 0;
+      width: 100px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      color: white;
+      background: rgb(211, 65, 65);
+      &:hover {
+        background: rgb(199, 21, 21);
+      }
+    }
+  }
 }
 
 /* ---------------------------------------------------
@@ -322,6 +463,11 @@ a:focus {
   .contenido {
     position: relative;
     margin-top: 30px;
+  }
+  .contenido-Horario {
+    padding: 30px 5px 0 5px;
+    .horario {
+    }
   }
 }
 </style>

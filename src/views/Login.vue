@@ -130,6 +130,7 @@ export default {
       carga: false,
       acceso: null,
       canBeShown: false,
+      loader: null,
     };
   },
   validations: {
@@ -145,16 +146,15 @@ export default {
     },
   },
 
-  computed:{
-    ...mapGetters(['getUsuario','getTipoUsuario'])
+  computed: {
+    ...mapGetters(["getUsuario", "getTipoUsuario"]),
   },
 
   methods: {
     ...mapActions(["loginPaciente", "loginDoctor", "loginOrganizacion"]),
-    //INICIALIZA EL ESPINER 
+    //INICIALIZA EL ESPINER
     cargar(user) {
-      this.iniciarUsuario(user);
-      let loader = this.$loading.show({
+      this.loader = this.$loading.show({
         // Optional parameters
         container: this.fullPage ? null : this.$refs.formContainer,
         color: "#0099a1",
@@ -162,37 +162,32 @@ export default {
         height: 150,
         width: 130,
       });
-      // simulate AJAX
-      setTimeout(() => {
-        loader.hide();
-      }, 5000);
+      this.iniciarUsuario(user);
     },
     //INICIAR SESION COMO PACIENTE, DOCTOR U ORGANIZACION
     iniciarUsuario(user) {
-      this.acceso = true
+      this.acceso = true;
       //INCIAR SESION COMO PACIENTE
       this.loginPaciente(user).then((res) => {
         if (res) {
-          setTimeout(() => {
-            this.$router.push("/pacientevista");
-          }, 2000);
+          this.loader.hide();
+          this.$router.push("/pacientevista");
         } else {
           //INICIAR SESION COMO DOCTOR
           this.loginDoctor(user).then((res) => {
             if (res) {
-              setTimeout(() => {
-                this.$router.push("/doctorvista");
-              }, 2000);
+              this.loader.hide();
+              this.$router.push("/doctorvista");
             } else {
               //INICIAR SESION COMO ORGANIZACION
               this.loginOrganizacion(user).then((res) => {
                 if (res) {
-                  setTimeout(() => {
-                    this.$router.push("/organizacionvista");
-                  }, 2000);
-                }else{
-                  this.acceso = false
-                  this.mensaje = "Usuario o contraseñas incorrectos."
+                  this.loader.hide();
+                  this.$router.push("/organizacionvista");
+                } else {
+                  this.loader.hide();
+                  this.acceso = false;
+                  this.mensaje = "Usuario o contraseñas incorrectos.";
                 }
               });
             }
@@ -201,25 +196,30 @@ export default {
       });
     },
     //PREGUNTA SI EL USUARIO ESTA LOGEADO
-    usuarioLogeado(){
-      if(this.getUsuario!=null){
-        console.log(this.getUsuario)
-        console.log(this.getTipoUsuario)
-        switch(this.getTipoUsuario){
-          case 'paciente' : this.$router.push("/pacientevista"); break;
-          case 'doctor':  this.$router.push("/doctorvista");break;
-          case 'organizacion':  this.$router.push("/organizacionvista");break;
+    usuarioLogeado() {
+      if (this.getUsuario != null) {
+        console.log(this.getUsuario);
+        console.log(this.getTipoUsuario);
+        switch (this.getTipoUsuario) {
+          case "paciente":
+            this.$router.push("/pacientevista");
+            break;
+          case "doctor":
+            this.$router.push("/doctorvista");
+            break;
+          case "organizacion":
+            this.$router.push("/organizacionvista");
+            break;
         }
-      }else{
-        console.log("Inicio")
+      } else {
+        console.log("Inicio");
       }
-    }
+    },
   },
 
-  created(){
-    this.usuarioLogeado()
-  }
-
+  created() {
+    this.usuarioLogeado();
+  },
 };
 </script>
 

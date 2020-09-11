@@ -8,59 +8,63 @@
           <span>Menú</span>
         </button>
       </div>
-      <br>
+      <br />
       <div class="contenido">
-        <div class="container"
-        style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); background:white;"> 
+        <div
+          class="container"
+          style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); background:white;"
+        >
           <div
             class="row "
             style="background:#0099a1; height:60px; align-content: center;"
           >
             <div class="col-12 text-center">
-              <h3 style="color:white">Mis Horarios</h3>
+              <h3 style="color:white">Mi historial de Horarios </h3>
             </div>
           </div>
-          <table class="table table-striped table-hover mt-4"
-          style="border-style: solid; border-width: 2px; border-color: #f2f2f2;"
-          v-if="getListaHorariosDoctor!=null">
-          <thead class="text-center">
-            <tr>
-              <th scope="col">Fecha</th>
-              <th scope="col">Hora inicio</th>
-              <th scope="col">Hora fin</th>
-              <th scope="col">Acción</th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr v-for="(element, index) in getListaHorariosDoctor" :key="index">
-              <td>{{ element.fecha }}</td>
-              <td>{{ element.hora_inicio}}</td>
-              <td>{{ element.hora_fin }}</td>
-              <td >
-                <div class="boton-group">
-                  <button class="btn btn-primary btn-sm  mr-2">Actualizar</button>
-                  <button class="btn btn-danger btn-sm ">Eliminar</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="container" v-if="getListaHorariosDoctor ===null ">
-              <div class="mt-3" style="padding:50px; align-content: center; text-align: center; background:pink">
-                  <h4>NO CUENTA CON HORARIOS REGISTRADOS</h4>
-              </div>
+          <table
+            class="table table-striped table-hover mt-4"
+            style="border-style: solid; border-width: 2px; border-color: #f2f2f2;"
+            v-if="getListaHorariosDoctor != null"
+          >
+            <thead class="text-center">
+              <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Hora inicio</th>
+                <th scope="col">Hora fin</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              <tr
+                v-for="(element, index) in getListaHorariosDoctor"
+                :key="index"
+              >
+                <td>{{ element.fecha }}</td>
+                <td>{{ element.hora_inicio }}</td>
+                <td>{{ element.hora_fin }}</td>
+                <td>Ocupado</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="container" v-if="getListaHorariosDoctor === null">
+            <div
+              class="mt-3"
+              style="padding:50px; align-content: center; text-align: center; background:pink"
+            >
+              <h4>NO CUENTA CON HORARIOS REGISTRADOS OCUPADOS</h4>
+            </div>
           </div>
 
-        <br>
+          <br />
         </div>
-        
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {  mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "ModificarHorarioDoc",
   mounted() {
@@ -69,21 +73,17 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    
+    this.listarHorarios();
   },
   methods: {
-    ...mapActions(['listarHorariosDoctor']),
+    ...mapActions(["listarHorariosOcupadosDoctor"]),
     listarHorarios() {
-      this.listarHorariosDoctor(this.getUsuario)
+      this.listarHorariosOcupadosDoctor(this.getUsuario);
     },
   },
   computed: {
-    
-    ...mapGetters(['getListaHorariosDoctor','getUsuario'])
+    ...mapGetters(["getListaHorariosDoctor", "getUsuario"]),
   },
-  mounted(){
-    this.listarHorarios();
-  }
 };
 </script>
 
@@ -137,7 +137,6 @@ a:focus {
   top: 0;
   right: 0;
   background-color: #ffffff;
-
 }
 
 #content.active {

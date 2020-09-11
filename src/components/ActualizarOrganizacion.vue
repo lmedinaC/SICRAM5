@@ -27,7 +27,15 @@
             </div>
           </div>
 
-          <form>
+          <form
+            @submit.prevent="
+              actualizar({
+                email: getDatosOrganizacion.email,
+                nameOrg: getDatosOrganizacion.nameOrg,
+                direccion: getDatosOrganizacion.direccion,
+              })
+            "
+          >
             <div>
               <h5 class="subTitulo">Datos de la empresa</h5>
             </div>
@@ -42,7 +50,9 @@
                       <input
                         type="text"
                         class="form-control"
-                        placeholder="NOMBRE Doctor"
+                        placeholder="Usuario organizacion"
+                        v-model="getDatosOrganizacion.username"
+                        disabled
                       />
                     </div>
                   </div>
@@ -56,7 +66,8 @@
                       <input
                         type="text"
                         class="form-control"
-                        placeholder="APELLIDO Doctor"
+                        placeholder="Nombre Organización"
+                        v-model="getDatosOrganizacion.nameOrg"
                       />
                     </div>
                   </div>
@@ -70,9 +81,10 @@
                     </div>
                     <div class="col-8">
                       <input
-                        
+                        placeholder="Direccion organización"
                         type="text"
                         class="form-control"
+                        v-model="getDatosOrganizacion.direccion"
                       />
                     </div>
                   </div>
@@ -80,15 +92,16 @@
                 <div class="form-group col-md-6">
                   <div class="row mr-1">
                     <div class="col-4">
-                      <label for="inputCMP">Celular:</label>
+                      <label for="inputCMP">RUC</label>
                     </div>
                     <div class="col-8">
                       <input
-                        max="8"
                         type="number"
                         class="form-control"
                         id="inputCMP"
-                        placeholder="Celular Doctor"
+                        placeholder="Ruc organizacion"
+                        v-model="getDatosOrganizacion.ruc"
+                        disabled
                       />
                     </div>
                   </div>
@@ -104,21 +117,8 @@
                       <input
                         type="email"
                         class="form-control"
-                        placeholder="Correo Doctor"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group col-md-6">
-                  <div class="row mr-1">
-                    <div class="col-4">
-                      <label for="inputCelular">RUC:</label>
-                    </div>
-                    <div class="col-8">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Edad Doctor"
+                        placeholder="Correo organización"
+                        v-model="getDatosOrganizacion.email"
                       />
                     </div>
                   </div>
@@ -137,14 +137,14 @@
         </div>
       </div>
       <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
-      <br>
+      <br />
     </div>
   </div>
 </template>
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   name: "ActualizarOrganizacion",
   components: {
@@ -154,16 +154,39 @@ export default {
     return {};
   },
   methods: {
-    //vacía las casillas despues de un registro
-    vaciar() {},
+    ...mapActions(["actualizarOrganizacion"]),
+    //LLAMA A ACTUALIZAR DATOS DE ORG EN ORGANIZACION.JS
+    actualizar(org) {
+      if (org.email == "" || org.nameOrg == "" || org.direccion == "") {
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      } else {
+        let datos = {
+          organizacion: this.getUsuario,
+          newOrganizacion: org,
+        };
+        //LLAMA A LA CONSULTA DE ACTUALIZAR
+        this.actualizarOrganizacion(datos).then((res) => {
+          //MUESTRA EL MENSAJE DE POSITIVO O NEGATIVO
+          this.$refs.simplert.openSimplert(this.getMensajeOrganizacion);
+        });
+      }
+    },
   },
-  computed: {},
+  computed: {
+    ...mapGetters([
+      "getDatosOrganizacion",
+      "getUsuario",
+      "getMensajeOrganizacion",
+      "getMensajeAdvertencia",
+    ]),
+  },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
+    console.log(this.getDatosOrganizacion);
   },
 };
 </script>
@@ -232,15 +255,15 @@ a:focus {
   background: #0099a1;
 }
 
-.subTitulo{
-    margin-top: 10px;
-    margin-bottom: 30px;
+.subTitulo {
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
-.datosPersonales{
-    background: #c6eff1;
-    padding: 18px;
-    border-radius: 10px;
+.datosPersonales {
+  background: #c6eff1;
+  padding: 18px;
+  border-radius: 10px;
 }
 
 /* ---------------------------------------------------
@@ -366,12 +389,11 @@ label {
   height: 100%;
   display: flex;
   margin-left: 20px;
-
 }
 .foto img {
   width: 100px;
   height: 100%;
-  background: white; 
+  background: white;
   border-radius: 100%;
   box-shadow: 0 0 3px 3px #62bbe4;
   object-fit: cover;

@@ -215,6 +215,9 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
+    this.usuario = this.usuarioPaciente;
+    this.cargarDependiente();
+    this.listarEspecialidades();
   },
   data() {
     return {
@@ -250,6 +253,7 @@ export default {
       console.log("open simplert with obj : ", obj);
       this.$refs.simplert.openSimplert(obj);
       console.log(o);
+
     },
 
     //deshabilitar seccion de familiares
@@ -292,6 +296,7 @@ export default {
         .get(url)
         .then((res) => {
           this.horarioDoctor = res.data;
+          console.log(res)
           this.$log.info('HORARIOS', this.horarioDoctor)
           this.horarioDoctor.forEach((element) => {
             this.dia.push(element.fecha);
@@ -371,17 +376,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getEspecialidades','getListFamiliares','getUsuario','getMensaje','getCarga'])
-  },
-  beforeMount() {
-    this.usuario = this.usuarioPaciente;
-    this.cargarDependiente();
-    this.listarEspecialidades();
+    ...mapGetters(['getEspecialidades','getListFamiliares','getUsuario','getMensaje','getCarga',""])
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 p {
   font-family: "Poppins", sans-serif;
