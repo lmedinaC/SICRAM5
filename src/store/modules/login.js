@@ -1,5 +1,5 @@
 import axios from 'axios';
-import router from 'C:/Users/usser/Desktop/proyect/src/router'
+import router from '../../router'
 const namespaced= true;
 
 const state = {
