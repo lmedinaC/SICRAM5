@@ -95,10 +95,11 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <input
-                style="text-transform:uppercase;"
-                type="text"
+                type="number"
+                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                maxlength = "8"
                 class="form-control"
-                id="inputDni"
+                id="dniPaciente"
                 v-model="$v.user.dni.$model"
                 placeholder="DNI"
               />
@@ -138,7 +139,9 @@
               <input
                 type="number"
                 class="form-control"
-                id="inputCelular"
+                id="celularPaciente"
+                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                maxlength = "9"
                 v-model="$v.user.celular.$model"
                 placeholder="Número de celular"
               />
@@ -146,9 +149,6 @@
             
           </div>
           <br />
-          <div class="alert alert-danger" role="alert" v-if="carga != true">
-            <div class="label">{{mensaje}}</div>
-          </div>
           <hr />
           <div class="row justify-content-center">
             <div class="col-12 col-sm-10 col-xl-6 text-center">
@@ -163,10 +163,12 @@
         </div>
         <br />
       </form>
+      <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
     </div>
   </modal>
 </template>
 <script>
+import Simplert from "@/components/Simplert.vue";
 import axios from "axios";
 import qs from "qs";
 import { required, minLength, email } from "vuelidate/lib/validators";
@@ -174,7 +176,9 @@ const MODAL_WIDTH = 800;
 
 export default {
   name: "DemoLoginModal",
-  
+  components:{
+      Simplert
+  },
   data() {
     return {
       mensajeRegistro:"",
@@ -236,6 +240,9 @@ export default {
     },
   },
   methods: {
+    cerrar(){
+      this.$modal.hide("demo-login");
+    },
     registrarPaciente(user) {
       this.user = user;
       const config = {
@@ -253,17 +260,30 @@ export default {
 
         .then((res) => {
           if(res.data.msg==="Username ya existe."){
-            this.mensaje = "Este usuario se encuentra registrado"
             this.carga = false;
             this.carga2 = false;
+            this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Este paciente ya se encuentra registrado",
+              type: "error",
+            })
           }else{
+            this.$refs.simplert.openSimplert({
+              title: "REGISTRO EXITOSO",
+              message: "Paciente registrado con éxito",
+              type: "success",
+              onClose: this.cerrar
+            })
             this.carga = true;
-            this.$modal.hide("demo-login");
             this.carga2 = false;
           }
         })
         .catch((e) => {
-          this.mensaje = "Este usuario se encuentra registrado"
+          this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Ocurrió un error al registrar al paciente.",
+              type: "error",
+            })
           this.carga = false;
           this.carga2 = false;
         });

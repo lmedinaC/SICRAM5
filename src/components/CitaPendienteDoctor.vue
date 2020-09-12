@@ -41,7 +41,7 @@
               <td >
                 <div class="boton-group">
                   <button class="btn btn-success  mr-2"
-                  @click="cargar({aulaVirtual: element.aulaVirtual, name: element.user.name, lastname: element.user.lastname })">Ingresar</button>
+                  @click="cargar({aulaVirtual: element.aulaVirtual, name: element.user.name, lastname: element.user.lastname, doctor: getUsuario, id : element._id })">Ingresar</button>
                 </div>
               </td>
             </tr>
@@ -49,7 +49,7 @@
         </table>
         <div class="container" v-if="getListaCitasDoctor===null">
               <div class="mt-3" style="padding:50px; align-content: center; text-align: center; background:pink">
-                  <h4>NO CUENTA CON CITAS REGISTRADAS</h4>
+                  <h4>NO CUENTA CON CITAS PENDIENTES</h4>
               </div>
           </div>
 
@@ -79,6 +79,7 @@ export default {
       mensaje: "",
       usuario: "",
       datosUsuario: {},
+      listaDeCitas: null
     };
   },
   components: {
@@ -92,6 +93,7 @@ export default {
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
     this.getCitas();
+    console.log(this.listAtendida)
   },
   methods: {
     ...mapActions(['setObjCita','listarCitasDoctor']),
@@ -126,7 +128,24 @@ export default {
   },
   computed: {
     ...mapState(["usuarioDoctor","idDoctor"]),
-    ...mapGetters(['getListaCitasDoctor','getUsuario'])
+    ...mapGetters(['getListaCitasDoctor','getUsuario']),
+    listAtendida(){
+      if(this.getListaCitasDoctor==null){
+        this.listaDeCitas = null
+      }else{
+        this.listaDeCitas = []
+        this.getListaCitasDoctor.forEach((element) => {
+          if(element.estado == "pendiente"){
+            this.listaDeCitas.push(element)
+          }
+        });
+        if(this.listaDeCitas.length == 0) {
+          console.log("lista vacia")
+          this.listaDeCitas = null
+        }
+      }         
+      return this.listaDeCitas
+    }
   },
 };
 </script>

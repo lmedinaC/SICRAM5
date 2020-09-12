@@ -101,7 +101,9 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <input
-                      type="text"
+                      type="number"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      maxlength = "8"
                       class="form-control"
                       id="inputDni"
                       v-model="$v.doctor.dni.$model"
@@ -111,6 +113,8 @@
                    <div class="form-group col-md-6">
                     <input
                       type="number"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      maxlength = "9"
                       class="form-control"
                       id="inputtelefono"
                       v-model="$v.doctor.celular.$model"
@@ -197,9 +201,6 @@
               >
             </div>
           </div>
-          <div class="alert alert-danger" role="alert" v-if="carga != true">
-            <div class="label">{{ mensaje }}</div>
-          </div>
           <br />
           <hr />
           <div class="row justify-content-center">
@@ -214,12 +215,13 @@
           </div>
         </form>
       </div>
-
+      <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
       <!--ends -->
     </div>
   </modal>
 </template>
 <script>
+import Simplert from "@/components/Simplert.vue";
 import vueCustomScrollbar from "vue-custom-scrollbar";
 import { required, minLength, email } from "vuelidate/lib/validators";
 import { mapGetters } from 'vuex';
@@ -229,6 +231,7 @@ export default {
   name: "Modal_Registro_Doc",
   components: {
     vueCustomScrollbar,
+    Simplert
   },
   data() {
     return {
@@ -282,6 +285,9 @@ export default {
   },
 
   methods: {
+    cerrar(){
+      this.$modal.hide("demo-registro-doc");
+    },
     closeByEvent() {
       this.$modal.hide("demo-registro-doc");
     },
@@ -303,25 +309,41 @@ export default {
 
         .then((res) => {
           if(res.data.msg==="Username ya existe."){
-              this.mensaje = "Este usuario se encuentra registrado"
               this.carga = false;
               this.carga2 = false;
+              this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Este doctor ya se encuentra registrado",
+              type: "error",
+            })
           }else if(res.data.msg=="LLene los nombres y apellidos, completos y CORRECTOS del doctor"){
-              this.mensaje = "¡Los datos registrados no coinciden con el CMP!"
+              this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "LLene los nombres y apellidos, completos y CORRECTOS del doctor",
+              type: "error",
+              })
               this.carga = false;
               this.carga2 = false;
           }else{
             this.carga = true;
-            this.$modal.hide("demo-registro-doc");
             this.carga2 = false;
+            this.$refs.simplert.openSimplert({
+              title: "REGISTRO EXITOSO",
+              message: "Doctor registrado con éxito",
+              type: "success",
+              onClose: this.cerrar
+            })
           }
           
         })
         .catch((e) => {
-          this.mensaje = "Usuario ya registrado";
-          console.log(e)
           this.carga = false;
           this.carga2 = false;
+          this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Ocurrió un error al registrar al Doctor.",
+              type: "error",
+          })
         });
     },
   },

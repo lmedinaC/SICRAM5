@@ -91,6 +91,8 @@
             <div class="form-group col-md-6">
               <input
                 type="number"
+                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                maxlength = "11"
                 class="form-control"
                 id="inputRUC"
                 v-model="$v.organizacion.ruc.$model"
@@ -100,9 +102,6 @@
           </div>
 
           <br />
-          <div class="alert alert-danger" role="alert" v-if="carga != true">
-            <div class="label">{{mensaje}}</div>
-          </div>
           <hr />
           <div class="row justify-content-center">
             <div class="col-12 col-sm-10 col-xl-6 text-center">
@@ -117,15 +116,20 @@
         </div>
         <br />
       </form>
+      <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
     </div>
   </modal>
 </template>
 <script>
+import Simplert from "@/components/Simplert.vue";
 import { required, minLength, email } from "vuelidate/lib/validators";
 const MODAL_WIDTH = 700;
 
 export default {
   name: "Modal_RegOrg",
+  components:{
+      Simplert
+  },
   data() {
     return {
       carga: true,
@@ -160,6 +164,9 @@ export default {
     },
   },
   methods: {
+    cerrar(){
+      this.$modal.hide("demo-reg-org");
+    },
     registrarOrganizacion(org) {
       this.carga2 = true;
       this.organizacion = org;
@@ -171,19 +178,33 @@ export default {
 
         .then((res) => {
           if(res.data.msg==="Username ya existe."){
-            this.mensaje = "Organización ya registrada"
+            this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Este organización ya se encuentra registrada",
+              type: "error",
+            })
             this.carga = false;
             this.carga2 = false;
+
           }else{
             this.carga = true;
-            this.$modal.hide("demo-reg-org");
             this.carga2 = false;
+            this.$refs.simplert.openSimplert({
+              title: "REGISTRO EXITOSO",
+              message: "Organización registrada con éxito",
+              type: "success",
+              onClose: this.cerrar
+            })
           }
         })
         .catch((e) => {
-          this.mensaje = "Organización ya se encuentra registrada"
           this.carga = false;
           this.carga2 = false;
+          this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Este organización ya se encuentra registrada.",
+              type: "error",
+          })
         });
     },
   },

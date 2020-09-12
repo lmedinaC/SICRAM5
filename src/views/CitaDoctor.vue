@@ -36,7 +36,7 @@ export default {
     };
   }, 
   methods: {
-    ...mapActions(['obtenerCita']),
+    ...mapActions(['obtenerCita',"citaAtendida"]),
     colgarLlamada() {
       let obj2 = {
         title: "SALIR DE LA SESIÓN",
@@ -48,25 +48,22 @@ export default {
       this.$refs.simplert1.openSimplert(obj2);
     },
     salir() {
-      window.location.assign("/doctorvista")
-      /*let url = `https://proyectocalidad9.herokuapp.com/cita/actualizar_estado/${this.idCita}`;
-      this.axios.post(url, {
-        estado: "Atendido",
-      })
+      let datos = {
+        doctor : this.cita.doctor,
+        estado : 'atendido',
+        id_cita : this.cita.id,
+      }
+      this.citaAtendida(datos)
       .then((res)=>{
         window.location.assign("/doctorvista")
       })
-      .catch((e)=>{
-        console.log("sucedio un error")
-      })*/
-      
     },
   },
   created(){
       this.obtenerCita()
   },
   computed: {
-    ...mapState(["idCita"]),
+    ...mapState(["idCita","getUsuario","cita"]),
   },
 };
 </script>

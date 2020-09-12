@@ -6,6 +6,7 @@ const state = {
     datosDoctor : null, //DATOS DEL PACIENTE
     listaHorariosDoctor : null, //LISTA DE HORARIOS DE ATENCION DEL DOCTOR
     listaCitasDoctor: null, //LISTA DE CITAS DEL DOCTOR
+    listaCitasDoctorPasadas: null, //LISTA DE CITAS DEL DOCTOR PASADAS
     mensajeDoctor: null, //MENSAJE DE ACTUALIZACION
     cargaDoctor: false, //CARGA DE BOTONES
     horariosDisponibles:  [
@@ -42,6 +43,10 @@ const getters = {
     getListaHorariosDoctor(state){
         return state.listaHorariosDoctor
     },
+    //CONSEGUIR LISTA DE CITAS PASADAS
+    getListaCitasDoctorPasadas(state){
+      return state.listaCitasDoctorPasadas
+    },
     //CONSEGUIR LA LISTA DE LAS CITAS
     getListaCitasDoctor(state){
         return state.listaCitasDoctor
@@ -72,6 +77,10 @@ const mutations = {
     //PONE LA LISTA DE LAS CITAS
     setListaCitasDoctor(state,payload){
         state.listaCitasDoctor = payload
+    },
+    //PONE LA LISTA DE CITAS PASADAS
+    setListaCitasDoctorPasadas(state,payload){
+      state.listaCitasDoctorPasadas = payload
     },
     //PONE LOS DATOS DEL MENSAJE
     setMensajeNegativoDoctor(state){
@@ -324,7 +333,7 @@ const actions = {
     },
 
     //CONSULTA LISTAR CITAS DE ATENCION
-    listarCitasDoctor({commit},doctor){
+    listarCitasDoctor({commit,state},doctor){
         let url =
         `https://sicramv1.herokuapp.com/api/doctor/cita/listar/${doctor.id}`;
         axios
@@ -337,16 +346,60 @@ const actions = {
         .then((res) => {
             console.log(res)
             if(res.data.length!=0){
-                commit('setListaCitasDoctor',res.data)
+              state.listaCitasDoctor = []
+              state.listaCitasDoctorPasadas = []
+              res.data.forEach((element) => {
+                if(element.estado == "pendiente"){
+                  state.listaCitasDoctor.push(element)
+                }else if(element.estado == "atendido"){
+                  state.listaCitasDoctorPasadas.push(element)
+                }
+              });
+              if(state.listaCitasDoctor.length==0) {
+                commit('setListaCitasDoctor',null)
+              }else if(state.listaCitasDoctorPasadas.length==0){
+                commit('setListaCitasDoctorPasadas',null)
+              }
             }else{
                 commit('setListaCitasDoctor',null)
+                commit('setListaCitasDoctorPasadas',null)
             }
         })
         .catch((e) => {
             console.log(e)
         });
-    }
+    },
 
+    //CONSULTA PARA ATENDER CITA
+    citaAtendida({commit},datos){
+      let url =
+        `https://sicramv1.herokuapp.com/api/doctor/cita/estado/${datos.doctor.id}`;
+       return axios
+        .post(url,
+          { estado: datos.estado, id_cita : datos.id_cita  },
+          {
+            headers: {
+              Authorization: `${datos.doctor.token}`,
+            },
+          }
+        )
+
+        .then((res) => {
+            console.log(res)
+            if(res.data.msg == "Estado guardado"){
+              commit('setMensajePositivoDoctor')
+              return Promise.resolve(true)
+            }else{
+              commit('setMensajeNegativoDoctor')
+              return Promise.resolve(true)
+            }
+        })
+        .catch((e) => {
+            console.log("ocurrio un error")
+            commit('setMensajeNegativoDoctor')
+            return Promise.resolve(true)
+        });
+    }
    
 }
   

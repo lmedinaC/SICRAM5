@@ -6,6 +6,7 @@ const state = {
     datosPaciente : null, //DATOS DEL PACIENTE
     listFamiliares : null, //LISTA DE FAMILIARES DEL PACIENTE
     listaCitas: null, //LISTA DE CITAS DEL PACIENTE
+    listaCitasPasadas: null, //LISTA DE CITAS DEL PACIENTE PASADAS
     mensaje: null, //MENSAJE DE ACTUALIZACION
     carga: false, //CARGA DE BOTONES
     datosFamiliar: null, //DATOS DEL DEPENDIENTE
@@ -55,6 +56,10 @@ const mutations = {
     //PONE LA LISTA DE LAS CITAS
     setListaCitas(state,payload){
         state.listaCitas = payload
+    },
+    //PONE LA LISTA DE LAS CITAS PASADAS
+    setListaCitasPasadas(state,payload){
+      state.listaCitasPasadas = payload
     },
     //PONE LOS DATOS DEL MENSAJE
     setMensajeNegativo(state){
@@ -313,12 +318,26 @@ const actions = {
           },
         })
         .then((res) => {
-            console.log(res)
-            if(res.data.length!=0){
-                commit('setListaCitas',res.data)
-            }else{
-                commit('setListaCitas',null)
+          console.log(res)
+          if(res.data.length!=0){
+            state.listaCitas = []
+            state.listaCitasPasadas = []
+            res.data.forEach((element) => {
+              if(element.estado == "pendiente"){
+                state.listaCitas.push(element)
+              }else if(element.estado == "atendido"){
+                state.listaCitasPasadas.push(element)
+              }
+            });
+            if(state.listaCitas.length==0) {
+              commit('setListaCitas',null)
+            }else if(state.listaCitasPasadas.length==0){
+              commit('setListaCitasPasadas',null)
             }
+          }else{
+              commit('setListaCitas',null)
+              commit('setListaCitasPasadas',null)
+          }
         })
         .catch((e) => {
            console.log(e) 

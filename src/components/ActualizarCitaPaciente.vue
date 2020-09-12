@@ -132,6 +132,7 @@ export default {
       diaMax: new Date(),
       fecha: "",
       cita: null,
+      listaDeCitas : null
     };
   },
   mounted() {
@@ -140,6 +141,8 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
+    this.getCita();
+    console.log(this.listAtendida)
   },
   methods: {
     ...mapActions(["setObjCita", "listCitas",'listarDependientes',"eliminarCitaPaciente","datosCita","listarHorariosDoctor"]),
@@ -271,12 +274,29 @@ export default {
   computed: {
     ...mapState(["usuarioPaciente", "idPaciente"]),
     ...mapGetters(['getEspecialidades','getListFamiliares',"getUsuario", "getListaCitas","getMensaje"]),
+    listAtendida(){
+      console.log("lista",this.getListaCitas)
+      if(this.getListaCitas==null){
+        this.listaDeCitas = null
+      }else{
+        this.listaDeCitas = []
+        this.getListaCitas.forEach((element) => {
+          if(element.estado == "pendiente"){
+            this.listaDeCitas.push(element)
+          }
+        });
+        if(this.listaDeCitas.length == 0) {
+          console.log("lista vacia")
+          this.listaDeCitas = null
+        }
+      }         
+      return this.listaDeCitas
+    }
   },
   beforeMount() {
     this.diaMax.setDate(this.diaMax.getDate() + 7);
     this.setFecha(this.diaMin, this.diaMax);
     this.listarDependientes(this.getUsuario)
-    this.getCita();
   },
 };
 </script>
