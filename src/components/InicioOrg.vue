@@ -10,26 +10,16 @@
       </div>
       <div class="contenido">
         <div class="contenido-perfil ">
-          <div class="perfil-label">
-            <h2 style="text-transform: uppercase;">
-              Bienvenido(a) {{ getDatosOrganizacion.nameOrg }}
-            </h2>
-            <p class="">
-              En SICRAM podrás realizar orientacion médica a personas que tienen
-              alguna discapacidad.
-            </p>
+          <div class="perfil-label" style="text-transform: uppercase;">
+            <h1 >
+              Bienvenido(a) A SICRAM
+            </h1>
+            <h2>{{ getDatosOrganizacion.nameOrg }}</h2>
           </div>
 
-          <div class="row justify-content-around">
-            <div class="col-lg-5 imagen">
-              <img class="" src="../assets/perfil1.jpg" alt="" />
-              <p class="font-weight-bold parrafo">
-                Doctores de todas las especialidades
-              </p>
-            </div>
-            <div class="col-lg-5  imagen">
-              <img class="" src="../assets/perfil2.jpg" alt="" />
-              <p class="font-weight-bold">Seguridad en las videollamadas</p>
+          <div class="row justify-content-around"> 
+            <div class="col-lg-12 imagen">
+              <img class="" src="../assets/team.png" alt="" />
             </div>
           </div>
         </div>
@@ -57,7 +47,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 p {
   font-family: "Poppins", sans-serif;
@@ -183,23 +173,26 @@ a:focus {
   width: 100%;
 }
 .perfil-label {
+  h1 {
+  font-size: 50px;
+  color: #0099a1;
+  }
+  text-align: center;
   margin-bottom: 50px;
 }
 
 .imagen {
-  width: 400px;
-  height: 400px;
+  width: 600px;
+  height: 320px;
   display: flex;
   flex-direction: column;
   align-items: start;
-  border-radius: 10px;
 }
 
 .imagen img {
   object-fit: cover;
-  width: 300px;
-  height: 300px;
-  border-radius: 10px;
+  width: 600px;
+  height: 320px;
 }
 
 .imagen p {
@@ -208,6 +201,9 @@ a:focus {
 
 @media (max-width: 768px) {
   .perfil-label {
+    h1 {
+    font-size: 40px;
+    }
     text-align: center;
   }
   .imagen {

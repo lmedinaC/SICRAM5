@@ -2,6 +2,7 @@
   <div>
     <!-- Page Content  -->
     <ModEditarCita/>
+    <ModSintomasPaciente/>
     <div id="content">
       <div class="">
         <button type="button" id="sidebarCollapse" class=" boton-menu">
@@ -55,10 +56,11 @@
                         <button
                           class="btn btn-md  btn-ingresar "
                           @click="
-                            cargar({
+                            abrirDetalleSintomas({
                               aulaVirtual: element.aulaVirtual,
                               name: element.doctor.name,
                               lastname: element.doctor.lastname,
+                              id_cita: element._id
                             })
                           "
                         >
@@ -105,23 +107,16 @@
 </template>
 
 <script>
+import ModSintomasPaciente from "@/components/Modales/ModSintomasPaciente.vue";
 import ModEditarCita from "@/components/Modales/ModEditarCita.vue";
-import Vue from "vue";
-//Impor component mensaje
 import Simplert from "@/components/Simplert.vue";
-// Import component
-import Loading from "vue-loading-overlay";
-// Import stylesheet
-import "vue-loading-overlay/dist/vue-loading.css";
-// Init plugin
-Vue.use(Loading);
 import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   name: "ActualizarCitaPaciente",
   components: {
     Simplert,
-    Loading,
-    ModEditarCita
+    ModEditarCita,
+    ModSintomasPaciente
   },
   data() {
     return {
@@ -142,26 +137,15 @@ export default {
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
     this.getCita();
-    console.log(this.listAtendida)
   },
   methods: {
     ...mapActions(["setObjCita", "listCitas",'listarDependientes',"eliminarCitaPaciente","datosCita","listarHorariosDoctor"]),
-    cargar(cita) {
-      let loader = this.$loading.show({
-        // Optional parameters
-        color: "#0099a1",
-        container: this.fullPage ? null : this.$refs.formContainer,
-        canCancel: false,
-        loader: "dots",
-        height: 150,
-        width: 130,
-      });
-      // simulate AJAX
-      setTimeout(() => {
-        loader.hide();
-        this.ingresarCita(cita);
-      }, 3000);
-    }, //
+    //MODAL PARA DETALLAR SINTOMAS
+    abrirDetalleSintomas(cita){
+      this.setObjCita(cita);
+      this.$modal.show('mod-sintomas-paciente')
+    },
+
     MostrarFecha(fecha) {
       var nombres_dias = new Array(
         "Domingo",
@@ -226,15 +210,7 @@ export default {
     getCita() {
       //LLAMA A LA FUNCION LISTAR CISTAS DE PACIENTE.JS
       this.listCitas(this.getUsuario);
-    },
-
-    //INGRESA A LA CITA
-    ingresarCita(cita) { 
-      console.log(cita); 
-      this.setObjCita(cita);
-      window.location.assign('/pacientevista/citapaciente')
-    },
-  
+    }, 
     //ABRE MODAL DE EDICION DE CITA
     abrirEdicion(cita){
       console.log("asdasd",cita.doctor)
@@ -243,8 +219,8 @@ export default {
       }
       //cita.doctor.name = cita.doctor.name + " " + cita.doctor.lastname
       this.listarHorariosDoctor(datos)
-      this.datosCita(cita)
-      this.$modal.show('mod-editar-cita')
+        this.datosCita(cita)
+        this.$modal.show('mod-editar-cita')
     },
     //ABRE MODAL DE CONFIRAMCIÓN DE ELIMINACIÓN
     abrirEliminación(cita) {

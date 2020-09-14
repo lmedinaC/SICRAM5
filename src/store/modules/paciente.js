@@ -118,6 +118,29 @@ const mutations = {
       }
     },
 
+    setAdvertencia(state,paylaod){
+      state.mensaje  = {
+        title: "CAMPOS NECESARIOS",
+        message: paylaod,
+        type: "warning",
+      }
+    },
+
+    setError(state,payload){
+      state.mensaje  = {
+        title: "OCURRIÓ UN ERROR",
+        message: payload,
+        type: "error",
+      }
+    },
+
+    setExito(state,payload){
+      state.mensaje  = {
+        title: "REGISTRO EXITOSO",
+        message: payload,
+        type: "success",
+      }
+    },
 
     //PONE VALOR DE CARGA
     setCarga(state, payload){
@@ -432,8 +455,11 @@ const actions = {
                 if(res.data.msg == "cita actualizada"){
                   commit('setMensajeActualizacionPositiva')
                   return Promise.resolve(true)
+                }if(res.data.msg == "HORARIO YA ESTA USADO "){
+                  commit('setError',"Horario en uso.")
+                  return Promise.resolve(true)
                 }else{
-                  commit('setMensajeActualizacionNegativa')
+                  commit('setAdvertencia',"Elija fecha y hora.")
                   return Promise.resolve(true)
                 }
                 
@@ -484,6 +510,32 @@ const actions = {
     //DATOS CITA
     datosCita({commit},cita){
       commit('setDatosCita',cita)
+    },
+
+    //CONSULTA DE DETALLE DE SINTOMAS
+    detallarSintomasPaciente({commit},datos){
+      commit('setCarga',true)
+        let url = `https://sicramv1.herokuapp.com/api/user/cita/registrar_sintomas/${datos.paciente.id}`;
+          return axios
+            .post(
+              url,
+              { ...datos.sintomas },
+              {
+                headers: {
+                  Authorization: `${datos.paciente.token}`,
+                },
+              }
+            )
+            .then((res)=>{
+              commit('setCarga',false)
+              console.log(res.data)
+              return Promise.resolve(true) 
+            })
+            .catch((e)=>{
+              commit('setCarga',false)
+              console.log(e)
+              return Promise.resolve(false) 
+        })
     }
 
 }

@@ -31,7 +31,32 @@
                     <div class="col-md-8">
                       <div class="row">
                         <div class="col-md-4">
-                          <div class="foto"></div>
+                          <div class="foto">
+                            <img
+                              v-if="element.genero == 'masculino' && element.edad <30"
+                              class="foto-img"
+                              src="../assets/familiarNiño.png"
+                              alt=""
+                            />
+                            <img
+                              v-if="element.genero == 'femenino' && element.edad <30"
+                              class="foto-img"
+                              src="../assets/familiarNiña.png"
+                              alt=""
+                            />
+                            <img
+                              v-if="element.genero == 'masculino' && element.edad >=30"
+                              class="foto-img"
+                              src="../assets/familiarH.png"
+                              alt=""
+                            />
+                            <img
+                              v-if="element.genero == 'femenino' && element.edad >=30"
+                              class="foto-img"
+                              src="../assets/familiarM.png"
+                              alt=""
+                            />
+                          </div>
                         </div>
                         <div class="col-md-8">
                           <p class="mayusculas">
@@ -39,9 +64,13 @@
                             {{ element.lastname }}
                           </p>
                           <p><strong>DNI: </strong> {{ element.dni }}</p>
-                          <p><strong>Correo:</strong> {{ element.email }}</p>
+                          <p><strong>Género:</strong> {{ element.genero }}</p>
                           <p>
                             <strong>Celular: </strong> {{ element.celular }}
+                          </p>
+                          <p>
+                            <strong>Edad: </strong>
+                            {{ element.edad }}
                           </p>
                           <p>
                             <strong>Discapacidad: </strong>
@@ -63,7 +92,7 @@
                         <button
                           class="btn  btn-lg btn-eliminar"
                           @click="abrirEliminación(element)"
-                          :disabled = "getCarga"
+                          :disabled="getCarga"
                         >
                           <i class="fas fa-times"></i> Eliminar
                         </button>
@@ -229,9 +258,16 @@ a:focus {
 }
 
 .foto {
-  background: gray;
-  height: 150px;
+  text-align: center;
+  background: rgb(235, 235, 235);
+  height: 170px;
   border-radius: 15px;
+}
+
+.foto-img{
+  width: 100px;
+  height: 100%;
+  object-fit: cover;
 }
 .lista-doctor {
   margin-top: 30px;

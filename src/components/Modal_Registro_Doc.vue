@@ -28,6 +28,7 @@
               cmp: $v.doctor.cmp.$model,
               profesion: $v.doctor.profesion.$model,
               especialidad: $v.doctor.especialidad.$model,
+              genero: $v.doctor.genero.$model,
             })
           "
         >
@@ -103,18 +104,18 @@
                     <input
                       type="number"
                       oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                      maxlength = "8"
+                      maxlength="8"
                       class="form-control"
                       id="inputDni"
                       v-model="$v.doctor.dni.$model"
                       placeholder="DNI"
                     />
                   </div>
-                   <div class="form-group col-md-6">
+                  <div class="form-group col-md-6">
                     <input
                       type="number"
                       oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                      maxlength = "9"
+                      maxlength="9"
                       class="form-control"
                       id="inputtelefono"
                       v-model="$v.doctor.celular.$model"
@@ -131,6 +132,17 @@
                       v-model="$v.doctor.edad.$model"
                       placeholder="Edad"
                     />
+                  </div>
+                  <div class="form-group col-md-6">
+                    <select
+                      id="inputState"
+                      class="form-control"
+                      v-model="$v.doctor.genero.$model"
+                    >
+                      <option disabled value="">Sexo</option>
+                      <option value="femenino">FEMENINO</option>
+                      <option value="masculino">MASCULINO</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -224,14 +236,14 @@
 import Simplert from "@/components/Simplert.vue";
 import vueCustomScrollbar from "vue-custom-scrollbar";
 import { required, minLength, email } from "vuelidate/lib/validators";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 const MODAL_WIDTH = 800;
 
 export default {
   name: "Modal_Registro_Doc",
   components: {
     vueCustomScrollbar,
-    Simplert
+    Simplert,
   },
   data() {
     return {
@@ -252,6 +264,7 @@ export default {
         cmp: "",
         profesion: "",
         especialidad: "",
+        genero: "",
       },
       mensaje: null,
       carga: true,
@@ -281,11 +294,12 @@ export default {
       cmp: { required },
       profesion: { required },
       especialidad: { required },
+      genero: { required },
     },
   },
 
   methods: {
-    cerrar(){
+    cerrar() {
       this.$modal.hide("demo-registro-doc");
     },
     closeByEvent() {
@@ -300,7 +314,7 @@ export default {
       this.carga2 = true;
       this.doctor = doctor;
       console.log(doctor.especialidad);
-      console.log(doctor)
+      console.log(doctor);
       this.axios
         .post("https://sicramv1.herokuapp.com/api/signupdoctor", {
           ...this.doctor,
@@ -308,48 +322,51 @@ export default {
         //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
 
         .then((res) => {
-          if(res.data.msg==="Username ya existe."){
-              this.carga = false;
-              this.carga2 = false;
-              this.$refs.simplert.openSimplert({
+          if (res.data.msg === "Username ya existe.") {
+            this.carga = false;
+            this.carga2 = false;
+            this.$refs.simplert.openSimplert({
               title: "REGISTRO FALLIDO",
               message: "Este doctor ya se encuentra registrado",
               type: "error",
-            })
-          }else if(res.data.msg=="LLene los nombres y apellidos, completos y CORRECTOS del doctor"){
-              this.$refs.simplert.openSimplert({
+            });
+          } else if (
+            res.data.msg ==
+            "LLene los nombres y apellidos, completos y CORRECTOS del doctor"
+          ) {
+            this.$refs.simplert.openSimplert({
               title: "REGISTRO FALLIDO",
-              message: "LLene los nombres y apellidos, completos y CORRECTOS del doctor",
+              message:
+                "LLene los nombres y apellidos, completos y CORRECTOS del doctor",
               type: "error",
-              })
-              this.carga = false;
-              this.carga2 = false;
-          }else{
+            });
+            this.carga = false;
+            this.carga2 = false;
+          } else {
             this.carga = true;
             this.carga2 = false;
             this.$refs.simplert.openSimplert({
               title: "REGISTRO EXITOSO",
               message: "Doctor registrado con éxito",
               type: "success",
-              onClose: this.cerrar
-            })
+              onClose: this.cerrar,
+            });
           }
-          
         })
         .catch((e) => {
           this.carga = false;
           this.carga2 = false;
           this.$refs.simplert.openSimplert({
-              title: "REGISTRO FALLIDO",
-              message: "Ocurrió un error al registrar al Doctor.",
-              type: "error",
-          })
+            title: "REGISTRO FALLIDO",
+            message: "Ocurrió un error al registrar al Doctor.",
+            type: "error",
+          });
         });
     },
   },
   computed: {
-    ...mapGetters(['getEspecialidades'])
-  }
+    ...mapGetters(["getEspecialidades"]),
+  },
 };
 </script>
 <style lang="scss" scoped>

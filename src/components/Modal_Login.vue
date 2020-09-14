@@ -23,6 +23,7 @@
             discapacidad: $v.user.discapacidad.$model,
             celular: $v.user.celular.$model,
             direccion: $v.user.direccion.$model,
+            genero: $v.user.genero.$model,
           })
         "
       >
@@ -97,7 +98,7 @@
               <input
                 type="number"
                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                maxlength = "8"
+                maxlength="8"
                 class="form-control"
                 id="dniPaciente"
                 v-model="$v.user.dni.$model"
@@ -105,13 +106,15 @@
               />
             </div>
             <div class="form-group col-md-6">
-              <input
-                type="text"
+              <select
+                id="inputState"
                 class="form-control"
-                id="inputDireccion"
-                placeholder="DIRECCIÓN 'Calle siempre viva...'"
-                v-model="$v.user.direccion.$model"
-              />
+                v-model="$v.user.genero.$model"
+              >
+                <option disabled value="">Seleccione género</option>
+                <option value="femenino">Femenino</option>
+                <option value="masculino">Masculino</option>
+              </select>
             </div>
           </div>
           <div class="form-row">
@@ -141,12 +144,20 @@
                 class="form-control"
                 id="celularPaciente"
                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                maxlength = "9"
+                maxlength="9"
                 v-model="$v.user.celular.$model"
                 placeholder="Número de celular"
               />
             </div>
-            
+            <div class="form-group col-md-6">
+              <input
+                type="text"
+                class="form-control"
+                id="inputDireccion"
+                placeholder="DIRECCIÓN 'Calle siempre viva...'"
+                v-model="$v.user.direccion.$model"
+              />
+            </div>
           </div>
           <br />
           <hr />
@@ -176,12 +187,12 @@ const MODAL_WIDTH = 800;
 
 export default {
   name: "DemoLoginModal",
-  components:{
-      Simplert
+  components: {
+    Simplert,
   },
   data() {
     return {
-      mensajeRegistro:"",
+      mensajeRegistro: "",
       mensaje: "",
       modalWidth: MODAL_WIDTH,
       user: {
@@ -195,6 +206,7 @@ export default {
         discapacidad: "",
         celular: "",
         direccion: "",
+        genero: "",
       },
       paciente: {
         correo: "",
@@ -237,10 +249,11 @@ export default {
       discapacidad: { required },
       celular: { required },
       direccion: { required },
+      genero: { required },
     },
   },
   methods: {
-    cerrar(){
+    cerrar() {
       this.$modal.hide("demo-login");
     },
     registrarPaciente(user) {
@@ -251,39 +264,39 @@ export default {
         },
       };
       this.carga2 = true;
-      
+
       this.axios
         .post("https://sicramv1.herokuapp.com/api/signupuser", {
-          ...this.user
+          ...this.user,
         }) //elemento spreat
         //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
 
         .then((res) => {
-          if(res.data.msg==="Username ya existe."){
+          if (res.data.msg === "Username ya existe.") {
             this.carga = false;
             this.carga2 = false;
             this.$refs.simplert.openSimplert({
               title: "REGISTRO FALLIDO",
               message: "Este paciente ya se encuentra registrado",
               type: "error",
-            })
-          }else{
+            });
+          } else {
             this.$refs.simplert.openSimplert({
               title: "REGISTRO EXITOSO",
               message: "Paciente registrado con éxito",
               type: "success",
-              onClose: this.cerrar
-            })
+              onClose: this.cerrar,
+            });
             this.carga = true;
             this.carga2 = false;
           }
         })
         .catch((e) => {
           this.$refs.simplert.openSimplert({
-              title: "REGISTRO FALLIDO",
-              message: "Ocurrió un error al registrar al paciente.",
-              type: "error",
-            })
+            title: "REGISTRO FALLIDO",
+            message: "Ocurrió un error al registrar al paciente.",
+            type: "error",
+          });
           this.carga = false;
           this.carga2 = false;
         });
@@ -330,14 +343,14 @@ $facebook_color: #3880ff;
   }
 
   .but {
-  background: #60b9cf;
-  color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-.but:hover {
-  background: #0099a1;
-  color: white;
-}
+    background: #60b9cf;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  .but:hover {
+    background: #0099a1;
+    color: white;
+  }
   .label {
     width: 100%;
     height: 100%;
@@ -446,7 +459,4 @@ $facebook_color: #3880ff;
   opacity: 0;
   transform: translateY(24px);
 }
-
-
-
 </style>

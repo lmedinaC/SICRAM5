@@ -19,7 +19,18 @@
         >
           <div class="row justify-content-center" style="background:#0099a1;">
             <div class="foto col-sm-3  col-md-3 mt-2 mb-2 ">
-              <img src="../assets/user.png" alt="" />
+              <img
+                v-if="getDatosPaciente.genero == 'masculino'"
+                class=""
+                src="../assets/usuarioM.png"
+                alt=""
+              />
+              <img
+                v-if="getDatosPaciente.genero == 'femenino'"
+                class=""
+                src="../assets/usuarioH.png"
+                alt=""
+              />
             </div>
 
             <div class="col-sm-7 col-md-7 col-12 titulo">
@@ -271,17 +282,16 @@ export default {
         newDatos: pacient,
       };
       //LLAMA A LA CONSULTADA ALMACENADA EN PACIENTE.JS
-      this.actualizarDatosPaciente(datos)
-      .then((res)=>{
+      this.actualizarDatosPaciente(datos).then((res) => {
         this.$refs.simplert.openSimplert(this.getMensaje);
-      })
+      });
     },
     datosPaciente() {
       this.datosUsuario = this.getDatosPaciente;
     },
   },
   computed: {
-    ...mapGetters(["getDatosPaciente", "getUsuario","getCarga","getMensaje"]),
+    ...mapGetters(["getDatosPaciente", "getUsuario", "getCarga", "getMensaje"]),
   },
 };
 </script>
@@ -477,7 +487,7 @@ label {
 .foto img {
   width: 100px;
   height: 100%;
-
+  background: white;
   border-radius: 100%;
   box-shadow: 0 0 3px 3px #62bbe4;
   object-fit: cover;

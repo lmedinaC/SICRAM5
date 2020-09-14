@@ -27,7 +27,8 @@
             </div>
           </div>
 
-          <form @submit.prevent="
+          <form
+            @submit.prevent="
               cargar({
                 username: doctor.username,
                 password: doctor.password,
@@ -40,8 +41,10 @@
                 cmp: doctor.cmp,
                 profesion: doctor.profesion,
                 especialidad: doctor.especialidad,
+                genero: doctor.genero,
               })
-            ">
+            "
+          >
             <div>
               <h5 class="subTitulo">Datos personales</h5>
             </div>
@@ -58,6 +61,52 @@
                         class="form-control"
                         placeholder="Usuario Doctor"
                         v-model="doctor.username"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-md-6">
+                  <div class="row mr-1">
+                    <div class="col-4">
+                      <label for="inputGenero">Correo:</label>
+                    </div>
+                    <div class="col-8">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Correo Doctor"
+                        v-model="doctor.email"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <div class="row mr-1">
+                    <div class="col-4">
+                      <label>Contraseña:</label>
+                    </div>
+                    <div class="col-8">
+                      <input
+                        type="password"
+                        class="form-control"
+                        placeholder="Cotraseña Doctor"
+                        v-model="doctor.password"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-md-6">
+                  <div class="row mr-1">
+                    <div class="col-4">
+                      <label>Repita contraseña:</label>
+                    </div>
+                    <div class="col-8">
+                      <input
+                        type="password"
+                        class="form-control"
+                        placeholder="Contraseña Doctor"
                       />
                     </div>
                   </div>
@@ -136,15 +185,14 @@
                 <div class="form-group col-md-6">
                   <div class="row mr-1">
                     <div class="col-4">
-                      <label for="inputGenero">Correo:</label>
+                      <label for="inputGenero">Género:</label>
                     </div>
                     <div class="col-8">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Correo Doctor"
-                        v-model="doctor.email"
-                      />
+                      <select class="form-control" v-model="doctor.genero">
+                        <option disabled value="">Seleccione género</option>
+                        <option value="femenino">Femenino</option>
+                        <option value="masculino">Masculino</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -159,37 +207,6 @@
                         class="form-control"
                         placeholder="Edad Doctor"
                         v-model="doctor.edad"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <div class="row mr-1">
-                    <div class="col-4">
-                      <label for="inputCMP">Contraseña:</label>
-                    </div>
-                    <div class="col-8">
-                      <input
-                        type="password"
-                        class="form-control"
-                        placeholder="Cotraseña Doctor"
-                        v-model="doctor.password"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group col-md-6">
-                  <div class="row mr-1">
-                    <div class="col-4">
-                      <label for="inputCMP">Repita contraseña:</label>
-                    </div>
-                    <div class="col-8">
-                      <input
-                        type="password"
-                        class="form-control"
-                        placeholder="Contraseña Doctor"
                       />
                     </div>
                   </div>
@@ -243,12 +260,19 @@
                       <label for="inputDNI">Especialidad:</label>
                     </div>
                     <div class="col-8">
-                      <input
-                        type="text"
+                      <select
+                        id="inputState"
                         class="form-control"
-                        placeholder="Especialidad"
                         v-model="doctor.especialidad"
-                      />
+                      >
+                        <option disabled value="">Especialidad</option>
+                        <option
+                          v-for="(element, id) in getEspecialidades"
+                          :key="id"
+                          v-bind:value="element.especialidad"
+                          >{{ element.especialidad }}</option
+                        >
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -256,12 +280,13 @@
             </div>
 
             <div class="text-center boton-final">
-              <a href="formPaciente.html"
-                ><button class="but btn btn-lg mt-4" type="submit"
-                :disabled="getCargaOrganizacion">
-                  Registrar
-                </button></a
+              <button
+                class="but btn btn-lg mt-4"
+                type="submit"
+                :disabled="getCargaOrganizacion"
               >
+                Registrar
+              </button>
             </div>
           </form>
         </div>
@@ -274,7 +299,7 @@
 
 <script>
 import Vue from "vue";
-//Impor component mensaje 
+//Impor component mensaje
 import Simplert from "@/components/Simplert.vue";
 // Import component
 import Loading from "vue-loading-overlay";
@@ -291,6 +316,7 @@ export default {
   },
   data() {
     return {
+      loader : null,
       //ELEMENTOS PARA CARGAR
       fullPage: false,
       //MENSAJE DE ACEPTACION
@@ -308,30 +334,63 @@ export default {
         cmp: "",
         profesion: "",
         especialidad: "",
+        genero: "",
       },
     };
   },
   methods: {
-    ...mapActions(['agregarNuevoDoctor']),
+    ...mapActions(["agregarNuevoDoctor"]),
     //METODOS LOADING
     cargar(doc) {
-      this.setDoctor(doc)
-      let loader = this.$loading.show({
-        // Optional parameters
-        color: '#0099a1',
-        container: this.fullPage ? null : this.$refs.formContainer,
-        canCancel: false,
-        loader: 'dots',
-        height: 150,
-        width: 130,
-      });
-      // simulate AJAX
-      setTimeout(() => {
-        loader.hide();
-        this.$refs.simplert.openSimplert(this.getMensajeOrganizacion);
-      }, 4000);
+      if (this.camposVacios()) {
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      } else {
+        this.setDoctor(doc);
+        this.loader = this.$loading.show({
+          // Optional parameters
+          color: "#0099a1",
+          container: this.fullPage ? null : this.$refs.formContainer,
+          canCancel: false,
+          loader: "dots",
+          height: 150,
+          width: 130,
+        });
+      }
     },
-
+    //REGISTRAR UN DOCTOR
+    setDoctor(doc) {
+      let datos = {
+        newDoctor: doc,
+        organizacion: this.getUsuario,
+      };
+      //LLAMA A LA CONSULTA AGREGAR NUEVO DOCTOR DE ORGANIZACION.JS
+      this.agregarNuevoDoctor(datos)
+      .then((res)=>{
+        this.loader.hide();
+        this.$refs.simplert.openSimplert(this.getMensajeOrganizacion);
+      })
+    },
+    //VE SI ALGUN INPUT ESTA VACIO
+    camposVacios() {
+      if (
+        this.doctor.username == "" ||
+        this.doctor.password == "" ||
+        this.doctor.email == "" ||
+        this.doctor.name == "" ||
+        this.doctor.lastname == "" ||
+        this.doctor.dni == "" ||
+        this.doctor.edad == "" ||
+        this.doctor.celular == "" ||
+        this.doctor.cmp == "" ||
+        this.doctor.profesion == "" ||
+        this.doctor.especialidad == "" ||
+        this.doctor.genero == ""
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     //vacía las casillas despues de un registro
     vaciar() {
       this.doctor = {
@@ -349,18 +408,16 @@ export default {
         especialidad: "",
       };
     },
-    //REGISTRAR UN DOCTOR
-    setDoctor(doc) {
-        let datos = {
-            newDoctor: doc,
-            organizacion : this.getUsuario
-        }
-        //LLAMA A LA CONSULTA AGREGAR NUEVO DOCTOR DE ORGANIZACION.JS
-        this.agregarNuevoDoctor(datos)
-    },
+    
   },
   computed: {
-    ...mapGetters(['getUsuario','getMensajeOrganizacion','getCargaOrganizacion'])
+    ...mapGetters([
+      "getUsuario",
+      "getMensajeOrganizacion",
+      "getCargaOrganizacion",
+      "getEspecialidades",
+      "getMensajeAdvertencia",
+    ]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -374,7 +431,12 @@ export default {
     document.getElementById("inputDNI").addEventListener("input", function() {
       if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
-    
+    this.$refs.simplert.openSimplert({
+      title: "TENER EN CUENTA!",
+      message:
+        "Recuerde que los datos registrados del doctor serán verificados con el Colegio de médicos del Perú.",
+      type: "warning",
+    });
   },
 };
 </script>

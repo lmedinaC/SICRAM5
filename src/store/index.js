@@ -77,6 +77,7 @@ export default new Vuex.Store({
     },
     setObjCita({commit},cita){
       localStorage.setItem('cita',JSON.stringify(cita))
+      commit('setCita',cita)
     },
     obtenerCita({commit}){
       const cita = JSON.parse(localStorage.getItem('cita'))

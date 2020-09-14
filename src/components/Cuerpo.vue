@@ -16,7 +16,7 @@
           <div>
             <img
               style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); "
-              src="../assets/qwe.png"
+              src="../assets/personas.png"
               alt="paciente"
               class="rounded-circle servicio-img"
 

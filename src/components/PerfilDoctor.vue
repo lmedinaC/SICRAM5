@@ -13,41 +13,50 @@
           <div class="row justify-content-center">
             <div class="col-lg-3">
               <div class="foto">
-                <img src="../assets/docs3.png" alt="" />
+                <img
+                  v-if="getDatosDoctor.genero == 'masculino'"
+                  src="../assets/doctor.png"
+                  alt=""
+                />
+                <img
+                  v-if="getDatosDoctor.genero == 'femenino'"
+                  src="../assets/doctora.png"
+                  alt=""
+                />
               </div>
             </div>
             <div class="col-lg-7">
               <div class="datos-personales ">
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Nombres y apellidos
                   </div>
                   <div class="col-7 " style="text-transform: uppercase;">
-                    {{getDatosDoctor.name}} {{getDatosDoctor.lastname}}
+                    {{ getDatosDoctor.name }} {{ getDatosDoctor.lastname }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     DNI
                   </div>
                   <div class="col-7 ">
-                    {{getDatosDoctor.dni}}
+                    {{ getDatosDoctor.dni }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Username
                   </div>
                   <div class="col-7 ">
-                    {{getDatosDoctor.username}} 
+                    {{ getDatosDoctor.username }}
                   </div>
                 </div>
-                <div class="row" > 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row">
+                  <div class="col-5 valores font-weight-bold">
                     Edad
                   </div>
                   <div class="col-7 ">
-                    {{getDatosDoctor.edad}}
+                    {{ getDatosDoctor.edad }}
                   </div>
                 </div>
               </div>
@@ -59,28 +68,28 @@
           <div class="row justify-content-center">
             <div class="col-12 col-lg-10 seccion2">
               <div class="datos-profesionales h-100">
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     CMP
                   </div>
                   <div class="col-7 " style="text-transform: uppercase;">
-                    {{getDatosDoctor.cmp}} 
+                    {{ getDatosDoctor.cmp }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Especialidad
                   </div>
                   <div class="col-7 ">
-                    {{getDatosDoctor.especialidad}}
+                    {{ getDatosDoctor.especialidad }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Profesión
                   </div>
                   <div class="col-7 ">
-                    {{getDatosDoctor.profesion}} 
+                    {{ getDatosDoctor.profesion }}
                   </div>
                 </div>
               </div>
@@ -93,21 +102,20 @@
 </template>
 
 <script>
-import {  mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "PerfilDoctor",
 
   mounted() {
     $("#sidebarCollapse").on("click", function() {
-    
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
   },
-  
+
   computed: {
-    ...mapGetters(['getDatosDoctor'])
+    ...mapGetters(["getDatosDoctor"]),
   },
 };
 </script>
@@ -284,7 +292,7 @@ a:focus {
   width: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   padding: 20px;
-  padding-left: 50px ;
+  padding-left: 50px;
 }
 
 .datos-profesionales .valores {
@@ -322,7 +330,6 @@ a:focus {
     margin-bottom: 20px;
   }
   .datos-profesionales {
-    
   }
 }
 
@@ -360,7 +367,6 @@ a:focus {
   .datos-profesionales {
     width: 380px;
     height: 150px;
-    
   }
   .seccion2 {
     position: relative;

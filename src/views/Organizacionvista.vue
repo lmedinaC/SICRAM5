@@ -34,10 +34,17 @@ export default {
     ActualizarOrganizacion,
     InicioOrg,
   },
+  methods:{
+    ...mapActions(['listarEspecialidades'])
+  },
 
   computed: {
     ...mapState(["componenteVistaOrganizacion"]),
   },
+
+  mounted(){
+    this.listarEspecialidades()
+  }
  
 };
 </script>

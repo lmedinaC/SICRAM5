@@ -5,20 +5,24 @@
     :width="750"
     :focus-trap="true"
     :height="370"
-  > 
-    <div class="editar">
+  >
+    <div class="editar" v-if="getListaHorariosDoctor !=null">
       <div class="titulo">
         <h3>Editar Cita pendiente</h3>
       </div>
       <div class="datos">
-        <form @submit.prevent="abrirEditarCita({
-                  especialidad: getDatosCita.especialidad.especialidad,
-                  fecha: rango,
-                  hora_inicio: horas.hora_inicio,
-                  hora_fin: horas.hora_fin,
-                  _iddoctor: getDatosCita.doctor._id,
-                  id_cita : getDatosCita._id
-                },)">
+        <form
+          @submit.prevent="
+            abrirEditarCita({
+              especialidad: getDatosCita.especialidad.especialidad,
+              fecha: rango,
+              hora_inicio: horas.hora_inicio,
+              hora_fin: horas.hora_fin,
+              _iddoctor: getDatosCita.doctor._id,
+              id_cita: getDatosCita._id,
+            })
+          "
+        >
           <div class="form-row ">
             <div class="form-group col-md-6">
               <div class="row mr-1">
@@ -27,7 +31,7 @@
                 </div>
                 <div class="col-8">
                   <select
-                    id="inputState" 
+                    id="inputState"
                     class="form-control"
                     v-model="tipopaciente"
                     disabled
@@ -72,7 +76,12 @@
                   <label for="inputEspecialidad">Especialidad</label>
                 </div>
                 <div class="col-8">
-                  <input type="text" class="form-control" disabled v-model="getDatosCita.doctor.lastname"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    disabled
+                    v-model="getDatosCita.doctor.lastname"
+                  />
                 </div>
               </div>
             </div>
@@ -82,7 +91,12 @@
                   <label for="inputDoctor">Doctor</label>
                 </div>
                 <div class="col-8">
-                  <input type="text" class="form-control" disabled  v-model="getDatosCita.especialidad.especialidad"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    disabled
+                    v-model="getDatosCita.especialidad.especialidad"
+                  />
                 </div>
               </div>
             </div>
@@ -124,7 +138,6 @@
                       v-for="(item, index) in horarios"
                       :key="index"
                       v-bind:value="item"
-                      
                     >
                       {{ item.hora_inicio }} - {{ item.hora_fin }}
                     </option>
@@ -135,8 +148,7 @@
           </div>
 
           <div class="botones">
-            <button class="btn btn-md boton-editar"
-            >Editar</button>
+            <button class="btn btn-md boton-editar">Editar</button>
             <button
               class="btn btn-md boton-cerrar"
               type="button"
@@ -157,24 +169,24 @@ import Simplert from "@/components/Simplert.vue";
 import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   name: "ModEditarCita",
-  components:{
-      Simplert
+  components: {
+    Simplert,
   },
   data() {
     return {
-      cita : null,
+      cita: null,
       tipopaciente: "titular",
       idFamiliar: "",
-      horarios : [],
-      rango : "",
-      horas: {}
+      horarios: [],
+      rango: "",
+      horas: {},
     };
   },
   methods: {
-    ...mapActions(['actualizarCitaPaciente']),
+    ...mapActions(["actualizarCitaPaciente","listCitas"]),
     //MOSTRAR LAS FECHAS
-    setHorario(rango){
-      console.log(rango)
+    setHorario(rango) {
+      console.log(rango);
       this.horarios = [];
       this.rango = rango;
       this.getListaHorariosDoctor.forEach((element) => {
@@ -185,24 +197,23 @@ export default {
     },
     //MODAL PARA EDITAR LA CITA
     abrirEditarCita(element) {
-        this.cita = element
-        this.getMensajeEditar.onConfirm = this.editarCita
-        this.$refs.simplert.openSimplert(this.getMensajeEditar)
+      this.cita = element;
+      this.getMensajeEditar.onConfirm = this.editarCita;
+      this.$refs.simplert.openSimplert(this.getMensajeEditar);
     },
     //LLAMA A EDITAR CITA DE PACIENTE.JS
-    editarCita(){
+    editarCita() {
       let datos = {
-        paciente : this.getUsuario,
-        cita : this.cita
-      }
-        console.log('cita', this.cita)
-        console.log(this.getDatosCita)
-        this.actualizarCitaPaciente(datos)
-        .then((res)=>{
-          this.$refs.simplert.openSimplert(this.getMensaje);
-        })
+        paciente: this.getUsuario,
+        cita: this.cita,
+      };
+      console.log("cita", this.cita);
+      console.log(this.getDatosCita);
+      this.actualizarCitaPaciente(datos).then((res) => {
+        this.$refs.simplert.openSimplert(this.getMensaje);
+        this.listCitas(this.getUsuario)
+      });
     },
-
   },
   computed: {
     ...mapGetters([
@@ -213,10 +224,9 @@ export default {
       "getMensajeEditar",
       "getDatosCita",
       "getDia",
-      "getListaHorariosDoctor"
+      "getListaHorariosDoctor",
     ]),
   },
-  
 };
 </script>
 

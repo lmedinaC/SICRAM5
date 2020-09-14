@@ -13,41 +13,52 @@
           <div class="row justify-content-center">
             <div class="col-12 col-lg-3">
               <div class="foto">
-                <img src="../assets/user.png" alt="" />
+                <img
+                  v-if="getDatosPaciente.genero == 'masculino'"
+                  class=""
+                  src="../assets/usuarioM.png"
+                  alt=""
+                />
+                <img
+                  v-if="getDatosPaciente.genero == 'femenino'"
+                  class=""
+                  src="../assets/usuarioH.png"
+                  alt=""
+                />
               </div>
             </div>
             <div class="col-lg-7">
               <div class="datos-personales ">
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Nombres y apellidos
                   </div>
                   <div class="col-7 " style="text-transform: uppercase;">
-                    {{datosUsuario.name}} {{datosUsuario.lastname}}
+                    {{ datosUsuario.name }} {{ datosUsuario.lastname }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     DNI
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.dni}}
+                    {{ datosUsuario.dni }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Username
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.username}} 
+                    {{ datosUsuario.username }}
                   </div>
                 </div>
-                <div class="row" > 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row">
+                  <div class="col-5 valores font-weight-bold">
                     Edad
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.edad}}
+                    {{ datosUsuario.edad }}
                   </div>
                 </div>
               </div>
@@ -59,28 +70,28 @@
           <div class="row justify-content-center">
             <div class="col-12 col-lg-10 seccion2">
               <div class="datos-profesionales">
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Discapacidad
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.discapacidad}} 
+                    {{ datosUsuario.discapacidad }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Celular:
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.celular}}
+                    {{ datosUsuario.celular }}
                   </div>
                 </div>
-                <div class="row" style="margin-bottom:5px;"> 
-                  <div class="col-5 valores font-weight-bold"> 
+                <div class="row" style="margin-bottom:5px;">
+                  <div class="col-5 valores font-weight-bold">
                     Dirección
                   </div>
                   <div class="col-7 ">
-                    {{datosUsuario.direccion}} 
+                    {{ datosUsuario.direccion }}
                   </div>
                 </div>
               </div>
@@ -105,7 +116,7 @@ export default {
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
-      console.log("asdasd")
+      console.log("asdasd");
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
@@ -115,11 +126,11 @@ export default {
   methods: {
     getPaciente() {
       this.datosUsuario = this.getDatosPaciente;
-      this.$log.info('Datos.PACIENTE', this.datosUsuario)
+      this.$log.info("Datos.PACIENTE", this.datosUsuario);
     },
   },
   computed: {
-    ...mapGetters(['getDatosPaciente'])
+    ...mapGetters(["getDatosPaciente"]),
   },
 };
 </script>
@@ -380,4 +391,3 @@ a:focus {
   }
 }
 </style>
-

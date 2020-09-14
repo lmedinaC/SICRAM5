@@ -19,7 +19,7 @@
         >
           <div class="row justify-content-center" style="background:#0099a1;">
             <div class="foto col-sm-3  col-md-3 mt-2 mb-2 ">
-              <img src="../assets/org.png" alt="" />
+              <img src="../assets/hospital2.jpg" alt="" />
             </div>
 
             <div class="col-sm-7 col-md-7 col-12 titulo">
@@ -394,7 +394,6 @@ label {
   width: 100px;
   height: 100%;
   background: white;
-  border-radius: 100%;
   box-shadow: 0 0 3px 3px #62bbe4;
   object-fit: cover;
 }

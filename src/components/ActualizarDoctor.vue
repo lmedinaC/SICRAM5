@@ -17,9 +17,18 @@
           class="container"
           style=" box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); background:white;"
         >
-          <div class="row justify-content-center" style="background:#0099a1;"> 
+          <div class="row justify-content-center" style="background:#0099a1;">
             <div class="foto col-sm-3  col-md-3 mt-2 mb-2 ">
-              <img src="../assets/docs3.png" alt="" />
+              <img
+                v-if="datosUsuario.genero == 'masculino'"
+                src="../assets/doctor.png"
+                alt=""
+              />
+              <img
+                v-if="datosUsuario.genero == 'femenino'"
+                src="../assets/doctora.png"
+                alt=""
+              />
             </div>
 
             <div class="col-sm-7 col-md-7 col-12 titulo">
@@ -32,7 +41,7 @@
                 email: datosUsuario.email,
                 celular: datosUsuario.celular,
                 edad: datosUsuario.edad,
-                especialidad : datosUsuario.especialidad
+                especialidad: datosUsuario.especialidad,
               })
             "
           >
@@ -81,12 +90,12 @@
                   </div>
                   <div class="col-8">
                     <input
-                  type="text"
-                  class="form-control"
-                  id="inputDNI"
-                  v-model="datosUsuario.dni"
-                  disabled
-                />
+                      type="text"
+                      class="form-control"
+                      id="inputDNI"
+                      v-model="datosUsuario.dni"
+                      disabled
+                    />
                   </div>
                 </div>
               </div>
@@ -97,11 +106,11 @@
                   </div>
                   <div class="col-8">
                     <input
-                  type="text"
-                  class="form-control"
-                  id="inputEdad"
-                  v-model="datosUsuario.edad"
-                />
+                      type="text"
+                      class="form-control"
+                      id="inputEdad"
+                      v-model="datosUsuario.edad"
+                    />
                   </div>
                 </div>
               </div>
@@ -115,11 +124,11 @@
                   </div>
                   <div class="col-8">
                     <input
-                  type="text"
-                  class="form-control"
-                  id="inputEspecialidad"
-                  v-model="datosUsuario.email"
-                />
+                      type="text"
+                      class="form-control"
+                      id="inputEspecialidad"
+                      v-model="datosUsuario.email"
+                    />
                   </div>
                 </div>
               </div>
@@ -130,11 +139,11 @@
                   </div>
                   <div class="col-8">
                     <input
-                  type="text"
-                  class="form-control"
-                  id="inputEspecialidad"
-                  v-model="datosUsuario.celular"
-                />
+                      type="text"
+                      class="form-control"
+                      id="inputEspecialidad"
+                      v-model="datosUsuario.celular"
+                    />
                   </div>
                 </div>
               </div>
@@ -147,13 +156,13 @@
                     <label for="inputCMP">Cmp</label>
                   </div>
                   <div class="col-8">
-                     <input
-                  type="text"
-                  class="form-control"
-                  id="inputCMP"
-                  v-model="datosUsuario.cmp"
-                  disabled
-                />
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputCMP"
+                      v-model="datosUsuario.cmp"
+                      disabled
+                    />
                   </div>
                 </div>
               </div>
@@ -164,34 +173,37 @@
                   </div>
                   <div class="col-8">
                     <input
-                  type="text"
-                  class="form-control"
-                  id="inputEspecialidad"
-                  v-model="datosUsuario.especialidad"
-                  disabled
-                />
+                      type="text"
+                      class="form-control"
+                      id="inputEspecialidad"
+                      v-model="datosUsuario.especialidad"
+                      disabled
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            
-            
+
             <div class="text-center boton-final">
-              <button class="but btn  btn-lg mt-3" 
+              <button
+                class="but btn  btn-lg mt-3"
                 type="submit"
-                :disabled = "getCargaDoctor"
+                :disabled="getCargaDoctor"
               >
                 Actualizar
               </button>
             </div>
           </form>
-          <div class="row " style="background:#0099a1; height:60px; align-content: center;">
+          <div
+            class="row "
+            style="background:#0099a1; height:60px; align-content: center;"
+          >
             <div class="col-12 text-center">
               <h3 style="color:white">Actualizar contraseña</h3>
             </div>
           </div>
           <form action="">
-              <div class="form-row ">
+            <div class="form-row ">
               <div class="form-group col-md-6">
                 <div class="row mr-1">
                   <div class="col-4">
@@ -247,7 +259,7 @@ export default {
     return {
       mensajeRegistro: {},
       datosUsuario: {},
-      actualizarUsuario:{}
+      actualizarUsuario: {},
     };
   },
   mounted() {
@@ -259,24 +271,28 @@ export default {
     this.cargarDatos();
   },
   methods: {
-    ...mapActions(['actualizarDatosDoctor']),
+    ...mapActions(["actualizarDatosDoctor"]),
     actualizarDoctor(newDatos) {
-      console.log(newDatos)
+      console.log(newDatos);
       let datos = {
-        doctor : this.getUsuario,
-        newDatos : newDatos
-      }
-      this.actualizarDatosDoctor(datos)
-      .then((res)=>{
+        doctor: this.getUsuario,
+        newDatos: newDatos,
+      };
+      this.actualizarDatosDoctor(datos).then((res) => {
         this.$refs.simplert.openSimplert(this.getMensajeDoctor);
-      })
+      });
     },
     cargarDatos() {
-      this.datosUsuario = this.getDatosDoctor
+      this.datosUsuario = this.getDatosDoctor;
     },
   },
   computed: {
-    ...mapGetters(['getDatosDoctor','getCargaDoctor','getUsuario','getMensajeDoctor'])
+    ...mapGetters([
+      "getDatosDoctor",
+      "getCargaDoctor",
+      "getUsuario",
+      "getMensajeDoctor",
+    ]),
   },
 };
 </script>
@@ -340,7 +356,6 @@ a:focus {
 #content .contenido {
   position: relative;
   top: 10px;
-  
 }
 
 /* ---------------------------------------------------
@@ -476,7 +491,7 @@ label {
 .foto img {
   width: 100px;
   height: 100%;
-
+  background: white;
   border-radius: 100%;
   box-shadow: 0 0 3px 3px #62bbe4;
   object-fit: cover;

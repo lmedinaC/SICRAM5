@@ -16,9 +16,12 @@
         <div class="perfil">
           <div class="row">
             <div class="col-md-4 col-sm-12">
-              <div class="foto-perfil"></div>
-              <div>
-                <button class="btn boton-perfil">Cambiar foto</button>
+              <div class="foto-perfil">
+                <img
+                  class="foto-org"
+                  src="../assets/hospital2.jpg"
+                  alt=""
+                />
               </div>
             </div>
             <div class="col-md-8 col-sm-12">
@@ -169,8 +172,12 @@ a:focus {
   height: 200px;
   width: 100%;
   border-style: solid;
-  border-color: rgb(165, 164, 164);
+  border-color: #75bec2;
   background: #ffffff;
+}
+.foto-org{
+  width: 100%;
+  height: 100%;
 }
 
 .boton-perfil {

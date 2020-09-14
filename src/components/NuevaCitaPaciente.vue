@@ -242,7 +242,12 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['listarEspecialidades','listarDependientes','agregarCitaPaciente','agregarCitaDependiente']),
+    ...mapActions([
+      "listarEspecialidades",
+      "listarDependientes",
+      "agregarCitaPaciente",
+      "agregarCitaDependiente",
+    ]),
     open2(o) {
       let obj = {
         title: o.title,
@@ -253,7 +258,6 @@ export default {
       console.log("open simplert with obj : ", obj);
       this.$refs.simplert.openSimplert(obj);
       console.log(o);
-
     },
 
     //deshabilitar seccion de familiares
@@ -268,9 +272,8 @@ export default {
 
     //Carga los dependientes del paciente
     cargarDependiente() {
-      this.listarDependientes(this.getUsuario)
+      this.listarDependientes(this.getUsuario);
     },
-
 
     //LISTAR DOCTORES POR ESPECIALIDAD
     getDoctores(especialidad) {
@@ -280,10 +283,10 @@ export default {
           this.doctores = element.doctor; //se guardan los doctores de la especialidad seleccionada
         }
       });
-      this.$log.info('DOCTORES', this.doctores)
+      this.$log.info("DOCTORES", this.doctores);
       this.doctorElegido = "";
       this.rango = "";
-      this.dia= [];
+      this.dia = [];
       this.horarios = [];
     },
 
@@ -296,8 +299,8 @@ export default {
         .get(url)
         .then((res) => {
           this.horarioDoctor = res.data;
-          console.log(res)
-          this.$log.info('HORARIOS', this.horarioDoctor)
+          console.log(res);
+          this.$log.info("HORARIOS", this.horarioDoctor);
           this.horarioDoctor.forEach((element) => {
             this.dia.push(element.fecha);
           });
@@ -327,6 +330,7 @@ export default {
       this.agregarcitaPaciente = cita;
       //SI LOS DATOS VIENEN VACÍOS
       if (
+        this.rango == "" ||
         cita.hora_inicio == null ||
         cita.hora_fin == null ||
         cita.fecha == null ||
@@ -345,26 +349,37 @@ export default {
         if (paciente.tipopaciente == "titular") {
           let datos = {
             paciente: this.getUsuario,
-            cita : cita
-          }
-          this.agregarCitaPaciente(datos)
-          .then((res)=>{
-            this.$refs.simplert.openSimplert(this.getMensaje);
-            this.limpiarCasillas()
-          })
-        } else {
-          //CITA PARA EL PACIENTE DEPENDIENTE
-          console.log("idpaciente", this.idPaciente);
-          let datos = {
-            paciente: this.getUsuario,
             cita: cita,
-            idFamiliar : paciente.idFamiliar
-          }
-          this.agregarCitaDependiente(datos)
-          .then((res)=>{
+          };
+          this.agregarCitaPaciente(datos).then((res) => {
             this.$refs.simplert.openSimplert(this.getMensaje);
-            this.limpiarCasillas()
-          })
+            this.limpiarCasillas();
+          });
+        } else if (paciente.tipopaciente == "familiar") {
+          //CITA PARA EL PACIENTE DEPENDIENTE
+          if (paciente.idFamiliar == "") {
+            this.$refs.simplert.openSimplert({
+              title: "CAMPOS IMCOMPLETOS",
+              message: "Si cuenta con algún familiar, seleccionelo.",
+              type: "warning",
+            });
+          } else {
+            let datos = {
+              paciente: this.getUsuario,
+              cita: cita,
+              idFamiliar: paciente.idFamiliar,
+            };
+            this.agregarCitaDependiente(datos).then((res) => {
+              this.$refs.simplert.openSimplert(this.getMensaje);
+              this.limpiarCasillas();
+            });
+          }
+        } else {
+          this.$refs.simplert.openSimplert({
+            title: "CAMPOS IMCOMPLETOS",
+            message: "Seleccione el tipo de paciente.",
+            type: "warning",
+          });
         }
       }
     },
@@ -373,10 +388,18 @@ export default {
       this.doctores = [];
       this.dia = [];
       this.horarios = [];
+      this.rango=""
+      this.doctorElegido=""
     },
   },
   computed: {
-    ...mapGetters(['getEspecialidades','getListFamiliares','getUsuario','getMensaje','getCarga',""])
+    ...mapGetters([
+      "getEspecialidades",
+      "getListFamiliares",
+      "getUsuario",
+      "getMensaje",
+      "getCarga",
+    ]),
   },
 };
 </script>

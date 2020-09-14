@@ -1,7 +1,6 @@
 const axios = require('axios');
-
+ 
 const namespaced= true;
-const dia = [];
 const state = {
     datosDoctor : null, //DATOS DEL PACIENTE
     listaHorariosDoctor : null, //LISTA DE HORARIOS DE ATENCION DEL DOCTOR

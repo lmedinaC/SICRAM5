@@ -102,6 +102,30 @@ const mutations = {
       }
     },
 
+    setAdvertencia(state,paylaod){
+      state.mensajeOrganizacion  = {
+        title: "CAMPOS NECESARIOS",
+        message: paylaod,
+        type: "warning",
+      }
+    },
+
+    setError(state,payload){
+      state.mensajeOrganizacion  = {
+        title: "REGISTRO FALLIDO",
+        message: payload,
+        type: "error",
+      }
+    },
+
+    setExito(state,payload){
+      state.mensajeOrganizacion  = {
+        title: "REGISTRO EXITOSO",
+        message: payload,
+        type: "success",
+      }
+    },
+
     //PONE VALOR DE CARGA
     setCargaOrganizacion(state, payload){
         state.cargaOrganizacion = payload
@@ -178,18 +202,25 @@ const actions = {
             console.log(res)
             commit('setCargaOrganizacion',false)
             if (res.data.msg === "Bienvenido Doctor, es un nuevo usario.") {
-                commit('setMensajePositivoOrganizacion')
-                return Promise.resolve(true)
-            } else {
-                commit('setMensajeNegativoOrganizacion')
-                return Promise.resolve(false)
+              commit('setMensajePositivoOrganizacion')
+              return Promise.resolve(true)
+            }else if(res.data.msg === "Username ya existe" ){
+              commit('setError',"El usuario ya existe")
+              return Promise.resolve(false)
+            }else if(res.data.msg === "LLene los nombres y apellidos, completos y CORRECTOS del doctor" ){
+              commit('setError',"Los datos registrados no coinciden con el CMP del doctor.")
+              return Promise.resolve(false)
+            } 
+            else {
+              commit('setError',"Ya existe un Doctor con este usuario o correo electrónico.")
+              return Promise.resolve(false)
             }
         })
         .catch((e) => {
             console.log(e)
             commit('setCargaOrganizacion',false)
-            commit('setMensajeNegativoOrganizacion')
-            return Promise.resolve(false)
+            commit('setError',"Ya existe un Doctor con este usuario o correo electrónico.")
+              return Promise.resolve(false)
         });
     },
 

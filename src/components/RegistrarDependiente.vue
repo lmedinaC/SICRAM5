@@ -19,7 +19,7 @@
         >
           <div class="row justify-content-center" style="background:#0099a1;">
             <div class="foto col-sm-3  col-md-3 mt-2 mb-2 ">
-              <img src="../assets/personas.jpg" alt="" />
+              <img src="../assets/equipo.png" alt="" />
             </div>
 
             <div class="col-sm-7 col-md-7 col-12 titulo">
@@ -38,6 +38,7 @@
                 discapacidad: dependiente.discapacidad,
                 celular: dependiente.celular,
                 direccion: dependiente.direccion,
+                genero: dependiente.genero,
               })
             "
           >
@@ -116,16 +117,18 @@
               <div class="form-group col-md-6">
                 <div class="row mr-1">
                   <div class="col-4">
-                    <label for="inputGenero">Correo</label>
+                    <label for="inputGenero">Género</label>
                   </div>
                   <div class="col-8">
-                    <input
-                      type="text"
+                    <select
+                      id="inputState"
                       class="form-control"
-                      id="Correo"
-                      v-model="dependiente.email"
-                      placeholder="Correo Familiar"
-                    />
+                      v-model="dependiente.genero"
+                    >
+                      <option disabled value="">Seleccione género</option>
+                      <option value="femenino">Femenino</option>
+                      <option value="masculino">Masculino</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -181,10 +184,13 @@
               </div>
             </div>
             <div class="text-center boton-final">
-              <button class="but btn btn-lg mt-4" style="color:"
-                :disabled="getCarga">
-                  Registrar
-                </button>
+              <button
+                class="but btn btn-lg mt-4"
+                style="color:"
+                :disabled="getCarga"
+              >
+                Registrar
+              </button>
             </div>
           </form>
         </div>
@@ -196,7 +202,7 @@
 
 <script>
 import Simplert from "@/components/Simplert.vue";
-import { mapGetters , mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "RegistrarDependiente",
   components: {
@@ -204,23 +210,25 @@ export default {
   },
   data() {
     return {
-      dependiente: {//DATOS DEL DEPENDIENTE
+      dependiente: {
+        //DATOS DEL DEPENDIENTE
         name: "",
         lastname: "",
-        email: "",
+        email: "email@hotmail.com",
         dni: "",
         edad: "",
         discapacidad: "",
         celular: "",
         direccion: "",
+        genero: "",
       },
     };
   },
   methods: {
     ...mapActions(["registrarPacienteDependiente"]),
     //vacía las casillas despues de un registro
-    vaciar(){
-      this.dependiente= {
+    vaciar() {
+      this.dependiente = {
         name: "",
         lastname: "",
         email: "",
@@ -229,24 +237,42 @@ export default {
         discapacidad: "",
         celular: "",
         direccion: "",
-      }
+      };
     },
     //FUNCION PARA REGISTRAR AL DEPENDIENTE
     crearDependiente(paciente) {
-      const datos = {
-        paciente: this.getUsuario,
-        dependiente: paciente,
+      if (
+        this.dependiente.name == "" ||
+        this.dependiente.lastname == "" ||
+        this.dependiente.email == "" ||
+        this.dependiente.dni == "" ||
+        this.dependiente.edad == "" ||
+        this.dependiente.discapacidad == "" ||
+        this.dependiente.genero == "" ||
+        this.dependiente.direccion == "" ||
+        this.dependiente.celular == ""
+      ) {
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      } else {
+        const datos = {
+          paciente: this.getUsuario,
+          dependiente: paciente,
+        };
+        //LLAMA A LA CONSULTA REGISTRAR DEPENDIENTE DE PACIENTE.JS
+        this.registrarPacienteDependiente(datos).then((res) => {
+          this.$refs.simplert.openSimplert(this.getMensaje);
+          this.vaciar();
+        });
       }
-      //LLAMA A LA CONSULTA REGISTRAR DEPENDIENTE DE PACIENTE.JS
-      this.registrarPacienteDependiente(datos)
-      .then((res)=>{
-        this.$refs.simplert.openSimplert(this.getMensaje);
-        this.vaciar()
-      })
     },
   },
   computed: {
-    ...mapGetters(["getUsuario","getCarga","getMensaje"]),
+    ...mapGetters([
+      "getUsuario",
+      "getCarga",
+      "getMensaje",
+      "getMensajeAdvertencia",
+    ]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -455,7 +481,7 @@ label {
 .foto img {
   width: 100px;
   height: 100%;
-
+  background: white;
   border-radius: 100%;
   box-shadow: 0 0 3px 3px #62bbe4;
   object-fit: cover;

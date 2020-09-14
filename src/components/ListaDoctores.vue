@@ -41,7 +41,20 @@
                     <div class="col-md-8">
                       <div class="row">
                         <div class="col-md-4">
-                          <div class="foto"></div>
+                          <div class="foto">
+                            <img
+                              class="foto-img"
+                              v-if="element.genero == 'masculino'"
+                              src="../assets/doctor.png"
+                              alt=""
+                            />
+                            <img
+                              class="foto-img"
+                              v-if="element.genero == 'femenino'"
+                              src="../assets/doctora.png"
+                              alt=""
+                            />
+                          </div>
                         </div>
                         <div class="col-md-8">
                           <p>
@@ -98,7 +111,7 @@ export default {
   },
   methods: {
     //LLAMAMOS A LA CONSULTA DE LISTAR  DOCTORES EN ORGANIZACION JS
-    ...mapActions(["listarDoctores","eliminarDoctorOrg"]),
+    ...mapActions(["listarDoctores", "eliminarDoctorOrg"]),
     //ABRE MODAL DE CONFIRAMCIÓN DE ELIMINACIÓN
     abrirEliminación(doctor) {
       this.doctoresDatos = doctor;
@@ -114,19 +127,22 @@ export default {
     eliminarDoctor() {
       console.log(this.doctoresDatos);
       let datos = {
-        doctor : this.getUsuario,
-        id_doctor : this.doctoresDatos._id
-      }
-      this.eliminarDoctorOrg(datos)
-      .then((res)=>{
+        doctor: this.getUsuario,
+        id_doctor: this.doctoresDatos._id,
+      };
+      this.eliminarDoctorOrg(datos).then((res) => {
         this.$refs.simplert.openSimplert(this.getMensajeOrganizacion);
         this.listarDoctores(this.getUsuario);
-      })
+      });
     },
   },
   computed: {
     //LLAMAMOS A EL ID Y TOKEN DE ORGANIZACION Y SU LISTA DE DOCTORES
-    ...mapGetters(["getUsuario", "getListaDoctoresOrganizacion","getMensajeOrganizacion"]),
+    ...mapGetters([
+      "getUsuario",
+      "getListaDoctoresOrganizacion",
+      "getMensajeOrganizacion",
+    ]),
   },
   mounted() {
     $("#sidebarCollapse").on("click", function() {
@@ -134,7 +150,7 @@ export default {
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
     });
-    console.log(this.getUsuario)
+    console.log(this.getUsuario);
     this.listarDoctores(this.getUsuario);
   },
 };
@@ -206,9 +222,16 @@ a:focus {
 }
 
 .foto {
-  background: gray;
+  text-align: center;
+  background: rgb(192, 192, 192);
   height: 150px;
   border-radius: 15px;
+}
+
+.foto-img{
+  width: 130px;
+  height: 100%;
+  object-fit: cover;
 }
 .lista-doctor {
   margin-top: 30px;
