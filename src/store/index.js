@@ -23,8 +23,8 @@ export default new Vuex.Store({
         onConfirm: null
     },
     mensajeAdevertencia: {
-      title: "CAMPOS IMCOMPLETOS",
-      message: "Todos los campos son necesarios!",
+      title: "RELLENE LOS CAMPOS",
+      message: "!Todos los campos son necesarios!",
       type: "warning",
     },
     componenteVista: 'InicioPaciente',

@@ -114,6 +114,30 @@ const mutations = {
       }
     },
 
+    setAdvertencia(state,paylaod){
+      state.mensajeDoctor  = {
+        title: "CAMPOS NECESARIOS",
+        message: paylaod,
+        type: "warning",
+      }
+    },
+
+    setError(state,payload){
+      state.mensajeDoctor  = {
+        title: "FALLO EN EL REGISTRO",
+        message: payload,
+        type: "error",
+      }
+    },
+
+    setExito(state,payload){
+      state.mensajeDoctor  = {
+        title: "REGISTRO EXITOSO",
+        message: payload,
+        type: "success",
+      }
+    },
+
     //PONE VALOR DE CARGA
     setCargaDoctor(state, payload){
         state.cargaDoctor = payload
@@ -283,8 +307,9 @@ const actions = {
             if (res.data.msg === "Horario actualizado! "){
               commit('setMensajeActualizacionPositiva')
               return Promise.resolve(true)
+            
             }else{
-              commit('setMensajeActualizacionNegativa')
+              commit('setError',res.data.msg)
               return Promise.resolve(false)
             } 
         })

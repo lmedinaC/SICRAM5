@@ -172,7 +172,7 @@ export default {
       }
     },
   },
-  computed: {
+  computed: { 
     ...mapGetters([
       "getDatosOrganizacion",
       "getUsuario",

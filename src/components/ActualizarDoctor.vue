@@ -272,15 +272,27 @@ export default {
   },
   methods: {
     ...mapActions(["actualizarDatosDoctor"]),
+    //VERIFICA SI LOS DATOS ESTAN VACIOS
+    camposVacios(element) {
+      for (const e in element) {
+        if (element[e] == "" || element[e] == null) {
+          return true;
+        }
+      }
+    },
+    //PARA ACTUALIZAR LOS DATOS DEL DOCTOR QUE SE ENCUENTRAN EN DOCTOR.JS
     actualizarDoctor(newDatos) {
-      console.log(newDatos);
-      let datos = {
-        doctor: this.getUsuario,
-        newDatos: newDatos,
-      };
-      this.actualizarDatosDoctor(datos).then((res) => {
-        this.$refs.simplert.openSimplert(this.getMensajeDoctor);
-      });
+      if (this.camposVacios(newDatos)) {
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      } else {
+        let datos = {
+          doctor: this.getUsuario,
+          newDatos: newDatos,
+        };
+        this.actualizarDatosDoctor(datos).then((res) => {
+          this.$refs.simplert.openSimplert(this.getMensajeDoctor);
+        });
+      }
     },
     cargarDatos() {
       this.datosUsuario = this.getDatosDoctor;
@@ -292,6 +304,7 @@ export default {
       "getCargaDoctor",
       "getUsuario",
       "getMensajeDoctor",
+      "getMensajeAdvertencia",
     ]),
   },
 };

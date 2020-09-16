@@ -19,7 +19,7 @@
           <div class="col-md-5 sicram">
             <img
               class="imagen"
-              src="../assets/iconoDoctor.png"
+              src="../../assets/iconoDoctor.png"
               alt="DoctorIcono"
             />
             SICRAM
@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
               <div class="row">
                 <div class="col-md-5">
                   <label for="">ACTO MEDICO: </label>
@@ -64,20 +64,6 @@
                 <div class="col-md-7">
                   <input
                     v-model="lista.acto_medico"
-                    class="form-control"
-                    type="text"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="row">
-                <div class="col-md-4">
-                  <label for="">Nº H.CL: </label>
-                </div>
-                <div class="col-md-8">
-                  <input
-                    v-model="lista.h_cl"
                     class="form-control"
                     type="text"
                   />
@@ -181,7 +167,14 @@
                 <div class="col-md-5">
                   <label for="">FECHA DE EXPEDICIÓN: </label>
                 </div>
-                <div class="col-md-7"></div>
+                <div class="col-md-7">
+                  <b-form-datepicker
+                    size="sm"
+                    local="es"
+                    v-model="lista.fecha_expedicion"
+                    disabled
+                  ></b-form-datepicker>
+                </div>
               </div>
             </div>
             <div class="col-md-4">
@@ -189,7 +182,14 @@
                 <div class="col-md-5">
                   <label for="">VÁLIDA HASTA: </label>
                 </div>
-                <div class="col-md-7"></div>
+                <div class="col-md-7">
+                  <b-form-datepicker
+                    size="sm"
+                    local="es"
+                    v-model="lista.fecha_expiracion"
+                    :min="dia"
+                  ></b-form-datepicker>
+                </div>
               </div>
             </div>
             <div class="col-md-4">
@@ -247,13 +247,14 @@ export default {
   },
   data() {
     return {
+      dia : new Date(),
       file: "",
       lista: {
         contador: 0,
         receta: [],
         acto_medico: "",
         h_cl: "",
-        fecha_expedicion: "",
+        fecha_expedicion: new Date(),
         fecha_expiracion: "",
         image: null,
       },
@@ -263,6 +264,15 @@ export default {
     };
   },
   methods: {
+    //PARA LA FECHA PONE UN MINIMO
+    disabledBeforeTodayAndAfterAWeek(date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return (
+        date < today 
+      );
+    },
+    //PARA LA FIRMA
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
       console.log(this.file);
@@ -329,7 +339,7 @@ export default {
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 .modal-contenido {
   padding: 15px 50px 15px 50px;
-  background-color: rgba(225, 234, 243, 0.72);
+  background-color: #e4f9fa;
   height: 100%;
 }
 
@@ -365,6 +375,7 @@ export default {
   }
 }
 .agrega {
+  box-shadow: 0 0 7px 0px rgb(105, 110, 110);
   color: #000;
   background-color: #54c7c7;
   font-weight: bold;
@@ -387,6 +398,7 @@ export default {
   margin-bottom: 30px;
 }
 .boton {
+  box-shadow: 0 0 7px 0px rgb(105, 110, 110);
   color: #000;
   margin: 5px;
   background-color: #54c7c7;
@@ -397,6 +409,7 @@ export default {
   }
 }
 .boton-eliminar {
+  box-shadow: 0 0 7px 0px rgb(105, 110, 110);
   color: #000;
   background-color: #d36e6e;
   font-weight: bold;

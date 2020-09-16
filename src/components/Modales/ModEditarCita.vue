@@ -184,6 +184,14 @@ export default {
   },
   methods: {
     ...mapActions(["actualizarCitaPaciente","listCitas"]),
+    //VERIFICA SI LOS DATOS ESTAN VACIOS
+    camposVacios(element) {
+      for (const e in element) {
+        if (element[e] == "" || element[e] == null) {
+          return true;
+        }
+      }
+    },
     //MOSTRAR LAS FECHAS
     setHorario(rango) {
       console.log(rango);
@@ -197,9 +205,13 @@ export default {
     },
     //MODAL PARA EDITAR LA CITA
     abrirEditarCita(element) {
-      this.cita = element;
-      this.getMensajeEditar.onConfirm = this.editarCita;
-      this.$refs.simplert.openSimplert(this.getMensajeEditar);
+      if(this.camposVacios(element)){
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      }else{
+        this.cita = element;
+        this.getMensajeEditar.onConfirm = this.editarCita;
+        this.$refs.simplert.openSimplert(this.getMensajeEditar);
+      }
     },
     //LLAMA A EDITAR CITA DE PACIENTE.JS
     editarCita() {
@@ -225,6 +237,7 @@ export default {
       "getDatosCita",
       "getDia",
       "getListaHorariosDoctor",
+      "getMensajeAdvertencia"
     ]),
   },
 };

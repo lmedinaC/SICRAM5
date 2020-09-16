@@ -160,7 +160,7 @@ export default {
       },
       nameOrg: { required },
       direccion: { required },
-      ruc: { required },
+      ruc: { required , minLength: minLength(11)},
     },
   },
   methods: {

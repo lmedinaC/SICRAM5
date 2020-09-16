@@ -158,9 +158,10 @@
                   </div>
                   <div class="col-8">
                     <input
-                      type="text"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      maxlength="9"
+                      type="number"
                       class="form-control"
-                      id="inputCMP"
                       v-model="datosUsuario.celular"
                     />
                   </div>
@@ -274,24 +275,41 @@ export default {
   },
   methods: {
     ...mapActions(["actualizarDatosPaciente"]),
+    //CAMPOS VACIOS
+    camposVacios(element){
+      for(const e in element){
+        if(element[e] == "" || element[e]  == null){
+          return true
+        }
+      }
+    },
     //FUNCION PARA ACTUALIZAR AL PACIENTE
     actualizarPaciente(pacient) {
-      this.deshabilitar = true;
-      const datos = {
-        paciente: this.getUsuario,
-        newDatos: pacient,
-      };
-      //LLAMA A LA CONSULTADA ALMACENADA EN PACIENTE.JS
-      this.actualizarDatosPaciente(datos).then((res) => {
-        this.$refs.simplert.openSimplert(this.getMensaje);
-      });
+      if (this.camposVacios(pacient)) {
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      }else{
+          const datos = {
+          paciente: this.getUsuario,
+          newDatos: pacient,
+        };
+        //LLAMA A LA CONSULTADA ALMACENADA EN PACIENTE.JS
+        this.actualizarDatosPaciente(datos).then((res) => {
+          this.$refs.simplert.openSimplert(this.getMensaje);
+        });
+      }
     },
     datosPaciente() {
       this.datosUsuario = this.getDatosPaciente;
     },
   },
   computed: {
-    ...mapGetters(["getDatosPaciente", "getUsuario", "getCarga", "getMensaje"]),
+    ...mapGetters([
+      "getDatosPaciente",
+      "getUsuario",
+      "getCarga",
+      "getMensaje",
+      "getMensajeAdvertencia",
+    ]),
   },
 };
 </script>

@@ -123,6 +123,7 @@
                 type="number"
                 class="form-control"
                 id="inputEdad"
+                min="18"
                 v-model="$v.user.edad.$model"
                 placeholder="Edad"
               />
@@ -133,7 +134,7 @@
                 class="form-control"
                 id="inputDiscapacidad"
                 v-model="$v.user.discapacidad.$model"
-                placeholder="Discapacidad 'niguna' "
+                placeholder="Discapacidad 'Ninguna' "
               />
             </div>
           </div>
@@ -167,7 +168,7 @@
                 type="submit"
                 class="butn"
                 value="REGISTRAR"
-                :disabled="$v.$invalid || carga2"
+                :disabled="carga2"
               />
             </div>
           </div>
@@ -223,8 +224,7 @@ export default {
         discapacidad: "",
       },
       mensaje: null,
-      carga: true,
-      carga2: null,
+      carga2: false,
     };
   },
   created() {
@@ -244,10 +244,10 @@ export default {
       },
       name: { required },
       lastname: { required },
-      dni: { required },
+      dni: { required, minLength: minLength(8) },
       edad: { required },
       discapacidad: { required },
-      celular: { required },
+      celular: { required, minLength: minLength(9) },
       direccion: { required },
       genero: { required },
     },
@@ -257,49 +257,62 @@ export default {
       this.$modal.hide("demo-login");
     },
     registrarPaciente(user) {
-      this.user = user;
-      const config = {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      };
       this.carga2 = true;
+      if (this.$v.user.celular.minLength == false) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "Digíte un número de celular válido.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else if (this.$v.user.dni.minLength == false) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "Digíte un número de DNI válido.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else if (this.$v.$invalid  == true) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "Relleno todos los campos correctamente.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else {
+        this.axios
+          .post("https://sicramv1.herokuapp.com/api/signupuser", {
+            ...user,
+          }) //elemento spreat
+          //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
 
-      this.axios
-        .post("https://sicramv1.herokuapp.com/api/signupuser", {
-          ...this.user,
-        }) //elemento spreat
-        //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
-
-        .then((res) => {
-          if (res.data.msg === "Username ya existe.") {
-            this.carga = false;
-            this.carga2 = false;
+          .then((res) => {
+            if (res.data.msg === "Username ya existe.") {
+              this.carga2 = false;
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO FALLIDO",
+                message: "Este paciente ya se encuentra registrado",
+                type: "error",
+              });
+            }else {
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO EXITOSO",
+                message: "Paciente registrado con éxito",
+                type: "success",
+                onClose: this.cerrar,
+              });
+              this.carga2 = false;
+            }
+          })
+          .catch((e) => {
             this.$refs.simplert.openSimplert({
               title: "REGISTRO FALLIDO",
-              message: "Este paciente ya se encuentra registrado",
+              message: "Ocurrió un error al registrar al paciente.",
               type: "error",
             });
-          } else {
-            this.$refs.simplert.openSimplert({
-              title: "REGISTRO EXITOSO",
-              message: "Paciente registrado con éxito",
-              type: "success",
-              onClose: this.cerrar,
-            });
-            this.carga = true;
             this.carga2 = false;
-          }
-        })
-        .catch((e) => {
-          this.$refs.simplert.openSimplert({
-            title: "REGISTRO FALLIDO",
-            message: "Ocurrió un error al registrar al paciente.",
-            type: "error",
           });
-          this.carga = false;
-          this.carga2 = false;
-        });
+      }
     },
   },
 };

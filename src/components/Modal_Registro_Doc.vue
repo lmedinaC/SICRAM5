@@ -26,7 +26,7 @@
               edad: $v.doctor.edad.$model,
               celular: $v.doctor.celular.$model,
               cmp: $v.doctor.cmp.$model,
-              profesion: $v.doctor.profesion.$model,
+              profesion: 'Doctor',
               especialidad: $v.doctor.especialidad.$model,
               genero: $v.doctor.genero.$model,
             })
@@ -129,6 +129,7 @@
                       type="number"
                       class="form-control"
                       id="inputEdad"
+                      min="18"
                       v-model="$v.doctor.edad.$model"
                       placeholder="Edad"
                     />
@@ -157,22 +158,13 @@
               </div>
               <div class="ml-2">
                 <div class="form-row">
-                  <div class="form-group col-md-6 mt-4">
+                  <div class="form-group col-md-12 mt-4">
                     <input
                       type="text"
                       class="form-control"
                       id="inputCmp"
                       v-model="$v.doctor.cmp.$model"
                       placeholder="CMP"
-                    />
-                  </div>
-                  <div class="form-group col-md-6 mt-4">
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="inputProfesion"
-                      v-model="$v.doctor.profesion.$model"
-                      placeholder="Profesión"
                     />
                   </div>
                 </div>
@@ -221,7 +213,7 @@
                 type="submit"
                 class="butn"
                 value="REGISTRAR"
-                :disabled="$v.$invalid || carga2"
+                :disabled="carga2"
               />
             </div>
           </div>
@@ -262,13 +254,11 @@ export default {
         edad: "",
         celular: "",
         cmp: "",
-        profesion: "",
         especialidad: "",
         genero: "",
       },
       mensaje: null,
-      carga: true,
-      carga2: null,
+      carga2: false,
     };
   },
   created() {
@@ -288,11 +278,10 @@ export default {
       username: { required },
       name: { required },
       lastname: { required },
-      dni: { required },
+      dni: { required,minLength: minLength(8)},
       edad: { required },
-      celular: { required },
+      celular: { required ,minLength: minLength(9)},
       cmp: { required },
-      profesion: { required },
       especialidad: { required },
       genero: { required },
     },
@@ -312,56 +301,72 @@ export default {
 
     registrarDoctor(doctor) {
       this.carga2 = true;
-      this.doctor = doctor;
-      console.log(doctor.especialidad);
-      console.log(doctor);
-      this.axios
-        .post("https://sicramv1.herokuapp.com/api/signupdoctor", {
-          ...this.doctor,
-        }) //elemento spreat
-        //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
-
-        .then((res) => {
-          if (res.data.msg === "Username ya existe.") {
-            this.carga = false;
-            this.carga2 = false;
-            this.$refs.simplert.openSimplert({
-              title: "REGISTRO FALLIDO",
-              message: "Este doctor ya se encuentra registrado",
-              type: "error",
-            });
-          } else if (
-            res.data.msg ==
-            "LLene los nombres y apellidos, completos y CORRECTOS del doctor"
-          ) {
-            this.$refs.simplert.openSimplert({
-              title: "REGISTRO FALLIDO",
-              message:
-                "LLene los nombres y apellidos, completos y CORRECTOS del doctor",
-              type: "error",
-            });
-            this.carga = false;
-            this.carga2 = false;
-          } else {
-            this.carga = true;
-            this.carga2 = false;
-            this.$refs.simplert.openSimplert({
-              title: "REGISTRO EXITOSO",
-              message: "Doctor registrado con éxito",
-              type: "success",
-              onClose: this.cerrar,
-            });
-          }
-        })
-        .catch((e) => {
-          this.carga = false;
-          this.carga2 = false;
-          this.$refs.simplert.openSimplert({
-            title: "REGISTRO FALLIDO",
-            message: "Ocurrió un error al registrar al Doctor.",
-            type: "error",
-          });
+      if (this.$v.doctor.celular.minLength == false) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "Digíte un número de celular válido.",
+          type: "warning",
         });
+        this.carga2 = false;
+      } else if (this.$v.doctor.dni.minLength == false) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "Digíte un número de DNI válido.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else if (this.$v.$invalid == true) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "Relleno todos los campos correctamente.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else {
+        this.axios
+          .post("https://sicramv1.herokuapp.com/api/signupdoctor", {
+            ...doctor,
+          }) //elemento spreat
+          //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
+
+          .then((res) => {
+            if (res.data.msg === "Username ya existe.") {
+              this.carga2 = false;
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO FALLIDO",
+                message: "Este doctor ya se encuentra registrado",
+                type: "error",
+              });
+            } else if (
+              res.data.msg ==
+              "LLene los nombres y apellidos, completos y CORRECTOS del doctor"
+            ) {
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO FALLIDO",
+                message:
+                  "LLene los nombres y apellidos, completos y CORRECTOS del doctor",
+                type: "error",
+              });
+              this.carga2 = false;
+            } else {
+              this.carga2 = false;
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO EXITOSO",
+                message: "Doctor registrado con éxito",
+                type: "success",
+                onClose: this.cerrar,
+              });
+            }
+          })
+          .catch((e) => {
+            this.carga2 = false;
+            this.$refs.simplert.openSimplert({
+              title: "REGISTRO FALLIDO",
+              message: "Ocurrió un error al registrar al Doctor.",
+              type: "error",
+            });
+          });
+      }
     },
   },
   computed: {

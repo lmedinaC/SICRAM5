@@ -175,11 +175,13 @@ const actions = {
             console.log(res)
             commit('setMensajeActualizacionPositivaOrg')
             commit('setDatosOrganizacion',res.data)
+            commit('setCargaOrganizacion',false)
             return Promise.resolve(true)
         })
         .catch((e) => {
             console.log(e)
             commit('setMensajeActualizacionNegativaOrg')
+            commit('setCargaOrganizacion',false)
             return Promise.resolve(false)
         });
     },

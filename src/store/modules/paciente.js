@@ -455,7 +455,7 @@ const actions = {
                 if(res.data.msg == "cita actualizada"){
                   commit('setMensajeActualizacionPositiva')
                   return Promise.resolve(true)
-                }if(res.data.msg == "HORARIO YA ESTA USADO "){
+                }else if(res.data.msg == "HORARIO YA ESTA USADO "){
                   commit('setError',"Horario en uso.")
                   return Promise.resolve(true)
                 }else{

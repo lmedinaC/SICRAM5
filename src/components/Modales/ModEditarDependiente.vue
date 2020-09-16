@@ -81,7 +81,7 @@
                 </div>
                 <div class="col-8">
                   <input
-                    type="text"
+                    type="number"
                     class="form-control"
                     v-model="getDatosFamiliar.edad"
                   />
@@ -112,9 +112,11 @@
                 </div>
                 <div class="col-8">
                   <input
-                    type="text"
+                    type="number"
                     class="form-control"
                     v-model="getDatosFamiliar.celular"
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                    maxlength="9"
                   />
                 </div>
               </div>
@@ -171,11 +173,22 @@ export default {
   },
   methods: {
     ...mapActions(["actualizarFamiliar"]),
+    camposVacios(element){
+      for(const e in element){
+        if(element[e] == "" || element[e]  == null){
+          return true
+        }
+      }
+    },
     //MODAL PARA CONFIRMAR EDICION DEPENDIENTE
     abrirEditarDependiente(dependiente) {
-      this.familiar = dependiente;
-      this.getMensajeEditar.onConfirm = this.editarDependiente;
-      this.$refs.simplert.openSimplert(this.getMensajeEditar);
+      if(this.camposVacios(dependiente)){ //VERIFICAMOS SI EL OBJETO ESTÁ VACIO
+        this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      }else{
+        this.familiar = dependiente;
+        this.getMensajeEditar.onConfirm = this.editarDependiente;
+        this.$refs.simplert.openSimplert(this.getMensajeEditar);
+      }
     },
     //LLAMA A EDITAR DEPENDIENTE DE PACIENTE.JS
     editarDependiente() {
@@ -197,6 +210,7 @@ export default {
       "getCarga",
       "getMensajeEditar",
       "getDatosFamiliar",
+      "getMensajeAdvertencia"
     ]),
   },
 };
