@@ -3,7 +3,7 @@
     <ModRecetaDoctor />
     <ModVerSintomas />
     <ModHistorialMedico />
-    <ModDiagnostico/>
+    <ModDiagnostico />
     <div class="container">
       <h3 class="titulo">SICRAM A TU SERVICIO</h3>
       <div class="row">
@@ -22,14 +22,15 @@
         <div class="col-md-2">
           <div class="menu">
             <button
-              class="btn btn-block botones" 
+              class="btn btn-block botones"
               @click="$modal.show('mod-historial-medico')"
             >
               <i class="fas fa-book-medical fa-lg"></i> Historial
             </button>
-            <button 
+            <button
               class="btn btn-block botones"
-              @click="$modal.show('mod-diagnostico')">
+              @click="$modal.show('mod-diagnostico')"
+            >
               <i class="fas fa-file-medical fa-lg"></i> Informe
             </button>
             <button
@@ -63,7 +64,7 @@ import ModRecetaDoctor from "@/components/Modales/ModRecetaDoctor.vue";
 import vueCustomScrollbar from "vue-custom-scrollbar";
 import Simplert from "@/components/Simplert.vue";
 import Session from "../components/Session.vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   name: "citaDoctor",
   components: {
@@ -73,7 +74,7 @@ export default {
     ModRecetaDoctor,
     ModVerSintomas,
     ModHistorialMedico,
-    ModDiagnostico
+    ModDiagnostico,
   },
   data() {
     return {
@@ -93,7 +94,13 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["obtenerCita", "citaAtendida"]),
+    ...mapActions([
+      "obtenerCita",
+      "citaAtendida",
+      "consultax",
+      "sintomasDelPaciente"
+    ]),
+    //COLGAMOS LA LLAMADA Y CAMBIAMOS EL ESTADO DE LA CITA A ATENDIDO
     colgarLlamada() {
       let obj2 = {
         title: "SALIR DE LA SESIÓN",
@@ -104,6 +111,7 @@ export default {
       };
       this.$refs.simplert1.openSimplert(obj2);
     },
+    //LLAMAMOS A LA CONSULTA CITA ATENDIDA DESPUES DE COLGAR LA LLAMADA
     salir() {
       let datos = {
         doctor: this.cita.doctor,
@@ -114,12 +122,29 @@ export default {
         window.location.assign("/doctorvista");
       });
     },
+    //LLAMAMOS AL DETALLE DE LA CITA JUNTO CON LOS SINTOMAS DEL PACIENTE
+    detalleCita() {
+      const objeto = {
+        doctor: this.cita.doctor,
+        id_cita: this.cita.id,
+      };
+      console.log(objeto);
+      this.verSintomas(objeto);
+    },
   },
   created() {
     this.obtenerCita();
   },
+  mounted(){
+    let datos = {
+        doctor: this.cita.doctor,
+        id_cita: this.cita.id,
+      };
+    this.sintomasDelPaciente(datos)
+  },
   computed: {
-    ...mapState(["idCita", "getUsuario", "cita"]),
+    ...mapState(["cita"]),
+    ...mapGetters(["getUsuario"]),
   },
 };
 </script>

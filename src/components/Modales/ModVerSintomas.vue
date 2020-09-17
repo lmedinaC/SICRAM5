@@ -20,7 +20,7 @@
             <div class="col-md-8">
               <input
                 style="text-transform: uppercase;"
-                
+                v-model="getPacienteAtendido.user.name"
                 class="form-control"
                 type="text"
                 :disabled="true"
@@ -36,7 +36,7 @@
             <div class="col-md-8">
               <input
                 style="text-transform: uppercase;"
-                
+                v-model="getPacienteAtendido.user.lastname"
                 class="form-control"
                 type="text"
                 :disabled="true"
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div v-if="detalleSintomas.sintomas != undefined">
+      <div v-if="getPacienteAtendido.detalle_sintomas.sintoma != undefined">
         <div class="descripcion-sintomas">
           <div class="col-md-12">
             <label class="descripcion" for="">
@@ -59,6 +59,7 @@
               rows="5"
               resize="false"
               placeholder="Describa sus sintomas..."
+              v-model="getPacienteAtendido.detalle_sintomas.sintoma"
               :disabled="true"
             ></textarea>
           </div>
@@ -72,7 +73,7 @@
               </label>
               <div class="cbox">
                 <input
-                  
+                  v-model="getPacienteAtendido.detalle_sintomas.tratamiento_reciente"
                   type="radio"
                   id="descripcionSi"
                   value="true"
@@ -80,7 +81,7 @@
                 />
                 <label for="descripcionSi">SI</label>
                 <input
-                  
+                  v-model="getPacienteAtendido.detalle_sintomas.tratamiento_reciente"
                   type="radio"
                   id="descripcionNo"
                   value="false"
@@ -97,7 +98,7 @@
               </div>
               <div class="cbox">
                 <input
-                  
+                  v-model="getPacienteAtendido.detalle_sintomas.alergia"
                   type="radio"
                   id="alergiaSi"
                   value="true"
@@ -105,8 +106,7 @@
                 />
                 <label for="alergiaSi">SI</label>
                 <input
-                  
-                
+                 v-model="getPacienteAtendido.detalle_sintomas.alergia"
                   type="radio"
                   id="alergiaNo"
                   value="false"
@@ -118,7 +118,7 @@
           </div>
         </div>
       </div>
-      <div class="container" v-if="detalleSintomas.sintomas === undefined">
+      <div class="container" v-if="this.getPacienteAtendido.detalle_sintomas.sintoma === undefined">
         <div
           class="mt-3"
           style="padding:50px; align-content: center; text-align: center; background:pink"
@@ -140,7 +140,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
   name: "ModVerSintomas",
   data() {
@@ -149,22 +149,20 @@ export default {
     };
   },
 
-  methods: {
-    
+  methods: {  
+    ...mapActions(['sintomasDelPaciente']),
+    //CADA VEZ QUE SE ABRE EL MODAL, PREGUNTA DENUEVO POR LOS SINTOMAS DEL PACIENTE
     open() {
-      
-      if (this.detalleSintomas.sintomas === undefined) {
-        this.detallarSintomas();
-      }
+        let datos  = {
+          id_cita : this.cita.id
+        }
+        this.sintomasDelPaciente(datos);
     }, 
-    detallarSintomas() {
-      
-    },
+    
   },
   computed: {
-  },
-  mounted() {
-    this.detallarSintomas();
+    ...mapGetters(["getPacienteAtendido"]),
+    ...mapState(["cita"])
   },
 };
 </script>

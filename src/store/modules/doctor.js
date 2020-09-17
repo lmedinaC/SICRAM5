@@ -1,6 +1,5 @@
 const axios = require('axios');
- 
-const namespaced= true;
+
 const state = {
     datosDoctor : null, //DATOS DEL PACIENTE
     listaHorariosDoctor : null, //LISTA DE HORARIOS DE ATENCION DEL DOCTOR
@@ -23,6 +22,7 @@ const state = {
     ],
     dia: [],
     datosHorario: null, //DATOS DEL HORARIO PARA MODIFICAR
+    pacienteAtendido: null,
 };
 
 const getters = {
@@ -60,6 +60,10 @@ const getters = {
     },
     getDia(state){
       return state.dia
+    },
+    //CONSEGUIR LOS DATOS DEL PACIENTE QUE SE ESTA ATENDIENDO
+    getPacienteAtendido(state){
+      return state.pacienteAtendido
     }
 };
 
@@ -150,12 +154,18 @@ const mutations = {
 
     setDia(state,payload){
       state.dia = payload
+    },
+
+    //PONE LOS DATOS DEL PACIENTE QUE SE ESTA ATENDIENDO
+    setPacienteAtendido(state,payload){
+      state.pacienteAtendido = payload
     }
 };
 
 const actions = {
     //CONSULTA DEL PERFIL DOCTOR
     perfilDoctor({commit},doctor){
+      console.log(doctor)
         let url =
         `https://sicramv1.herokuapp.com/api/doctor/perfil/${doctor.id}`;
         axios
@@ -423,8 +433,83 @@ const actions = {
             commit('setMensajeNegativoDoctor')
             return Promise.resolve(true)
         });
+    },
+
+    //CONSULTA PARA VER EL HISTORIAL DEL PACIENTE
+    sintomasDelPaciente({commit},datos){
+      let url =
+        `https://sicramv1.herokuapp.com/api/doctor/cita/detalle/${datos.id_cita}`;
+      axios
+        .get(url)
+        .then((res) => {
+            console.log(res)
+            commit('setPacienteAtendido',res.data)
+        })
+        .catch((e) => {
+            console.log("ocurrio un error")
+        });
+    },
+
+    //CONSULTA PARA REGISTRAR UN DIAGNÓSTICO DE UN PACIENTE
+    registrarDiagnosticoPaciente({commit},datos){
+      commit('setCargaDoctor',true)
+        let url = `https://sicramv1.herokuapp.com/api/doctor/cita/registrar_diagnostico/${datos.doctor.id}`;
+         return axios
+          .post(
+            url,
+            { ...datos.diagnostico },
+            {
+              headers: {
+                Authorization: `${datos.doctor.token}`,
+              },
+            }
+          )
+          .then((res)=>{
+            console.log(res)
+            commit('setCargaDoctor',false)
+            if (res.data.msg === "Nuevo diagnóstico guardado"){
+              commit('setMensajePositivoDoctor')
+              return Promise.resolve(true)
+            }else if(res.data.msg ==="Ya existe un diagnóstico para esta cita"){
+              commit('setError',"Ya ha registrado un informe para esta cita.")
+              return Promise.resolve(false)
+            }else{
+              commit('setMensajeNegativoDoctor')
+              return Promise.resolve(true)
+            }
+          })
+          .catch((e)=>{
+            console.log(e)
+            commit('setCargaDoctor',false)
+            commit('setMensajeNegativoDoctor')
+            return Promise.resolve(false)
+          })
+    },
+
+    agregarRecetaMedica({commit},datos){
+      
+        let url = `https://sicramv1.herokuapp.com/api/doctor/receta/crear/${datos.doctor.id}`;
+          axios
+          .post(
+            url,
+            datos.lista,
+            {
+              headers: {
+                'Authorization': `${datos.doctor.token}`,
+                'Content-Type': 'multipart/form-data'
+              },
+            }
+          )
+          .then((res)=>{
+            console.log(res)
+            
+          })
+          .catch((e)=>{
+            console.log(e)
+            
+          })
     }
-   
+    
 }
   
   export default {

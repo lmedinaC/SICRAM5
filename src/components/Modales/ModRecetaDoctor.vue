@@ -7,6 +7,7 @@
     :height="600"
   >
     <div class="modal-contenido">
+      <ModFirma />
       <vue-custom-scrollbar class="scroll-area" :settings="settings">
         <div class="row">
           <div class="col-md-7">
@@ -55,22 +56,7 @@
               />
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col-md-5">
-                  <label for="">ACTO MEDICO: </label>
-                </div>
-                <div class="col-md-7">
-                  <input
-                    v-model="lista.acto_medico"
-                    class="form-control"
-                    type="text"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+
           <div class="titulo-receta mt-1 mb-1">
             <label for="">Agregue Medicamentos</label>
             <button type="button" class="btn agrega" @click="agregar">+</button>
@@ -79,14 +65,11 @@
             <div class="tabla">
               <div class="encabezado">
                 <div class="row">
-                  <div class="col-md-2" style="border-right: 1px solid;">
+                  <div class="col-md-3" style="border-right: 1px solid;">
                     <label for="">MEDICAMENTO</label>
                   </div>
                   <div class="col-md-2" style="border-right: 1px solid;">
                     <label for="">CONCENTRACIÓN</label>
-                  </div>
-                  <div class="col-md-1" style="border-right: 1px solid;">
-                    <label for="">F.F</label>
                   </div>
                   <div class="col-md-2" style="border-right: 1px solid;">
                     <label for="">DÓSIS Y FRECUENCIA</label>
@@ -99,16 +82,16 @@
                   </div>
                 </div>
               </div>
-              <div class="lista-medica" v-if="lista.contador != 0">
+              <div class="lista-medica" v-if="contador != 0">
                 <div
                   class="row"
                   style="padding-bottom: 5px;"
-                  v-for="(element, id) of lista.receta"
+                  v-for="(element, id) of lista.medicamentos"
                   :key="id"
                 >
-                  <div class="col-md-2">
+                  <div class="col-md-3">
                     <input
-                      v-model="element.medicicamento"
+                      v-model="element.medicamento"
                       type="text"
                       class="form-control"
                     />
@@ -120,16 +103,9 @@
                       class="form-control"
                     />
                   </div>
-                  <div class="col-md-1" style="border-left: 1px solid #777777;">
-                    <input
-                      v-model="element.ff"
-                      type="text"
-                      class="form-control"
-                    />
-                  </div>
                   <div class="col-md-2" style="border-left: 1px solid #777777;">
                     <input
-                      v-model="element.dosis"
+                      v-model="element.dosis_frecuencia"
                       type="text"
                       class="form-control"
                     />
@@ -172,7 +148,8 @@
                     size="sm"
                     local="es"
                     v-model="lista.fecha_expedicion"
-                    disabled
+                    :min="dia"
+                    :max="dia"
                   ></b-form-datepicker>
                 </div>
               </div>
@@ -186,7 +163,7 @@
                   <b-form-datepicker
                     size="sm"
                     local="es"
-                    v-model="lista.fecha_expiracion"
+                    v-model="lista.valido_hasta"
                     :min="dia"
                   ></b-form-datepicker>
                 </div>
@@ -196,10 +173,9 @@
               <div>
                 <input
                   type="file"
-                  multiple
-                  id="file"
-                  ref="file"
-                  v-on:change="handleFileUpload()"
+                  name="image"
+                  @change="getImage"
+                  accept="image/*"
                 />
               </div>
               <div
@@ -211,7 +187,11 @@
             </div>
           </div>
           <div class="botones">
-            <button type="button" class="btn boton">
+            <button
+              type="button"
+              class="btn boton"
+              @click="$modal.show('mod-firma')"
+            >
               Firmar
             </button>
             <button type="submit" class="btn boton">
@@ -234,104 +214,132 @@
 </template>
 
 <script>
+import ModFirma from "@/components/Modales/ModFirma.vue";
 import Simplert from "@/components/Simplert.vue";
-//import ModalFirma from "@/components/ModalFirma.vue";
 import vueCustomScrollbar from "vue-custom-scrollbar";
-import { mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   name: "ModRecetaDoctor",
   components: {
     vueCustomScrollbar,
-    //ModalFirma,
+    ModFirma,
     Simplert,
   },
   data() {
     return {
-      dia : new Date(),
+      ejemplo: [],
+      bool: false,
+      dia: new Date(),
       file: "",
+      contador: 0,
       lista: {
-        contador: 0,
-        receta: [],
-        acto_medico: "",
-        h_cl: "",
-        fecha_expedicion: new Date(),
-        fecha_expiracion: "",
-        image: null,
+        medicamentos: [],
+        fecha_expedicion: "",
+        valido_hasta: "",
+        id_cita: "",
       },
+      firma_imagen: null,
       settings: {
         maxScrollbarLength: 400,
       },
     };
   },
   methods: {
-    //PARA LA FECHA PONE UN MINIMO
-    disabledBeforeTodayAndAfterAWeek(date) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return (
-        date < today 
-      );
-    },
+    ...mapActions(["agregarRecetaMedica"]),
     //PARA LA FIRMA
-    handleFileUpload() {
-      this.file = this.$refs.file.files[0];
-      console.log(this.file);
+    getImage(event) {
+      //Asignamos la imagen a  nuestra data
+      this.firma_imagen = event.target.files[0];
     },
     //AGREGA UN ELEMENTO A LA LISTA
     agregar() {
-      if (this.lista.contador == 6) {
+      if (this.contador == 6) {
         console.log("Llego al máximo.");
       } else {
-        let receta = {
-          medicicamento: "",
+        let medicamentos = {
+          medicamento: "",
           concentracion: "",
-          ff: "",
-          dosis: "",
+          dosis_frecuencia: "",
           duracion: "",
           cantidad: "",
         };
-        this.lista.contador = 1 + this.lista.contador;
-        this.lista.receta.push(receta);
+        this.contador = 1 + this.contador;
+        this.lista.medicamentos.push(medicamentos);
         console.log(this.doctor);
       }
     },
     //ELIMINAR UN MEDICAMENTO DE LA LISTA
     eliminar(item) {
-      this.lista.contador = this.lista.contador - 1;
-      var i = this.lista.receta.indexOf(item);
+      this.contador = this.contador - 1;
+      var i = this.lista.medicamentos.indexOf(item);
       if (i !== -1) {
-        this.lista.receta.splice(i, 1);
+        this.lista.medicamentos.splice(i, 1);
       }
     },
     //VERIFICA SI LOS IMPUTS ESTÁN VACION
     camposVacios() {
+      this.bool = false;
       if (
-        this.lista.acto_medico == "" ||
-        this.lista.h_cl == "" ||
-        this.lista.acto_medico == "" ||
         this.lista.fecha_expedicion == "" ||
-        this.lista.fecha_expiracion == ""
+        this.lista.valido_hasta == "" 
       ) {
-        return true;
+        this.bool = true;
       } else {
-        return false;
+        if (this.contador > 0) {
+          this.lista.medicamentos.forEach((element) => {
+            for (const e in element) {
+              if (element[e] == "" || element[e] == null) {
+                console.log("vacia");
+                this.bool = true;
+              }
+            }
+          });
+        } else {
+          this.bool = false;
+        }
       }
     },
     //LLAMA A LA CONSULTA AGREGAR MEDICAMENTOS
     agregarMedicamentos(lista) {
-      if (lista.contador == 0 || this.camposVacios()) {
+      var data = new FormData();
+      this.lista.id_cita = this.cita.id;
+      this.camposVacios();
+      console.log(this.lista);
+      if (this.contador == 0 || this.bool) {
         this.$refs.simplert.openSimplert({
           title: "RELLENE LOS CAMPOS.",
           message: "Registre los medicamentos en la receta.",
           type: "warning",
         });
       } else {
-        console.log(lista);
+        //data.append("firma_imagen", this.firma_imagen);
+        //this.lista.firma_imagen = data
+        
+        data.append("firma_imagen", this.firma_imagen);
+        data.append("id_cita", this.lista.id_cita);
+        data.append("fecha_expedicion", this.lista.fecha_expedicion);
+        data.append("valido_hasta", this.lista.valido_hasta);
+        for (let i = 0; i < this.contador; i++) {
+          data.append("medicamentos[" + i + "][medicamento]", this.lista.medicamentos[i].medicamento);
+          data.append("medicamentos[" + i + "][concentracion]", this.lista.medicamentos[i].concentracion);
+          data.append("medicamentos[" + i + "][dosis_frecuencia]", this.lista.medicamentos[i].dosis_frecuencia);
+          data.append("medicamentos[" + i + "][duracion]", this.lista.medicamentos[i].duracion);
+          data.append("medicamentos[" + i + "][cantidad]", this.lista.medicamentos[i].cantidad);
+        }
+        let datos = {
+          doctor : this.getUsuario,
+          lista : data
+        }
+        console.log(datos)
+        this.agregarRecetaMedica(datos)
       }
     },
     pacienteMedicamentos() {},
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["getPacienteAtendido", "getUsuario"]),
+    ...mapState(["cita"]),
+  },
 };
 </script>
 

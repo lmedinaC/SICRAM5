@@ -271,7 +271,7 @@ export default {
     this.cargarDatos();
   },
   methods: {
-    ...mapActions(["actualizarDatosDoctor"]),
+    ...mapActions(["actualizarDatosDoctor","sintomasDelPaciente"]),
     //VERIFICA SI LOS DATOS ESTAN VACIOS
     camposVacios(element) {
       for (const e in element) {
@@ -296,6 +296,11 @@ export default {
     },
     cargarDatos() {
       this.datosUsuario = this.getDatosDoctor;
+      let datos = {
+        id_cita : "5f618abcbdd0fc0017894d44",
+        doctor : this.getUsuario
+      }
+      this.sintomasDelPaciente(datos)
     },
   },
   computed: {

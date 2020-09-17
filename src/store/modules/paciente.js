@@ -490,7 +490,7 @@ const actions = {
             )
             .then((res)=>{
               console.log(res)
-              if(res.data.msg == "cita eliminada"){
+              if(res.data.msg == "Cita eliminada"){
                 commit('setCarga',false)
                 commit('setEliminacionPositiva')
                 return Promise.resolve(true)

@@ -83,6 +83,10 @@ export default new Vuex.Store({
       const cita = JSON.parse(localStorage.getItem('cita'))
       commit('setCita',cita)
     },
+    consultax({commit},datos){
+      console.log(datos)
+      console.log("asdasdasd")
+    }
 
   },
   modules: {
