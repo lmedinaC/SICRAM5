@@ -41,7 +41,7 @@
               <td >
                 <div class="boton-group">
                   <button class="btn btn-success  mr-2"
-                  @click="cargar({aulaVirtual: element.aulaVirtual, dni_paciente:element.user.dni,  name: element.user.name, lastname: element.user.lastname, doctor: getUsuario, id : element._id })">Ingresar</button>
+                  @click="cargar({aulaVirtual: element.aulaVirtual, dni_paciente:element.user.dni,  name: element.user.name, lastname: element.user.lastname, doctor: getUsuario, id : element._id , id_paciente : element.user._id})">Ingresar</button>
                 </div>
               </td>
             </tr>

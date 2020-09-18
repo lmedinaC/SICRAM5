@@ -1,6 +1,6 @@
- <template>
+<template>
   <modal
-    name="mod-ver-diagnostico"
+    name="mod-ver-diagnostico-doctor"
     transition="pop-out"
     :width="700"
     :focus-trap="true"
@@ -28,7 +28,7 @@
           </p>
         </div>
       </div>
-      <div class="datos-personales">
+      <div class="datos-personales"  v-if="getInformeDoctor != null">
         <div class="row">
           <div class="col-md-5">
             <div class="row">
@@ -40,7 +40,7 @@
                   class="form-control"
                   type="text"
                   :disabled="true"
-                  v-model="getDatosPaciente.dni"
+                  v-model="getInformeDoctor.dni"
                 />
               </div>
             </div>
@@ -52,7 +52,7 @@
           </div>
           <div class="col-md-7">
             <input
-              v-model="name"
+              v-model="getInformeDoctor.nombres_apellidos"
               style="text-transform: uppercase;"
               class="form-control"
               type="text"
@@ -61,87 +61,87 @@
           </div>
         </div>
       </div>
-        <div class="informe" v-if="getInformePaciente!=null">
-          <div class="row">
-            <div class="col-md-3">
-              <label for="">Anamnesis: </label>
-            </div>
-            <div class="col-md-9">
-              <textarea
-                disabled
-                class="form-control"
-                rows="2"
-                resize="false"
-                placeholder="Describa sus la anamnesis de su paciente..."
-                v-model="getInformePaciente.anamnesis"
-              ></textarea>
-            </div>
+      <div class="informe" v-if="getInformeDoctor != null">
+        <div class="row">
+          <div class="col-md-3">
+            <label for="">Anamnesis: </label>
           </div>
-          <div class="row mt-2">
-            <div class="col-md-3">
-              <label for="">Tratamiento: </label>
-            </div>
-            <div class="col-md-9">
-              <textarea
-                disabled
-                class="form-control"
-                rows="2"
-                resize="false"
-                placeholder="Describa el tratamiento o cirugia de su paciente..."
-                v-model="getInformePaciente.tratamiento"
-              ></textarea>
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col-md-3">
-              <label for="">Diagnóstico: </label>
-            </div>
-            <div class="col-md-9">
-              <textarea
-                disabled
-                class="form-control"
-                rows="2"
-                resize="false"
-                placeholder="Mencione el diagnóstico de su paciente..."
-                v-model="getInformePaciente.diagnostico"
-              ></textarea>
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col-md-3">
-              <label for="">Última evolución: </label>
-            </div>
-            <div class="col-md-9">
-              <textarea
-                disabled
-                class="form-control"
-                rows="2"
-                resize="false"
-                placeholder="Describa la evolución de su paciente..."
-                v-model="getInformePaciente.resultados_labo"
-              ></textarea>
-            </div>
+          <div class="col-md-9">
+            <textarea
+              disabled
+              class="form-control"
+              rows="2"
+              resize="false"
+              placeholder="Describa sus la anamnesis de su paciente..."
+              v-model="getInformeDoctor.anamnesis"
+            ></textarea>
           </div>
         </div>
-        <div>
-          <div class="container" v-if="getInformePaciente === null">
-            <div
-              class="mt-3"
-              style="padding:50px; align-content: center; text-align: center; background:pink"
-            >
-              <h4>NO CUENTA CON UN INFORME REGISTRADO EN ESTA CITA.</h4>
-            </div>
+        <div class="row mt-2">
+          <div class="col-md-3">
+            <label for="">Tratamiento: </label>
+          </div>
+          <div class="col-md-9">
+            <textarea
+              disabled
+              class="form-control"
+              rows="2"
+              resize="false"
+              placeholder="Describa el tratamiento o cirugia de su paciente..."
+              v-model="getInformeDoctor.tratamiento"
+            ></textarea>
           </div>
         </div>
-        <div class="boton">
-          <button
-            type="button"
-            class="btn botonSalir"
-            @click="$modal.hide('mod-ver-diagnostico')"
+        <div class="row mt-2">
+          <div class="col-md-3">
+            <label for="">Diagnóstico: </label>
+          </div>
+          <div class="col-md-9">
+            <textarea
+              disabled
+              class="form-control"
+              rows="2"
+              resize="false"
+              placeholder="Mencione el diagnóstico de su paciente..."
+              v-model="getInformeDoctor.diagnostico"
+            ></textarea>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-3">
+            <label for="">Última evolución: </label>
+          </div>
+          <div class="col-md-9">
+            <textarea
+              disabled
+              class="form-control"
+              rows="2"
+              resize="false"
+              placeholder="Describa la evolución de su paciente..."
+              v-model="getInformeDoctor.resultados_labo"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="container" v-if="getInformeDoctor === null">
+          <div
+            class="mt-3"
+            style="padding:50px; align-content: center; text-align: center; background:pink"
           >
-            Salir
-          </button>
+            <h4>NO CUENTA CON UN INFORME REGISTRADO EN ESTA CITA.</h4>
+          </div>
         </div>
+      </div>
+      <div class="boton">
+        <button
+          type="button"
+          class="btn botonSalir"
+          @click="$modal.hide('mod-ver-diagnostico-doctor')"
+        >
+          Salir
+        </button>
+      </div>
     </div>
   </modal>
 </template>
@@ -149,25 +149,15 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 export default {
-  name: "ModVerDiagnostico",
-  components: {
-    
-  },
+  name: "ModVerDiagnosticoDoctor",
+  components: {},
   data() {
-    return {
-      
-    };
+    return {};
   },
-  methods:{
-      
-      
-  },
+  methods: {},
   computed: {
-      ...mapGetters(['getDatosPaciente',"getInformePaciente"]),
-      name(){
-          return this.getDatosPaciente.name + " " + this.getDatosPaciente.lastname
-      },
-  }
+    ...mapGetters(["getInformeDoctor"]),
+  },
 };
 </script>
 

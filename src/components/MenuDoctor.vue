@@ -12,7 +12,7 @@
         <ul class="list-unstyled components">
           <p class="m-0 ml-1">Doctor :</p>
           <p class="mb-1 ml-1" style="text-transform: uppercase;">
-            {{ getDatosDoctor.lastname}}
+            {{ getDatosDoctor.lastname }}
           </p>
 
           <li class="active">
@@ -21,13 +21,14 @@
             >
           </li>
           <li class="">
-            <a
-              href="#PerfilSubmenu"
-              v-b-toggle.collapse-1
-              variant="info"
+            <a href="#PerfilSubmenu" v-b-toggle.collapse-1 variant="info"
               ><i class="fa fa-user icono" aria-hidden="true"></i>Perfil</a
             >
-            <b-collapse id="collapse-1"  accordion="my-accordion" role="tabpanel">
+            <b-collapse
+              id="collapse-1"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
               <ul class="list-unstyled" id="PerfilSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponenteDoctor('PerfilDoctor')"
@@ -45,14 +46,14 @@
             </b-collapse>
           </li>
           <li class="">
-            <a
-              href="#HorarioSubmenu"
-              v-b-toggle.collapse-2
-              variant="info"
-            >
+            <a href="#HorarioSubmenu" v-b-toggle.collapse-2 variant="info">
               <i class="fa fa-clock icono" aria-hidden="true"></i>Horario</a
             >
-            <b-collapse id="collapse-2"  accordion="my-accordion" role="tabpanel">
+            <b-collapse
+              id="collapse-2"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
               <ul class=" list-unstyled" id="citasSubmenu">
                 <li>
                   <a
@@ -72,32 +73,36 @@
             </b-collapse>
           </li>
           <li class="">
-            <a
-              href="#BuzonSubmenu"
-              v-b-toggle.collapse-3
-              variant="info"
-            >
+            <a href="#BuzonSubmenu" v-b-toggle.collapse-3 variant="info">
               <i class="fa fa-file icono" aria-hidden="true"></i>Buzón</a
             >
-            <b-collapse id="collapse-3"  accordion="my-accordion" role="tabpanel">
-              <ul
-                class=" list-unstyled"
-                id="BuzonSubmenu"
-              >
+            <b-collapse
+              id="collapse-3"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
+              <ul class=" list-unstyled" id="BuzonSubmenu">
                 <li>
-                  <a href="#"
-                  @click="cambiarComponenteDoctor('CitaPendienteDoctor')">Citas pendientes</a>
+                  <a
+                    href="#"
+                    @click="cambiarComponenteDoctor('CitaPendienteDoctor')"
+                    >Citas pendientes</a
+                  >
                 </li>
                 <li>
-                  <a href="#">Citas pasadas</a>
+                  <a
+                    href="#"
+                    @click="cambiarComponenteDoctor('CitaPasadaDoctor')"
+                    >Citas pasadas</a
+                  >
                 </li>
               </ul>
             </b-collapse>
           </li>
 
           <li>
-            <a href="#"
-              @click="cerrarSesion()"><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
+            <a href="#" @click="cerrarSesion()"
+              ><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
               Salir</a
             >
           </li>
@@ -124,7 +129,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["cambiarComponenteDoctor","cerrarSesion"]),
+    ...mapActions(["cambiarComponenteDoctor", "cerrarSesion"]),
   },
   mounted() {
     $(document).ready(function() {
@@ -143,7 +148,7 @@ export default {
     });
   },
   computed: {
-    ...mapGetters(['getDatosDoctor'])
+    ...mapGetters(["getDatosDoctor"]),
   },
 };
 </script>
@@ -206,7 +211,7 @@ p {
 
 #sidebar ul li a:hover {
   background: #f2f2f2;
-  color :  #03b3bd;
+  color: #03b3bd;
 }
 
 #sidebar ul li.active > a,

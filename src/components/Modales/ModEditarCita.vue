@@ -73,7 +73,7 @@
             <div class="form-group col-md-6">
               <div class="row mr-1">
                 <div class="col-4">
-                  <label for="inputEspecialidad">Especialidad</label>
+                  <label for="inputEspecialidad">Doctor</label>
                 </div>
                 <div class="col-8">
                   <input
@@ -88,7 +88,7 @@
             <div class="form-group col-md-6">
               <div class="row mr-1">
                 <div class="col-4">
-                  <label for="inputDoctor">Doctor</label>
+                  <label for="inputDoctor">Especialidad</label>
                 </div>
                 <div class="col-8">
                   <input

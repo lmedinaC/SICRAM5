@@ -106,7 +106,8 @@
                   </div>
                   <div class="col-8">
                     <input
-                      type="text"
+                      min="18"
+                      type="number"
                       class="form-control"
                       id="inputEdad"
                       v-model="datosUsuario.edad"
@@ -139,7 +140,9 @@
                   </div>
                   <div class="col-8">
                     <input
-                      type="text"
+                      type="number"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      maxlength="9"
                       class="form-control"
                       id="inputEspecialidad"
                       v-model="datosUsuario.celular"
@@ -192,52 +195,6 @@
               >
                 Actualizar
               </button>
-            </div>
-          </form>
-          <div
-            class="row "
-            style="background:#0099a1; height:60px; align-content: center;"
-          >
-            <div class="col-12 text-center">
-              <h3 style="color:white">Actualizar contraseña</h3>
-            </div>
-          </div>
-          <form action="">
-            <div class="form-row ">
-              <div class="form-group col-md-6">
-                <div class="row mr-1">
-                  <div class="col-4">
-                    <label for="inputNombre">Contraseña:</label>
-                  </div>
-                  <div class="col-8">
-                    <input
-                      style="text-transform: uppercase;"
-                      type="text"
-                      class="form-control"
-                      id="inputNombre"
-                      v-model="datosUsuario.name"
-                      :disabled="true"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="form-group col-md-6 ">
-                <div class="row mr-1">
-                  <div class="col-4">
-                    <label for="inputApellido">Nueva Contraseña:</label>
-                  </div>
-                  <div class="col-8">
-                    <input
-                      style="text-transform: uppercase;"
-                      type="text"
-                      class="form-control"
-                      id="inputApellido"
-                      v-model="datosUsuario.lastname"
-                      :disabled="true"
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </form>
         </div>
@@ -359,7 +316,7 @@ a:focus {
 #content {
   width: calc(100% - 150px);
   padding: 10px 0 0 0px;
-  min-height: 140vh;
+  min-height: 100vh;
   transition: all 0.3s;
   position: absolute;
   top: 0;

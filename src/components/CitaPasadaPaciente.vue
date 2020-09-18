@@ -81,7 +81,7 @@
               class="mt-3"
               style="padding:50px; align-content: center; text-align: center; background:pink"
             >
-              <h4>NO CUENTA CON CITAS REGISTRADAS</h4>
+              <h4>NO CUENTA CON CITAS PASADAS</h4>
             </div>
             <br />
           </div>

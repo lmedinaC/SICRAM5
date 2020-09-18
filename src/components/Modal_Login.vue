@@ -253,6 +253,21 @@ export default {
     },
   },
   methods: {
+    //VALIDAR LA CONTRASEÑA 
+    validarContraseña(str) {
+       if (str.length < 6) {
+           return true
+       } else if (str.length > 50) {
+           return true
+       } else if (str.search(/\d/) == -1) {
+           return true
+       } else if (str.search(/[a-zA-Z]/) == -1) {
+           return true
+       } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) != -1) {
+           return true
+       }
+       return false
+    },
     cerrar() {
       this.$modal.hide("demo-login");
     },
@@ -261,14 +276,21 @@ export default {
       if (this.$v.user.celular.minLength == false) {
         this.$refs.simplert.openSimplert({
           title: "REGISTRO FALLIDO",
-          message: "Digíte un número de celular válido.",
+          message: "Digite un número de celular válido.",
           type: "warning",
         });
         this.carga2 = false;
       } else if (this.$v.user.dni.minLength == false) {
         this.$refs.simplert.openSimplert({
           title: "REGISTRO FALLIDO",
-          message: "Digíte un número de DNI válido.",
+          message: "Digite un número de DNI válido.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else if (this.validarContraseña(this.$v.user.password.$model)) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "La contraseña debe ser mayor a 5 y menor a 60 carácteres y contar con por lo menos: un número, una letra y carácter especial.",
           type: "warning",
         });
         this.carga2 = false;

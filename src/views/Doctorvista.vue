@@ -17,7 +17,7 @@ import ActualizarDoctor from "@/components/ActualizarDoctor.vue";
 import ModificarHorarioDoc from "@/components/ModificarHorarioDoc.vue";
 import AgregarHorarioDoc from "@/components/AgregarHorarioDoc.vue";
 import CitaPendienteDoctor from "@/components/CitaPendienteDoctor.vue";
-
+import CitaPasadaDoctor from "@/components/CitaPasadaDoctor.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -29,7 +29,8 @@ export default {
     ActualizarDoctor,
     ModificarHorarioDoc,
     AgregarHorarioDoc,
-    CitaPendienteDoctor
+    CitaPendienteDoctor,
+    CitaPasadaDoctor
   },
 
   computed: {

@@ -9,7 +9,7 @@
     <div class="titulo">
       <h5>HISTORIAL MÉDICO</h5>
     </div>
-    <div class="container modal-content">
+    <div class="modal-content">
       <div class="fecha">
         <div class="row">
           <div class="col-md-4">
@@ -30,7 +30,7 @@
             ></date-picker>
           </div>
           <div class="col-md-4">
-            <button class="btn botonBuscar">
+            <button class="btn botonBuscar" @click="buscarHistorial">
               Buscar
             </button>
           </div>
@@ -62,6 +62,7 @@ export default {
   },
   methods: {
     deshabilitarDia(date) {
+      this.fechaFin=""
       let pattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
       let arrayDate = date.match(pattern);
       let dt = new Date(arrayDate[3], arrayDate[2] - 1, arrayDate[1]);
@@ -71,6 +72,10 @@ export default {
 
     diaMin(date){
          return date < this.fechaMin;
+    },
+
+    buscarHistorial(){
+        console.log(this.fechaInicio,this.fechaFin)
     }
   },
 };

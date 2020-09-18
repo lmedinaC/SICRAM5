@@ -92,7 +92,7 @@
               <input
                 type="number"
                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                maxlength = "11"
+                maxlength="11"
                 class="form-control"
                 id="inputRUC"
                 v-model="$v.organizacion.ruc.$model"
@@ -127,8 +127,8 @@ const MODAL_WIDTH = 700;
 
 export default {
   name: "Modal_RegOrg",
-  components:{
-      Simplert
+  components: {
+    Simplert,
   },
   data() {
     return {
@@ -160,52 +160,77 @@ export default {
       },
       nameOrg: { required },
       direccion: { required },
-      ruc: { required , minLength: minLength(11)},
+      ruc: { required, minLength: minLength(11) },
     },
   },
   methods: {
-    cerrar(){
+    cerrar() {
       this.$modal.hide("demo-reg-org");
     },
+    //VALIDAR LA CONTRASEÑA
+    validarContraseña(str) {
+      if (str.length < 6) {
+        return true;
+      } else if (str.length > 50) {
+        return true;
+      } else if (str.search(/\d/) == -1) {
+        return true;
+      } else if (str.search(/[a-zA-Z]/) == -1) {
+        return true;
+      } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) != -1) {
+        return true;
+      }
+      return false;
+    },
+
     registrarOrganizacion(org) {
       this.carga2 = true;
       this.organizacion = org;
-      this.axios
-        .post("https://sicramv1.herokuapp.com/api/signuporganizacion", {
-          ...this.organizacion,
-        }) //elemento spreat
-        //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
+      if (this.validarContraseña(this.organizacion.password)) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message:
+            "La contraseña debe ser mayor a 5 y menor a 60 carácteres y contar con por lo menos: un número, una letra y carácter especial.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      } else {
+        this.axios
+          .post("https://sicramv1.herokuapp.com/api/signuporganizacion", {
+            ...this.organizacion,
+          }) //elemento spreat
+          //agrega al obejto json al contenido que agregamos, seria como un solo json de todos los parámetros
 
-        .then((res) => {
-          if(res.data.msg==="Username ya existe."){
-            this.$refs.simplert.openSimplert({
-              title: "REGISTRO FALLIDO",
-              message: "Este organización ya se encuentra registrada",
-              type: "error",
-            })
+          .then((res) => {
+            if (res.data.msg === "Username ya existe.") {
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO FALLIDO",
+                message: "Este organización ya se encuentra registrada",
+                type: "error",
+              });
+              this.carga = false;
+              this.carga2 = false;
+            } else {
+              this.carga = true;
+              this.carga2 = false;
+              this.$refs.simplert.openSimplert({
+                title: "REGISTRO EXITOSO",
+                message: "Organización registrada con éxito",
+                type: "success",
+                onClose: this.cerrar,
+              });
+            }
+          })
+          .catch((e) => {
             this.carga = false;
             this.carga2 = false;
-
-          }else{
-            this.carga = true;
-            this.carga2 = false;
             this.$refs.simplert.openSimplert({
-              title: "REGISTRO EXITOSO",
-              message: "Organización registrada con éxito",
-              type: "success",
-              onClose: this.cerrar
-            })
-          }
-        })
-        .catch((e) => {
-          this.carga = false;
-          this.carga2 = false;
-          this.$refs.simplert.openSimplert({
               title: "REGISTRO FALLIDO",
               message: "Este organización ya se encuentra registrada.",
               type: "error",
-          })
-        });
+            });
+          });
+      }
     },
   },
 };

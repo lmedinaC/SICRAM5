@@ -291,13 +291,21 @@ export default {
     cerrar() {
       this.$modal.hide("demo-registro-doc");
     },
-    closeByEvent() {
-      this.$modal.hide("demo-registro-doc");
+    //VALIDAR LA CONTRASEÑA 
+    validarContraseña(str) {
+       if (str.length < 6) {
+           return true
+       } else if (str.length > 50) {
+           return true
+       } else if (str.search(/\d/) == -1) {
+           return true
+       } else if (str.search(/[a-zA-Z]/) == -1) {
+           return true
+       } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) != -1) {
+           return true
+       }
+       return false
     },
-    scrollHanle(evt) {
-      console.log(evt);
-    },
-    //...mapActions(['iniciarUsuario']),
 
     registrarDoctor(doctor) {
       this.carga2 = true;
@@ -319,6 +327,13 @@ export default {
         this.$refs.simplert.openSimplert({
           title: "REGISTRO FALLIDO",
           message: "Relleno todos los campos correctamente.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      }else if (this.validarContraseña(this.$v.doctor.password.$model)) {
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message: "La contraseña debe ser mayor a 5 y menor a 60 carácteres y contar con por lo menos: un número, una letra y carácter especial.",
           type: "warning",
         });
         this.carga2 = false;

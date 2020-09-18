@@ -98,7 +98,8 @@ export default {
       "obtenerCita",
       "citaAtendida",
       "consultax",
-      "sintomasDelPaciente"
+      "sintomasDelPaciente",
+      "verHistorialMedico"
     ]),
     //COLGAMOS LA LLAMADA Y CAMBIAMOS EL ESTADO DE LA CITA A ATENDIDO
     colgarLlamada() {
@@ -136,11 +137,14 @@ export default {
     this.obtenerCita();
   },
   mounted(){
+    console.log(this.getUsuario)
     let datos = {
         doctor: this.cita.doctor,
         id_cita: this.cita.id,
       };
+      console.log(datos)
     this.sintomasDelPaciente(datos)
+    this.verHistorialMedico(datos)
   },
   computed: {
     ...mapState(["cita"]),

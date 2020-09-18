@@ -23,6 +23,9 @@ const state = {
     dia: [],
     datosHorario: null, //DATOS DEL HORARIO PARA MODIFICAR
     pacienteAtendido: null,
+    informeDoctorCita: null, //DETALLAS DEL INFORME DE LA CITA
+    recetaDoctorCita: null, //DETALLES DE LA RECETA DE LA CITA
+    historialPaciente: null,
 };
 
 const getters = {
@@ -64,6 +67,18 @@ const getters = {
     //CONSEGUIR LOS DATOS DEL PACIENTE QUE SE ESTA ATENDIENDO
     getPacienteAtendido(state){
       return state.pacienteAtendido
+    },
+    //CONSEGUIR EL DETALLE DEL INFORME DE LA CITA
+    getInformeDoctor(state){ 
+      return state.informeDoctorCita
+    },
+    //CONSEGUIR LA RECETA MÉDICA DE LA CITA
+    getRecetaCitaDoctor(state){
+      return state.recetaDoctorCita
+    },
+
+    getHistorialPaciente(state){
+      return state.historialPaciente
     }
 };
 
@@ -159,6 +174,19 @@ const mutations = {
     //PONE LOS DATOS DEL PACIENTE QUE SE ESTA ATENDIENDO
     setPacienteAtendido(state,payload){
       state.pacienteAtendido = payload
+    },
+
+    //PONE EL INFORME DE LA CITA SELECCIONADA
+    setInformeDoctor(state,payload){
+      state.informeDoctorCita = payload
+    },
+    //PONE EN EL INFORME LA RECETA DE LA CITA SELECCIONADA  
+    setRecetaCitaDoctor(state,payload){
+      state.recetaDoctorCita = payload
+    },
+
+    setHistorialPaciente(payload){
+      state.historialPaciente = payload
     }
 };
 
@@ -294,7 +322,7 @@ const actions = {
       })
       .catch((e) => {
           console.log(e)
-      });
+      }); 
     },
 
     //CONSULTA MODIFICAR HORARIO DE ATENCIÓN
@@ -408,6 +436,30 @@ const actions = {
         });
     },
 
+    //CONSULTA LISTAR CITAS ATENDIDAS
+    listarCitasAtendidasDoctor({commit},doctor){
+      let url =
+      `https://sicramv1.herokuapp.com/api/doctor/cita/listar_atendidas/${doctor.id}`;
+      axios
+      .get(url, {
+        headers: {
+          Authorization: `${doctor.token}`,
+        },
+      })
+
+      .then((res) => {
+          console.log(res)
+          if(res.data.length!=0){
+            commit('setListaCitasDoctorPasadas',res.data)
+          }else{
+            commit('setListaCitasDoctorPasadas',null)
+          }
+      })
+      .catch((e) => {
+          console.log(e)
+      });
+  },
+
     //CONSULTA PARA ATENDER CITA
     citaAtendida({commit},datos){
       let url =
@@ -490,6 +542,7 @@ const actions = {
           })
     },
 
+    //CONSULTA PARA AGREGAR LA RECETA MÉDICA DEL DOCTOR
     agregarRecetaMedica({commit},datos){
       commit('setCargaDoctor',true)
         let url = `https://sicramv1.herokuapp.com/api/doctor/receta/crear/${datos.doctor.id}`;
@@ -527,7 +580,81 @@ const actions = {
             commit('setError',"Registre correctamente la receta médica.")
             return Promise.resolve(false)
           })
-    }
+    },
+
+    //CONSULTA PARA VER EL DIAGNÓSTICO QUE EL DOCTOR REGISTRO
+    verDiagnosticoDoctor({commit},datos){
+      let url = `https://sicramv1.herokuapp.com/api/doctor/diagnostico/ver_diagnostico/${datos.doctor.id}`;
+          axios
+            .post(
+              url,
+              { id_cita: datos.id_cita },
+              {
+                headers: {
+                  Authorization: `${datos.doctor.token}`,
+                },
+              }
+            )
+            .then((res)=>{
+              console.log(res.data)
+              if(res.data.msg === "No se encontró el diagnóstico de esta cita"){
+                commit('setInformeDoctor',null)
+              }else{
+                commit('setInformeDoctor',res.data)
+              }
+            })
+            .catch((e)=>{
+              console.log(e)
+        })
+    },
+
+    //CONSULTA PARA VER LA RECETA QUE EL DOCTOR REGISTRÓ
+    verRecetaDoctor({commit},datos){
+      let url = `https://sicramv1.herokuapp.com/api/doctor/receta/ver_receta/${datos.doctor.id}`;
+          axios
+            .post(
+              url,
+              { id_cita: datos.id_cita },
+              {
+                headers: {
+                  Authorization: `${datos.doctor.token}`,
+                },
+              }
+            )
+            .then((res)=>{
+              console.log(res.data)
+              if(res.data.msg === "No se encontraron recetas para esta cita"){
+                commit('setRecetaCitaDoctor',null)
+              }else{
+                commit('setRecetaCitaDoctor',res.data)
+              }
+            })
+            .catch((e)=>{
+              console.log(e)
+        })
+    },
+    
+    //CONSULTA PARA VER EL HISTORIAL MÉDICO DE UN PACIENTE
+    verHistorialMedico({commit},datos){
+      let url = `https://sicramv1.herokuapp.com/api/doctor/cita/ver_historial_de_paciente/${datos.doctor.id}`;
+          axios
+            .post(
+              url,
+              { id_cita: datos.id_cita },
+              {
+                headers: {
+                  Authorization: `${datos.doctor.token}`,
+                },
+              }
+            )
+            .then((res)=>{
+              console.log(res.data)
+            })
+            .catch((e)=>{
+              console.log(e)
+        })
+    },
+
     
 }
   
