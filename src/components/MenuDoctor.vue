@@ -66,7 +66,7 @@
                   <a
                     href="#"
                     @click="cambiarComponenteDoctor('ModificarHorarioDoc')"
-                    >Modificar horario</a
+                    >Historial horario</a
                   >
                 </li>
               </ul>

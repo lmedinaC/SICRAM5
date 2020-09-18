@@ -144,10 +144,11 @@
                     <input
                       type="number"
                       oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                      maxlength="9"
+                      maxlength="3"
                       class="form-control"
                       id="inputCelular"
                       v-model="datosUsuario.edad"
+                      max="120"
                     />
                   </div>
                 </div>

@@ -1,10 +1,7 @@
 <template>
   <div id="menuPaciente">
     <nav id="sidebar">
-      <vue-custom-scrollbar
-        class="scroll-area"
-        :settings="settings"
-      >
+      <vue-custom-scrollbar class="scroll-area" :settings="settings">
         <div class="sidebar-header text-center">
           <a href="/" style="color:white;">
             <i class="fas fa-user-md fa-2x "></i>
@@ -15,26 +12,29 @@
         <ul class="list-unstyled components">
           <p class="m-0 ml-1">Paciente :</p>
           <p class="mb-1 ml-1 " style="text-transform: uppercase;">
-            {{ getDatosPaciente.name }}  {{ getDatosPaciente.lastname}}
+            {{ getDatosPaciente.name }} {{ getDatosPaciente.lastname }}
           </p>
 
           <li class="active">
-            <a href="#" 
+            <a
+              href="#"
               v-b-toggle.collapse-1
               variant="info"
               @click="cambiarComponente('InicioPaciente')"
               ><i class="fa fa-home icono" aria-hidden="true"></i>Inicio</a
             >
           </li>
-          
+
           <li class="">
-            <a
-              href="#PerfilSubmenu"
-              v-b-toggle.collapse-2
-              variant="info"
-              ><i class="fas fa-user fa-sm" style=" margin-right: 10px;"></i>Perfil</a
+            <a href="#PerfilSubmenu" v-b-toggle.collapse-2 variant="info"
+              ><i class="fas fa-user fa-sm" style=" margin-right: 10px;"></i
+              >Perfil</a
             >
-            <b-collapse id="collapse-2"  accordion="my-accordion" role="tabpanel">
+            <b-collapse
+              id="collapse-2"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
               <ul class="list-unstyled" id="PerfilSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponente('PerfilPaciente')"
@@ -51,13 +51,15 @@
           </li>
 
           <li class="">
-            <a
-              href="#dependienteSubmenu"
-              v-b-toggle.collapse-3
-              variant="info"
-              ><i class="fas fa-users fa-sm" style=" margin-right: 5px;"></i>Familiar</a
+            <a href="#dependienteSubmenu" v-b-toggle.collapse-3 variant="info"
+              ><i class="fas fa-users fa-sm" style=" margin-right: 5px;"></i
+              >Familiar</a
             >
-            <b-collapse id="collapse-3"  accordion="my-accordion" role="tabpanel">
+            <b-collapse
+              id="collapse-3"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
               <ul class="list-unstyled" id="dependienteSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponente('RegistrarDependiente')"
@@ -74,13 +76,14 @@
           </li>
 
           <li class="">
-            <a
-              href="#citasSubmenu"
-              v-b-toggle.collapse-4
-              variant="info"
+            <a href="#citasSubmenu" v-b-toggle.collapse-4 variant="info"
               ><i class="fa fa-calendar icono" aria-hidden="true"></i>Citas</a
             >
-            <b-collapse id="collapse-4"  accordion="my-accordion" role="tabpanel">
+            <b-collapse
+              id="collapse-4"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
               <ul class=" list-unstyled" id="citasSubmenu">
                 <li>
                   <a href="#" @click="cambiarComponente('NuevaCitaPaciente')"
@@ -94,36 +97,16 @@
                     >Citas Pendientes</a
                   >
                 </li>
-              </ul>
-            </b-collapse>
-          </li>
-          <li class="">
-            <a
-              href="#BuzonSubmenu"
-              v-b-toggle.collapse-5
-              variant="info"
-            >
-              <i class="fa fa-file icono" aria-hidden="true"></i>Buzón</a
-            >
-            <b-collapse id="collapse-5"  accordion="my-accordion" role="tabpanel">
-              <ul
-                class=" list-unstyled"
-                id="BuzonSubmenu"
-              >
                 <li>
-                  <a href="#"
-                  @click="cambiarComponente('CitaPasadaPaciente')">Historial</a>
-                </li>
-                <li>
-                  <a href="#">---</a>
+                  <a href="#" @click="cambiarComponente('CitaPasadaPaciente')"
+                    >Historial</a
+                  >
                 </li>
               </ul>
             </b-collapse>
           </li>
-
           <li>
-            <a href="#"
-            @click="cerrarSesion()"
+            <a href="#" @click="cerrarSesion()"
               ><i class="fa fa-arrow-left icono" aria-hidden="true"></i>
               Salir</a
             >
@@ -151,8 +134,7 @@ export default {
     };
   },
   methods: {
-
-    ...mapActions(["cambiarComponente","cerrarSesion"]),
+    ...mapActions(["cambiarComponente", "cerrarSesion"]),
   },
 
   mounted() {
@@ -172,7 +154,7 @@ export default {
     });
   },
   computed: {
-    ...mapGetters(['getDatosPaciente'])
+    ...mapGetters(["getDatosPaciente"]),
   },
 };
 </script>
@@ -235,7 +217,7 @@ p {
 
 #sidebar ul li a:hover {
   background: #f2f2f2;
-  color :  #03b3bd;
+  color: #03b3bd;
 }
 
 #sidebar ul li.active > a,

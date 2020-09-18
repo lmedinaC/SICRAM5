@@ -86,10 +86,10 @@
                   </div>
                   <div class="col-8">
                     <input
-                      maxlength="8"
                       type="number"
                       class="form-control"
-                      id="inputDNI"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      maxlength="8"
                       placeholder="DNI Familiar"
                       v-model="dependiente.dni"
                     />
@@ -105,9 +105,9 @@
                     <input
                       type="text"
                       class="form-control"
-                      id="inputEdad"
                       placeholder="Discapacidad 'ninguna'"
                       v-model="dependiente.discapacidad"
+                      
                     />
                   </div>
                 </div>
@@ -141,7 +141,8 @@
                     <input
                       type="number"
                       class="form-control"
-                      id="inputCelular"
+                      max="120"
+                      min="1"
                       placeholder="Edad Familiar"
                       v-model="dependiente.edad"
                     />
@@ -159,7 +160,8 @@
                     <input
                       type="number"
                       class="form-control"
-                      id="inputCMP"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      maxlength="9"
                       placeholder="Celular Familiar"
                       v-model="dependiente.celular"
                     />
@@ -175,8 +177,7 @@
                     <input
                       type="text"
                       class="form-control"
-                      id="inputProfesion"
-                      placeholder="Direccion Familiar"
+                      placeholder="Direccion domicilio familiar"
                       v-model="dependiente.direccion"
                     />
                   </div>
@@ -222,6 +223,7 @@ export default {
         direccion: "",
         genero: "",
       },
+      mensajeError: null,
     };
   },
   methods: {
@@ -239,30 +241,50 @@ export default {
         direccion: "",
       };
     },
+    //VERIFICA SI LOS DATOS ESTAN VACIOS
+    camposVacios(element) {
+      for (const e in element) {
+        if (element[e] == "" || element[e] == null) {
+          return true;
+        }
+      }
+    },
+    //VERIFICA CELULAR Y DNI
+    camposIncorrectos(element) {
+      if (element.celular.length !== 9) {
+        this.mensajeError = {
+          title: "CELULAR INVALIDO",
+          message: "El número de celular debe tener 9 dígitos.",
+          type: "warning",
+        };
+        return true;
+      } else if (element.dni.length !== 8) {
+        this.mensajeError = {
+          title: "DNI INVALIDO",
+          message: "El DNI debe tener 8 dígitos.",
+          type: "warning",
+        };
+        return true;
+      }
+    },
     //FUNCION PARA REGISTRAR AL DEPENDIENTE
     crearDependiente(paciente) {
-      if (
-        this.dependiente.name == "" ||
-        this.dependiente.lastname == "" ||
-        this.dependiente.email == "" ||
-        this.dependiente.dni == "" ||
-        this.dependiente.edad == "" ||
-        this.dependiente.discapacidad == "" ||
-        this.dependiente.genero == "" ||
-        this.dependiente.direccion == "" ||
-        this.dependiente.celular == ""
-      ) {
+      if (this.camposVacios(this.dependiente)) {
         this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
       } else {
-        const datos = {
-          paciente: this.getUsuario,
-          dependiente: paciente,
-        };
-        //LLAMA A LA CONSULTA REGISTRAR DEPENDIENTE DE PACIENTE.JS
-        this.registrarPacienteDependiente(datos).then((res) => {
-          this.$refs.simplert.openSimplert(this.getMensaje);
-          this.vaciar();
-        });
+        if (this.camposIncorrectos(paciente)) {
+          this.$refs.simplert.openSimplert(this.mensajeError);
+        } else {
+          const datos = {
+            paciente: this.getUsuario,
+            dependiente: paciente,
+          };
+          //LLAMA A LA CONSULTA REGISTRAR DEPENDIENTE DE PACIENTE.JS
+          this.registrarPacienteDependiente(datos).then((res) => {
+            this.$refs.simplert.openSimplert(this.getMensaje);
+            this.vaciar();
+          });
+        }
       }
     },
   },
@@ -279,12 +301,6 @@ export default {
       $("#sidebar, #content").toggleClass("active");
       $(".collapse.in").toggleClass("in");
       $("a[aria-expanded=true]").attr("aria-expanded", "false");
-    });
-    document.getElementById("inputCMP").addEventListener("input", function() {
-      if (this.value.length > 9) this.value = this.value.slice(0, 9);
-    });
-    document.getElementById("inputDNI").addEventListener("input", function() {
-      if (this.value.length > 8) this.value = this.value.slice(0, 8);
     });
   },
 };

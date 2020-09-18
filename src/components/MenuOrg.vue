@@ -82,33 +82,6 @@
               </ul>
             </b-collapse>
           </li>
-          <li class="">
-            <a
-              href="#BuzonSubmenu"
-              v-b-toggle.collapse-3
-              data-toggle="collapse"
-              aria-expanded="false"
-              class="dropdown-toggle"
-            >
-              <i class="fas fa-file fa-sm icono"></i>Buzón</a
-            >
-            <b-collapse id="collapse-3">
-              <ul class=" list-unstyled" id="BuzonSubmenu">
-                <li>
-                  <a
-                    href="#"
-                    @click="
-                      cambiarComponenteOrganizacion('CitaPendientePaciente')
-                    "
-                    >Citas pendientes</a
-                  >
-                </li>
-                <li>
-                  <a href="#">Citas pasadas</a>
-                </li>
-              </ul>
-            </b-collapse>
-          </li>
 
           <li>
             <a href="#"

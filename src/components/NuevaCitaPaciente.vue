@@ -360,7 +360,7 @@ export default {
           if (paciente.idFamiliar == "") {
             this.$refs.simplert.openSimplert({
               title: "CAMPOS IMCOMPLETOS",
-              message: "Si cuenta con algún familiar, seleccionelo.",
+              message: "Seleccione a un familiar para registrar la cita.",
               type: "warning",
             });
           } else {

@@ -210,7 +210,7 @@ const actions = {
               commit('setError',"El usuario ya existe")
               return Promise.resolve(false)
             }else if(res.data.msg === "LLene los nombres y apellidos, completos y CORRECTOS del doctor" ){
-              commit('setError',"Los datos registrados no coinciden con el CMP del doctor.")
+              commit('setError',"Debe registrar el nombres y apellidos COMPLETOS y CORRECTOS del doctor.")
               return Promise.resolve(false)
             } 
             else {

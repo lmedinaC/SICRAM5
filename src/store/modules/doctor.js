@@ -181,11 +181,11 @@ const mutations = {
       state.informeDoctorCita = payload
     },
     //PONE EN EL INFORME LA RECETA DE LA CITA SELECCIONADA  
-    setRecetaCitaDoctor(state,payload){
+    setRecetaCitaDoctor(state,payload){ 
       state.recetaDoctorCita = payload
     },
 
-    setHistorialPaciente(payload){
+    setHistorialPaciente(state,payload){
       state.historialPaciente = payload
     }
 };
@@ -267,9 +267,13 @@ const actions = {
             console.log(res)
             commit('setCargaDoctor',false)
             if (res.data.msg === "nuevo horario guardado"){
-              commit('setMensajePositivoDoctor')
+              commit('setExito','El horario se registró con éxito')
               return Promise.resolve(true)
-            }else{
+            }else if(res.data.msg === "YA EXISTE ESE HORARIO PARA EL DOCTOR"){
+              commit('setError',"Este horario ya se encuentra registrado.")
+                return Promise.resolve(false)
+            }
+            else{
                 commit('setMensajeNegativoDoctor')
                 return Promise.resolve(false)
             }
@@ -648,7 +652,14 @@ const actions = {
               }
             )
             .then((res)=>{
-              console.log(res.data)
+              console.log(res)
+              if(res.data.msg === "No se encontraron diagnósticos para este paciente"){
+                commit('setHistorialPaciente',null)
+              }else if(res.data.length == 0){
+                commit('setHistorialPaciente',null)
+              }else{
+                commit('setHistorialPaciente',res.data)
+              }
             })
             .catch((e)=>{
               console.log(e)

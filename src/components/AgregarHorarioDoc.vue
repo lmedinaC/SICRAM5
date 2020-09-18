@@ -466,8 +466,7 @@ a:focus {
   }
   .contenido-Horario {
     padding: 30px 5px 0 5px;
-    .horario {
-    }
+    
   }
 }
 </style>

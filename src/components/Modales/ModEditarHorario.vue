@@ -96,7 +96,7 @@ export default {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       return (
-        date < today || date > new Date(today.getTime() + 7 * 24 * 3600 * 1000)
+        date < new Date(today.getTime() + 1 * 24 * 3600 * 1000) || date > new Date(today.getTime() + 8 * 24 * 3600 * 1000)
       );
     },
     //ELIGE EL INICIO Y FIN DE LA HORA
@@ -110,7 +110,7 @@ export default {
         }
       });
     },
-    //ABRIR MODAL DE CONFIRMACION DE EDICION
+    //ABRIR MODAL DE CONFIRMACION DE EDICION 
     abrirEdicion(element) {
       if (element.fecha == null || element.hora_inicio == "") {
         this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);

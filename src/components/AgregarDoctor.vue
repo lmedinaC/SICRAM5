@@ -357,7 +357,7 @@ export default {
         });
       }
     },
-    //REGISTRAR UN DOCTOR
+    //REGISTRAR UN DOCTOR 
     setDoctor(doc) {
       let datos = {
         newDoctor: doc,

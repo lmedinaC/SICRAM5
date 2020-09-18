@@ -81,6 +81,8 @@
                 </div>
                 <div class="col-8">
                   <input
+                    min="1"
+                    max="120"
                     type="number"
                     class="form-control"
                     v-model="getDatosFamiliar.edad"
@@ -94,13 +96,14 @@
             <div class="form-group col-md-6">
               <div class="row mr-1">
                 <div class="col-4">
-                  <label for="inputGenero">Correo</label>
+                  <label for="inputGenero">Género</label>
                 </div>
                 <div class="col-8">
                   <input
                     type="text"
                     class="form-control"
-                    v-model="getDatosFamiliar.email"
+                    v-model="getDatosFamiliar.genero"
+                    disabled
                   />
                 </div>
               </div>

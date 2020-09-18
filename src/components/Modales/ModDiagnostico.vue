@@ -84,7 +84,7 @@
                 class="form-control"
                 rows="2"
                 resize="false"
-                placeholder="Describa sus la anamnesis de su paciente..."
+                placeholder="Describa la anamnesis de su paciente..."
               ></textarea>
             </div>
           </div>
