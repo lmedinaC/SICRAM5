@@ -300,7 +300,7 @@ const actions = {
     //CONSULTA MODIFICAR HORARIO DE ATENCIÓN
     modificarHorarioDoctor({commit},datos){
       commit('setCargaDoctor',true)
-      let url = `http://sicramv1.herokuapp.com/api/doctor/horario/modificar/${datos.doctor.id}`;
+      let url = `https://sicramv1.herokuapp.com/api/doctor/horario/modificar/${datos.doctor.id}`;
       return axios
         .post(
           url,
