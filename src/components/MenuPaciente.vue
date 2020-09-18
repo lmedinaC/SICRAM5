@@ -112,7 +112,7 @@
               >
                 <li>
                   <a href="#"
-                  @click="cambiarComponente('CitaPendientePaciente')">Historial</a>
+                  @click="cambiarComponente('CitaPasadaPaciente')">Historial</a>
                 </li>
                 <li>
                   <a href="#">---</a>

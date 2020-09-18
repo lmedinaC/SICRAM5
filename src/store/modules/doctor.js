@@ -348,10 +348,14 @@ const actions = {
           console.log(res)
             commit('setCargaDoctor',false)
             if (res.data.msg === "Se elimino el horario del doctor"){
-              commit('setMensajeActualizacionPositiva')
+              commit('setExito',"El horario se borró con éxito")
               return Promise.resolve(true)
-                
-            }else{
+            
+            }else if(res.data.msg === "El horario esta siendo usado en una cita, No se puede eliminar"){
+              commit('setError',"El horario ya está en uso.")
+              return Promise.resolve(false)
+            }
+            else{
               commit('setMensajeActualizacionNegativa')
               return Promise.resolve(false)
             } 
@@ -487,9 +491,9 @@ const actions = {
     },
 
     agregarRecetaMedica({commit},datos){
-      
+      commit('setCargaDoctor',true)
         let url = `https://sicramv1.herokuapp.com/api/doctor/receta/crear/${datos.doctor.id}`;
-          axios
+          return axios
           .post(
             url,
             datos.lista,
@@ -501,12 +505,27 @@ const actions = {
             }
           )
           .then((res)=>{
+            commit('setCargaDoctor',false)
             console.log(res)
-            
+            if(res.data.msg === "Nueva receta guardada"){
+              commit('setExito',"La receta se registro correctamente.")
+              return Promise.resolve(true)
+            }else if(res.data.msg === "Ya existe una receta para esta cita."){
+              commit('setError',"Ya ha registrado una receta para esta cita.")
+              return Promise.resolve(false)
+            }else if(res.data.msg === "No se detectó ninguna imagen"){
+              commit('setError',"Registre correctamente la firma. Este archivo debe ser 'firma.jpg'.")
+              return Promise.resolve(false)
+            }else{
+              commit('setError',"Registre correctamente la receta médica.")
+              return Promise.resolve(false)
+            }
           })
           .catch((e)=>{
             console.log(e)
-            
+            commit('setCargaDoctor',false)
+            commit('setError',"Registre correctamente la receta médica.")
+            return Promise.resolve(false)
           })
     }
     

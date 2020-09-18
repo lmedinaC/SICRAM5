@@ -1,0 +1,49 @@
+@media print {
+  @page {
+    size: landscape;
+  }
+  @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+  .modal-contenido {
+    padding: 15px 50px 15px 50px;
+    background-color: #e4f9fa;
+    height: 100%;
+  }
+
+  .titulo {
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    padding: 10% 1% 0px 0;
+  }
+  .sicram {
+    text-align: center;
+    align-content: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.7em;
+    font-weight: 600;
+    line-height: 1.7em;
+  }
+
+  .sicram .sistema {
+    color: #000;
+    font-size: 0.4em;
+    font-weight: 300;
+    line-height: 1.1em;
+  }
+  .imagen {
+    width: 70px;
+    height: 85px;
+  }
+
+  .lista-medica {
+    padding-top: 15px;
+  }
+  .lista {
+    padding-bottom: 5px;
+    padding-right: 30px;
+  }
+
+  label {
+    font-weight: 500;
+    padding: 7px;
+  }
+}

@@ -11,6 +11,9 @@ const state = {
     carga: false, //CARGA DE BOTONES
     datosFamiliar: null, //DATOS DEL DEPENDIENTE
     datosCita: null, //DATOS DE LA CITA
+    detallesCita: null, //DETALLES DE LA CITA SELECCIONADA
+    informeCita: null, //DETALLAS DEL INFORME DE LA CITA
+    recetaCita: null, //DETALLES DE LA RECETA DE LA CITA
 };
 
 const getters = {
@@ -34,6 +37,10 @@ const getters = {
     getListaCitas(state){
         return state.listaCitas
     },
+    //CONSEGUIR LA LISTA DE LAS CITAS
+    getListaCitasPasadas(state){
+      return state.listaCitasPasadas
+    },
     //CONSEGUIR LOS DATOS DE LA CITA
     getDatosCita(state){
       return state.datosCita
@@ -41,7 +48,18 @@ const getters = {
     //CONSEGUIR LOS DATOS DEL DEPENDIENTE
     getDatosFamiliar(state){
       return state.datosFamiliar
-    } 
+    },
+    getDetalleCita(state){
+      return state.detalleDeCita
+    },
+    //CONSEGUIR EL DETALLE DEL INFORME DE LA CITA
+    getInformePaciente(state){ 
+      return state.informeCita
+    },
+    //CONSEGUIR LA RECETA MÉDICA DE LA CITA
+    getRecetaCita(state){
+      return state.recetaCita
+    }
 };
 
 const mutations = {
@@ -154,6 +172,18 @@ const mutations = {
     //PONE LOS DATOS DE LA CITA SELECCIONADA
     setDatosFamiliar(state, payload){
       state.datosFamiliar = payload
+    },
+    //PONE LOS DETALLES DE LA CITA SELECCIONADA
+    setDetalleCita(state,paylaod){
+      state.detalleDeCita = paylaod
+    },
+    //PONE EL INFORME DE LA CITA SELECCIONADA
+    setInformePaciente(state,payload){
+      state.informeCita = payload
+    },
+    //PONE EN EL INFORME LA RECETA DE LA CITA SELECCIONADA  
+    setRecetaCita(state,payload){
+      state.recetaCita = payload
     }
 };
 
@@ -343,29 +373,40 @@ const actions = {
         .then((res) => {
           console.log(res)
           if(res.data.length!=0){
-            state.listaCitas = []
-            state.listaCitasPasadas = []
-            res.data.forEach((element) => {
-              if(element.estado == "pendiente"){
-                state.listaCitas.push(element)
-              }else if(element.estado == "atendido"){
-                state.listaCitasPasadas.push(element)
-              }
-            });
-            if(state.listaCitas.length==0) {
-              commit('setListaCitas',null)
-            }else if(state.listaCitasPasadas.length==0){
-              commit('setListaCitasPasadas',null)
-            }
+            commit('setListaCitas',res.data)
           }else{
-              commit('setListaCitas',null)
-              commit('setListaCitasPasadas',null)
+            commit('setListaCitas',null)
           }
         })
         .catch((e) => {
            console.log(e) 
         });
     },
+
+    //CONSULTA LISTAR CITAS  PASADAS
+    listCitasPasadas({commit},paciente){
+      let url =
+      `https://sicramv1.herokuapp.com/api/user/cita/listar_ocupadas/${paciente.id}`;
+      axios
+      .get(url, {
+        headers: {
+          Authorization: `${paciente.token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res)
+        if(res.data.length!=0){
+          console.log("no vacia")
+          commit('setListaCitasPasadas',res.data)
+        }else{
+          console.log("vacia")
+          commit('setListaCitasPasadas',null)
+        }
+      })
+      .catch((e) => {
+         console.log(e) 
+      });
+  },
 
     //CONSULTA PARA ACTUALIZAR LOS DATOS DEL FAMILIAR
     actualizarFamiliar({commit,dispatch},datos){
@@ -452,10 +493,10 @@ const actions = {
             .then((res)=>{
                 console.log(res)
                 commit('setCarga',false)
-                if(res.data.msg == "cita actualizada"){
+                if(res.data.msg == "Cita actualizada"){
                   commit('setMensajeActualizacionPositiva')
                   return Promise.resolve(true)
-                }else if(res.data.msg == "HORARIO YA ESTA USADO "){
+                }else if(res.data.msg == "El horario se encuentra ocupado"){
                   commit('setError',"Horario en uso.")
                   return Promise.resolve(true)
                 }else{
@@ -536,7 +577,62 @@ const actions = {
               console.log(e)
               return Promise.resolve(false) 
         })
-    }
+    },
+
+    //CONSULTA PARA VER EL DIAGNOSTICO DEL DOCTOR
+    verDiagnosticoCita({commit},datos){
+        let url = `https://sicramv1.herokuapp.com/api/user/cita/ver_diagnostico/${datos.paciente.id}`;
+          axios
+            .post(
+              url,
+              { id_cita: datos.id_cita },
+              {
+                headers: {
+                  Authorization: `${datos.paciente.token}`,
+                },
+              }
+            )
+            .then((res)=>{
+              console.log(res.data)
+              if(res.data.msg === "No se encontró un diagnóstico para esta cita"){
+                commit('setInformePaciente',null)
+              }else{
+                commit('setInformePaciente',res.data)
+              }
+            })
+            .catch((e)=>{
+              console.log(e)
+        })
+    },
+
+    //CONSULTA PARA VER LA RECETA DEL DOCTOR
+    verRecetaCita({commit},datos){
+      let url = `https://sicramv1.herokuapp.com/api/user/cita/ver_receta/${datos.paciente.id}`;
+      axios
+        .post(
+          url,
+          { id_cita: datos.id_cita },
+          {
+            headers: {
+              Authorization: `${datos.paciente.token}`,
+            },
+          }
+        )
+        .then((res)=>{
+          console.log(res.data)
+          if(res.data.msg === "No se encontraron recetas para esta cita"){
+                commit('setRecetaCita',null)
+          }else{
+                commit('setRecetaCita',res.data)
+          }
+        })
+        .catch((e)=>{
+          console.log(e)
+        })
+    },
+    detalleDeCita({commit},datos){
+      commit('setDetalleCita',datos)
+    },
 
 }
   

@@ -13,6 +13,7 @@ import 'vue2-datepicker/index.css';
 import 'vue2-datepicker/locale/es';
 import vmodal from 'vue-js-modal'
 import VueLogger from 'vuejs-logger';
+import VueHtmlToPaper from 'vue-html-to-paper';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const options = {
@@ -24,6 +25,18 @@ const options = {
   separator: '|',
   showConsoleColors: true
 };
+const options2 = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+    'https://unpkg.com/kidlat-css/css/kidlat.css'
+  ]
+}
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
@@ -33,6 +46,7 @@ Vue.use(Vuelidate)
 Vue.use(vmodal)
 Vue.use(VueLogger, options);
 Vue.use(DatePicker)
+Vue.use(VueHtmlToPaper, options2);
 window.$ = window.jQuery = require('jquery');
 //axios.defaults.baseURL = 'https://proyectocalidad9.herokuapp.com/';
 new Vue({

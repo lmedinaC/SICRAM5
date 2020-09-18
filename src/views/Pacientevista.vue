@@ -18,6 +18,7 @@ import ActualizarCitaPaciente from "@/components/ActualizarCitaPaciente.vue";
 import NuevaCitaPaciente from "@/components/NuevaCitaPaciente.vue";
 import RegistrarDependiente from "@/components/RegistrarDependiente.vue";
 import ListaDependientes from "@/components/ListaDependientes.vue";
+import CitaPasadaPaciente from "@/components/CitaPasadaPaciente.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -36,7 +37,8 @@ export default {
     ActualizarCitaPaciente,
     NuevaCitaPaciente,
     RegistrarDependiente,
-    ListaDependientes
+    ListaDependientes,
+    CitaPasadaPaciente
   },
 
   computed: {

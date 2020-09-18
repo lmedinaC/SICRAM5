@@ -68,7 +68,7 @@
                 class="mt-3"
                 style="padding:50px; align-content: center; text-align: center; background:pink"
               >
-                <h4>NO CUENTA CON HORARIOS REGISTRADOS OCUPADOS</h4>
+                <h4>NO CUENTA CON HORARIOS LIBRES</h4>
               </div>
             </div>
             <div v-if="getListaHorariosDoctor != null">

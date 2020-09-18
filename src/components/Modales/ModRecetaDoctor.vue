@@ -38,7 +38,12 @@
                   <label for="">DNI: </label>
                 </div>
                 <div class="col-md-9">
-                  <input class="form-control" type="text" :disabled="true" />
+                  <input
+                    class="form-control"
+                    type="text"
+                    :disabled="true"
+                    v-model="getPacienteAtendido.user.dni"
+                  />
                 </div>
               </div>
             </div>
@@ -49,6 +54,7 @@
             </div>
             <div class="col-md-7">
               <input
+                v-model="name"
                 style="text-transform: uppercase;"
                 class="form-control"
                 type="text"
@@ -163,7 +169,7 @@
                   <b-form-datepicker
                     size="sm"
                     local="es"
-                    v-model="lista.valido_hasta"
+                    v-model="lista.valida_hasta"
                     :min="dia"
                   ></b-form-datepicker>
                 </div>
@@ -194,7 +200,7 @@
             >
               Firmar
             </button>
-            <button type="submit" class="btn boton">
+            <button type="submit" class="btn boton" :disabled="getCargaDoctor">
               Registrar
             </button>
             <button
@@ -227,18 +233,17 @@ export default {
   },
   data() {
     return {
-      ejemplo: [],
-      bool: false,
-      dia: new Date(),
-      file: "",
-      contador: 0,
+      bool: false, //PARA VER SI TODOS LOS CAMPOS ESTAN VACÍOS
+      dia: new Date(), // DIA MINIMO DEL CALENDARIO
+      contador: 0, //CONTADOR DE ELEMENTOS DE LA LISTA
       lista: {
+        //LISTA DE MEDICAMENTOS
         medicamentos: [],
         fecha_expedicion: "",
-        valido_hasta: "",
+        valida_hasta: "",
         id_cita: "",
       },
-      firma_imagen: null,
+      firma_imagen: null, //IMAGEN DE LA FIRMA
       settings: {
         maxScrollbarLength: 400,
       },
@@ -279,10 +284,7 @@ export default {
     //VERIFICA SI LOS IMPUTS ESTÁN VACION
     camposVacios() {
       this.bool = false;
-      if (
-        this.lista.fecha_expedicion == "" ||
-        this.lista.valido_hasta == "" 
-      ) {
+      if (this.lista.fecha_expedicion == "" || this.lista.valida_hasta == "") {
         this.bool = true;
       } else {
         if (this.contador > 0) {
@@ -307,38 +309,80 @@ export default {
       console.log(this.lista);
       if (this.contador == 0 || this.bool) {
         this.$refs.simplert.openSimplert({
-          title: "RELLENE LOS CAMPOS.",
-          message: "Registre los medicamentos en la receta.",
+          title: "RELLENE LOS CAMPOS CORRECTAMENTE.",
+          message: "Registre todos los campos de la receta médica.",
+          type: "warning",
+        });
+      } else if (this.firma_imagen == null) {
+        this.$refs.simplert.openSimplert({
+          title: "RELLENE LOS CAMPOS CORRECTAMENTE.",
+          message: "Seleccione una firma 'firma.jpg'.",
           type: "warning",
         });
       } else {
-        //data.append("firma_imagen", this.firma_imagen);
-        //this.lista.firma_imagen = data
-        
-        data.append("firma_imagen", this.firma_imagen);
-        data.append("id_cita", this.lista.id_cita);
-        data.append("fecha_expedicion", this.lista.fecha_expedicion);
-        data.append("valido_hasta", this.lista.valido_hasta);
-        for (let i = 0; i < this.contador; i++) {
-          data.append("medicamentos[" + i + "][medicamento]", this.lista.medicamentos[i].medicamento);
-          data.append("medicamentos[" + i + "][concentracion]", this.lista.medicamentos[i].concentracion);
-          data.append("medicamentos[" + i + "][dosis_frecuencia]", this.lista.medicamentos[i].dosis_frecuencia);
-          data.append("medicamentos[" + i + "][duracion]", this.lista.medicamentos[i].duracion);
-          data.append("medicamentos[" + i + "][cantidad]", this.lista.medicamentos[i].cantidad);
-        }
-        let datos = {
-          doctor : this.getUsuario,
-          lista : data
-        }
-        console.log(datos)
-        this.agregarRecetaMedica(datos)
+        this.$refs.simplert.openSimplert({
+          title: "ADVERTENCIA DE REGISTRO",
+          message:
+            "Solo puede registrar una receta médica por cita. ¿Está seguro que desea registrarla?",
+          type: "info",
+          useConfirmBtn: true,
+          onConfirm: this.registrarMedicamentos,
+        });
       }
     },
-    pacienteMedicamentos() {},
+    registrarMedicamentos() {
+      var data = new FormData();
+      data.append("firma_imagen", this.firma_imagen);
+      data.append("id_cita", this.lista.id_cita);
+      data.append("fecha_expedicion", this.lista.fecha_expedicion);
+      data.append("valida_hasta", this.lista.valida_hasta);
+      for (let i = 0; i < this.contador; i++) {
+        data.append(
+          "medicamentos[" + i + "][medicamento]",
+          this.lista.medicamentos[i].medicamento
+        );
+        data.append(
+          "medicamentos[" + i + "][concentracion]",
+          this.lista.medicamentos[i].concentracion
+        );
+        data.append(
+          "medicamentos[" + i + "][dosis_frecuencia]",
+          this.lista.medicamentos[i].dosis_frecuencia
+        );
+        data.append(
+          "medicamentos[" + i + "][duracion]",
+          this.lista.medicamentos[i].duracion
+        );
+        data.append(
+          "medicamentos[" + i + "][cantidad]",
+          this.lista.medicamentos[i].cantidad
+        );
+      }
+      let datos = {
+        doctor: this.getUsuario,
+        lista: data,
+      };
+      console.log(datos);
+      this.agregarRecetaMedica(datos).then((res) => {
+        this.$refs.simplert.openSimplert(this.getMensajeDoctor);
+      });
+    },
   },
   computed: {
-    ...mapGetters(["getPacienteAtendido", "getUsuario"]),
+    ...mapGetters([
+      "getPacienteAtendido",
+      "getUsuario",
+      "getCargaDoctor",
+      "getMensajeDoctor",
+    ]),
     ...mapState(["cita"]),
+    name() {
+      return (
+        this.getPacienteAtendido.user.name +
+        " " +
+        this.getPacienteAtendido.user.lastname
+      );
+    },
   },
 };
 </script>
