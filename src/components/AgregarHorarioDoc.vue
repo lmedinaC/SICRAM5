@@ -209,7 +209,7 @@ export default {
     agregarHorario(horario) {
       //CASILLAS VACÍAS
       console.log(horario);
-      if (horario.hora_inicio === "" || horario.fecha === "") {
+      if (horario.hora_inicio === "" || horario.fecha === "" || horario.fecha === null) {
         this.$log.warn("CITAS : ", "LLENE TODOS LOS CAMPOS");
 
         this.mensajeRegistro = {

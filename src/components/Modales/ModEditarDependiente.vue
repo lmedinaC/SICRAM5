@@ -169,6 +169,7 @@ export default {
   data() {
     return {
       familiar: null,
+      mensajeError: null,
     };
   },
   components: {
@@ -176,18 +177,33 @@ export default {
   },
   methods: {
     ...mapActions(["actualizarFamiliar"]),
-    camposVacios(element){
-      for(const e in element){
-        if(element[e] == "" || element[e]  == null){
-          return true
+    //VERIFICA CELULAR Y DNI
+    camposIncorrectos(element) {
+      if (element.celular.toString().length !== 9) {
+        this.mensajeError = {
+          title: "CELULAR INVALIDO",
+          message: "El número de celular debe tener 9 dígitos.",
+          type: "warning",
+        };
+        return true;
+      }
+    },
+    //VERIFICA SI LOS CAMPOS ESTÁN VACIOS
+    camposVacios(element) {
+      for (const e in element) {
+        if (element[e] == "" || element[e] == null) {
+          return true;
         }
       }
     },
     //MODAL PARA CONFIRMAR EDICION DEPENDIENTE
     abrirEditarDependiente(dependiente) {
-      if(this.camposVacios(dependiente)){ //VERIFICAMOS SI EL OBJETO ESTÁ VACIO
+      if (this.camposVacios(dependiente)) {
+        //VERIFICAMOS SI EL OBJETO ESTÁ VACIO
         this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
-      }else{
+      } else if (this.camposIncorrectos(dependiente)) {
+        this.$refs.simplert.openSimplert(this.mensajeError);
+      } else {
         this.familiar = dependiente;
         this.getMensajeEditar.onConfirm = this.editarDependiente;
         this.$refs.simplert.openSimplert(this.getMensajeEditar);
@@ -213,7 +229,7 @@ export default {
       "getCarga",
       "getMensajeEditar",
       "getDatosFamiliar",
-      "getMensajeAdvertencia"
+      "getMensajeAdvertencia",
     ]),
   },
 };

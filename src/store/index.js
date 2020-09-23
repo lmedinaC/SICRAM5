@@ -75,10 +75,12 @@ export default new Vuex.Store({
     cambiarComponenteOrganizacion({commit},comp){
       commit('setComponenteOrganizacion',comp)    
     },
+    //PONE EL OBJETO CITA EN LOCAL STORAGE
     setObjCita({commit},cita){
       localStorage.setItem('cita',JSON.stringify(cita))
       commit('setCita',cita)
     },
+    //OBITNE EL OBJETO CITA 
     obtenerCita({commit}){
       const cita = JSON.parse(localStorage.getItem('cita'))
       commit('setCita',cita)
@@ -87,6 +89,7 @@ export default new Vuex.Store({
       console.log(datos)
       console.log("asdasdasd")
     },
+    //IMPIME LA RECETA MEDICA
     imprimirDom(dato){
       const prtHtml = document.getElementById('inprime').innerHTML;
 
@@ -121,7 +124,7 @@ export default new Vuex.Store({
         WinPrint.print();
         WinPrint.close();
       }, 1000);
-    }
+    },
   },
   modules: {
     viewLogin: login,

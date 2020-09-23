@@ -224,14 +224,14 @@ const actions = {
         .then((res)=>{
             console.log(res)
             commit('setDatosPaciente',res.data)
-            commit('setMensajePositivo')
+            commit('setMensajeActualizacionPositiva')
             commit('setCarga',false)
             return Promise.resolve(true)
         })
         .catch((e)=>{
             console.log(e)
             commit('setCarga',false)
-            commit('setMensajeNegativo')
+            commit('setMensajeActualizacionNegativa')
             return Promise.resolve(false)
         })
     },
@@ -423,13 +423,13 @@ const actions = {
               }
             )
             .then((res)=>{
-              commit('setMensajePositivo')
+              commit('setMensajeActualizacionPositiva')
               commit('setCarga',false)
               return Promise.resolve(true)  
             })
             .catch((e)=>{
               commit('setCarga',false)
-              commit('setMensajeNegativo')
+              commit('setMensajeActualizacionNegativa')
               return Promise.resolve(false)
             })
     },

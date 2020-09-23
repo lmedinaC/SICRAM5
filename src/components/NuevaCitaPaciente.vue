@@ -390,6 +390,7 @@ export default {
       this.horarios = [];
       this.rango=""
       this.doctorElegido=""
+      this.especialidad=""
     },
   },
   computed: {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div> 
     <!-- Page Content  -->
     <ModEditarCita/>
     <ModSintomasPaciente/>
@@ -213,10 +213,9 @@ export default {
     }, 
     //ABRE MODAL DE EDICION DE CITA
     abrirEdicion(cita){
-      console.log("asdasd",cita.doctor)
       let datos = {
         id : cita.doctor._id
-      }
+      } 
       //cita.doctor.name = cita.doctor.name + " " + cita.doctor.lastname
       this.listarHorariosDoctor(datos)
         this.datosCita(cita)

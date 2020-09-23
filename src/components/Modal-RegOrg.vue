@@ -109,7 +109,7 @@
                 type="submit"
                 class="butn"
                 value="REGISTRAR"
-                :disabled="$v.$invalid || carga2"
+                :disabled="carga2"
               />
             </div>
           </div>
@@ -132,8 +132,7 @@ export default {
   },
   data() {
     return {
-      carga: true,
-      carga2: null,
+      carga2: false,
       mensaje: "",
       modalWidth: MODAL_WIDTH,
       organizacion: {
@@ -167,6 +166,14 @@ export default {
     cerrar() {
       this.$modal.hide("demo-reg-org");
     },
+    //VERIFICA SI LOS CAMPOS ESTÁN VACIOS
+    camposVacios(element) {
+      for (const e in element) {
+        if (element[e] == "" || element[e] == null) {
+          return true;
+        }
+      }
+    },
     //VALIDAR LA CONTRASEÑA
     validarContraseña(str) {
       if (str.length < 6) {
@@ -194,7 +201,24 @@ export default {
           type: "warning",
         });
         this.carga2 = false;
-      } else {
+      }else if(this.camposVacios(org)){
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message:
+            "Todos los campos son necesarios.",
+          type: "warning",
+        });
+        this.carga2 = false;
+      }else if(this.organizacion.ruc.length!=11){
+        this.$refs.simplert.openSimplert({
+          title: "REGISTRO FALLIDO",
+          message:
+            "Ingrese un RUC válido",
+          type: "warning",
+        });
+        this.carga2 = false;
+      }
+       else {
         this.axios
           .post("https://sicramv1.herokuapp.com/api/signuporganizacion", {
             ...this.organizacion,
@@ -208,10 +232,8 @@ export default {
                 message: "Este organización ya se encuentra registrada",
                 type: "error",
               });
-              this.carga = false;
               this.carga2 = false;
             } else {
-              this.carga = true;
               this.carga2 = false;
               this.$refs.simplert.openSimplert({
                 title: "REGISTRO EXITOSO",
@@ -222,7 +244,6 @@ export default {
             }
           })
           .catch((e) => {
-            this.carga = false;
             this.carga2 = false;
             this.$refs.simplert.openSimplert({
               title: "REGISTRO FALLIDO",

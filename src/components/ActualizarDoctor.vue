@@ -214,9 +214,8 @@ export default {
   },
   data() {
     return {
-      mensajeRegistro: {},
       datosUsuario: {},
-      actualizarUsuario: {},
+      mensajeError: null,
     };
   },
   mounted() {
@@ -228,7 +227,18 @@ export default {
     this.cargarDatos();
   },
   methods: {
-    ...mapActions(["actualizarDatosDoctor","sintomasDelPaciente"]),
+    ...mapActions(["actualizarDatosDoctor", "sintomasDelPaciente"]),
+    //VERIFICA CELULAR Y DNI
+    camposIncorrectos(element) {
+      if (element.celular.toString().length !== 9) {
+        this.mensajeError = {
+          title: "CELULAR INVALIDO",
+          message: "El número de celular debe tener 9 dígitos.",
+          type: "warning",
+        };
+        return true;
+      } 
+    },
     //VERIFICA SI LOS DATOS ESTAN VACIOS
     camposVacios(element) {
       for (const e in element) {
@@ -241,6 +251,8 @@ export default {
     actualizarDoctor(newDatos) {
       if (this.camposVacios(newDatos)) {
         this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      } else if (this.camposIncorrectos(newDatos)) {
+        this.$refs.simplert.openSimplert(this.mensajeError);
       } else {
         let datos = {
           doctor: this.getUsuario,
@@ -254,10 +266,10 @@ export default {
     cargarDatos() {
       this.datosUsuario = this.getDatosDoctor;
       let datos = {
-        id_cita : "5f618abcbdd0fc0017894d44",
-        doctor : this.getUsuario
-      }
-      this.sintomasDelPaciente(datos)
+        id_cita: "5f618abcbdd0fc0017894d44",
+        doctor: this.getUsuario,
+      };
+      this.sintomasDelPaciente(datos);
     },
   },
   computed: {

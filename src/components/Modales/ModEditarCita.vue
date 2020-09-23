@@ -4,7 +4,7 @@
     transition="pop-out"
     :width="750"
     :focus-trap="true"
-    :height="370"
+    :height="370" 
   >
     <div class="editar" v-if="getListaHorariosDoctor !=null">
       <div class="titulo">
@@ -183,7 +183,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["actualizarCitaPaciente","listCitas"]),
+    ...mapActions(["actualizarCitaPaciente","listCitas","listarHorariosDoctor"]),
     //VERIFICA SI LOS DATOS ESTAN VACIOS
     camposVacios(element) {
       for (const e in element) {
@@ -223,6 +223,9 @@ export default {
       console.log(this.getDatosCita);
       this.actualizarCitaPaciente(datos).then((res) => {
         this.$refs.simplert.openSimplert(this.getMensaje);
+        this.horarios = [];
+        this.rango = ""
+        this.listarHorariosDoctor({id:this.getDatosCita.doctor._id})
         this.listCitas(this.getUsuario)
       });
     },

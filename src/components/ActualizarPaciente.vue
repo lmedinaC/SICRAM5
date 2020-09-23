@@ -109,10 +109,8 @@
                   </div>
                   <div class="col-8">
                     <input
-                      type="number"
-                      min="18"
+                      type="text"
                       class="form-control"
-                      id="inputEdad"
                       v-model="datosUsuario.discapacidad"
                     />
                   </div>
@@ -142,6 +140,7 @@
                   </div>
                   <div class="col-8">
                     <input
+                      min="18"
                       type="number"
                       oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                       maxlength="3"
@@ -216,11 +215,8 @@ export default {
   },
   data() {
     return {
-      mensajeRegistro: {},
-      mensaje: "",
       datosUsuario: {},
-      deshabilitar: null,
-      actualizarUsuario: {},
+      mensajeError : null
     };
   },
   mounted() {
@@ -233,6 +229,20 @@ export default {
   },
   methods: {
     ...mapActions(["actualizarDatosPaciente"]),
+    //VERIFICA CELULAR Y DNI
+    camposIncorrectos(element) {
+      console.log(element)
+      var cel = element.celular.toString().length;
+      console.log(cel)
+        if (cel != 9) {
+        this.mensajeError = {
+          title: "CELULAR INVALIDO",
+          message: "El número de celular debe tener 9 dígitos.",
+          type: "warning",
+        };
+        return true;
+      } 
+    },
     //CAMPOS VACIOS
     camposVacios(element){
       for(const e in element){
@@ -245,6 +255,8 @@ export default {
     actualizarPaciente(pacient) {
       if (this.camposVacios(pacient)) {
         this.$refs.simplert.openSimplert(this.getMensajeAdvertencia);
+      }else if(this.camposIncorrectos(pacient)){
+        this.$refs.simplert.openSimplert(this.mensajeError);
       }else{
           const datos = {
           paciente: this.getUsuario,

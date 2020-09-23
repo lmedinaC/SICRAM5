@@ -297,6 +297,7 @@ const actions = {
             console.log(res)
             if(res.data.length!=0){
                 commit('setListaHorariosDoctor',res.data)
+                state.dia = []
                 res.data.forEach((element) => {
                   state.dia.push(element.fecha);
                 });
