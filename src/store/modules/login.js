@@ -167,6 +167,27 @@ const actions = {
             commit('setUsuario',null)
             commit('setTipoUsuario',null)
         }
+    },
+
+    //INGRESR CITA
+    ingresarCita({commit},id_cita){    
+        return axios
+        .post("https://sicramv1.herokuapp.com/api/cita/ingresar",
+        {id_cita : id_cita})
+        .then((res)=>{
+            console.log(res)
+            if(res.data.ingreso === true){
+                return Promise.resolve(true)
+            }else if(res.data.msg==="Cita no encontrada"){
+                return Promise.resolve(false)
+            }else{
+                return Promise.resolve(false)
+            }
+        })
+        .catch((e)=>{
+            console.log(e)
+            return Promise.resolve(false)
+        })
     }
 }
    

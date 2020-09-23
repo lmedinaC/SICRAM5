@@ -1,8 +1,8 @@
 <template>
-  <div> 
+  <div>
     <!-- Page Content  -->
-    <ModEditarCita/>
-    <ModSintomasPaciente/>
+    <ModEditarCita />
+    <ModSintomasPaciente />
     <div id="content">
       <div class="">
         <button type="button" id="sidebarCollapse" class=" boton-menu">
@@ -60,11 +60,11 @@
                               aulaVirtual: element.aulaVirtual,
                               name: element.doctor.name,
                               lastname: element.doctor.lastname,
-                              id_cita: element._id
+                              id_cita: element._id,
                             })
                           "
                         >
-                         <i class="fas fa-video fa-sm"></i> Ingresar
+                          <i class="fas fa-video fa-sm"></i> Ingresar
                         </button>
                       </div>
                       <div>
@@ -116,7 +116,7 @@ export default {
   components: {
     Simplert,
     ModEditarCita,
-    ModSintomasPaciente
+    ModSintomasPaciente,
   },
   data() {
     return {
@@ -127,7 +127,7 @@ export default {
       diaMax: new Date(),
       fecha: "",
       cita: null,
-      listaDeCitas : null
+      listaDeCitas: null,
     };
   },
   mounted() {
@@ -139,11 +139,30 @@ export default {
     this.getCita();
   },
   methods: {
-    ...mapActions(["setObjCita", "listCitas",'listarDependientes',"eliminarCitaPaciente","datosCita","listarHorariosDoctor"]),
+    ...mapActions([
+      "setObjCita",
+      "listCitas",
+      "listarDependientes",
+      "eliminarCitaPaciente",
+      "datosCita",
+      "listarHorariosDoctor",
+      "ingresarCita"
+    ]),
     //MODAL PARA DETALLAR SINTOMAS
-    abrirDetalleSintomas(cita){
-      this.setObjCita(cita);
-      this.$modal.show('mod-sintomas-paciente')
+    abrirDetalleSintomas(cita) {
+      this.ingresarCita(cita.id_cita)
+      .then((res)=>{
+        if(res){
+          this.setObjCita(cita);
+          this.$modal.show("mod-sintomas-paciente");
+        }else{
+          this.$refs.simplert.openSimplert({
+            title : "AVISO DE CITA",
+            message: "No se encuentra en el horario de su cita.",
+            type: "warning"
+          });
+        }
+      })
     },
 
     MostrarFecha(fecha) {
@@ -210,16 +229,16 @@ export default {
     getCita() {
       //LLAMA A LA FUNCION LISTAR CISTAS DE PACIENTE.JS
       this.listCitas(this.getUsuario);
-    }, 
+    },
     //ABRE MODAL DE EDICION DE CITA
-    abrirEdicion(cita){
+    abrirEdicion(cita) {
       let datos = {
-        id : cita.doctor._id
-      } 
+        id: cita.doctor._id,
+      };
       //cita.doctor.name = cita.doctor.name + " " + cita.doctor.lastname
-      this.listarHorariosDoctor(datos)
-        this.datosCita(cita)
-        this.$modal.show('mod-editar-cita')
+      this.listarHorariosDoctor(datos);
+      this.datosCita(cita);
+      this.$modal.show("mod-editar-cita");
     },
     //ABRE MODAL DE CONFIRAMCIÓN DE ELIMINACIÓN
     abrirEliminación(cita) {
@@ -235,43 +254,48 @@ export default {
     //LLAMA A ELIMINAR CITA DE PACIENTE EN PACIENTE.JS
     eliminarCita() {
       console.log(this.cita);
-      let datos= {
+      let datos = {
         paciente: this.getUsuario,
-        id_cita: this.cita._id
-      }
-      this.eliminarCitaPaciente(datos)
-      .then((res)=>{
+        id_cita: this.cita._id,
+      };
+      this.eliminarCitaPaciente(datos).then((res) => {
         this.$refs.simplert.openSimplert(this.getMensaje);
         this.listCitas(this.getUsuario);
-      })
+      });
     },
-  }, // 
+  }, //
   computed: {
     ...mapState(["usuarioPaciente", "idPaciente"]),
-    ...mapGetters(['getEspecialidades','getListFamiliares',"getUsuario", "getListaCitas","getMensaje"]),
-    listAtendida(){
-      console.log("lista",this.getListaCitas)
-      if(this.getListaCitas==null){
-        this.listaDeCitas = null
-      }else{
-        this.listaDeCitas = []
+    ...mapGetters([
+      "getEspecialidades",
+      "getListFamiliares",
+      "getUsuario",
+      "getListaCitas",
+      "getMensaje",
+    ]),
+    listAtendida() {
+      console.log("lista", this.getListaCitas);
+      if (this.getListaCitas == null) {
+        this.listaDeCitas = null;
+      } else {
+        this.listaDeCitas = [];
         this.getListaCitas.forEach((element) => {
-          if(element.estado == "pendiente"){
-            this.listaDeCitas.push(element)
+          if (element.estado == "pendiente") {
+            this.listaDeCitas.push(element);
           }
         });
-        if(this.listaDeCitas.length == 0) {
-          console.log("lista vacia")
-          this.listaDeCitas = null
+        if (this.listaDeCitas.length == 0) {
+          console.log("lista vacia");
+          this.listaDeCitas = null;
         }
-      }         
-      return this.listaDeCitas
-    }
+      }
+      return this.listaDeCitas;
+    },
   },
   beforeMount() {
     this.diaMax.setDate(this.diaMax.getDate() + 7);
     this.setFecha(this.diaMin, this.diaMax);
-    this.listarDependientes(this.getUsuario)
+    this.listarDependientes(this.getUsuario);
   },
 };
 </script>

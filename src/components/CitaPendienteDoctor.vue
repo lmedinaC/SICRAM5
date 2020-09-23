@@ -55,7 +55,7 @@
 
         <br>
         </div>
-        
+        <simplert :useRadius="true" :useIcon="true" ref="simplert"> </simplert>
       </div>
     </div>
   </div>
@@ -79,7 +79,9 @@ export default {
       mensaje: "",
       usuario: "",
       datosUsuario: {},
-      listaDeCitas: null
+      listaDeCitas: null,
+      cita: null,
+      loader: null
     };
   },
   components: {
@@ -96,9 +98,11 @@ export default {
     console.log(this.listAtendida)
   },
   methods: {
-    ...mapActions(['setObjCita','listarCitasDoctor']),
+    ...mapActions(['setObjCita','listarCitasDoctor',"ingresarCita"]),
     cargar(cita) {
-      let loader = this.$loading.show({
+      this.cita = cita
+      this.ingresar()
+      this.loader = this.$loading.show({
         // Optional parameters
         color: '#0099a1',
         container: this.fullPage ? null : this.$refs.formContainer,
@@ -107,11 +111,6 @@ export default {
         height: 150,
         width: 130,
       });
-      // simulate AJAX
-      setTimeout(() => {
-        loader.hide();
-        this.ingresarCita(cita)
-      }, 3000);
     },
     getCitas() {
       this.listarCitasDoctor(this.getUsuario)
@@ -119,10 +118,22 @@ export default {
     },
 
     //INGRESA A LA CITA
-    ingresarCita(cita){
-      console.log(cita)
-      this.setObjCita(cita)
-      window.location.assign("/doctorvista/citadoctor")
+    ingresar(){
+      this.ingresarCita(this.cita.id)
+      .then((res)=>{
+        this.loader.hide();
+        if(res){
+          this.setObjCita(this.cita)
+          window.location.assign("/doctorvista/citadoctor")
+        }else{
+          this.$refs.simplert.openSimplert({
+            title : "AVISO DE CITA",
+            message: "No se encuentra en el horario de su cita.",
+            type: "warning"
+          });
+        }
+      })
+      
     }
 
   },
