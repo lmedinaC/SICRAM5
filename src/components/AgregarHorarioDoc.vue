@@ -185,7 +185,7 @@ export default {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       return (
-        date < new Date(today.getTime() + 1 * 24 * 3600 * 1000) || date > new Date(today.getTime() + 8 * 24 * 3600 * 1000)
+        date < new Date(today.getTime() ) || date > new Date(today.getTime() + 8 * 24 * 3600 * 1000)
       );
     },
 
